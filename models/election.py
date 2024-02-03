@@ -9,7 +9,7 @@ from uuid import uuid4
 class Election():
     """ The Election class
     """
-    def __init__(self, title, start_date, end_date, candidates_list):
+    def __init__(self, title, start_date, end_date):
         """ Initializes Election class.
 
         Args:
@@ -50,21 +50,12 @@ class Election():
             msg = "Election starting date must be before the ending date"
             raise ValueError(msg)
 
-        # Validate the candidates_list parameter
-        if not candidates_list:
-            raise ValueError("Candidates' list is required")
-        if not isinstance(candidates_list, list):
-            raise TypeError("Candidates' list must be a list")
-        if not all(isinstance(candidate, str)
-                   for candidate in candidates_list):
-            raise TypeError("Candidates' list must contain strings only")
-
         self.public_key = self.short_uuid()
         self.private_key = str(uuid4())
         self.title = title
         self.start_date = start_date
         self.end_date = end_date
-        self.candidates = candidates_list
+        self.candidates = []
         self.voters = []
         self.ballots = []
         self.status = "Upcoming"
@@ -77,19 +68,6 @@ class Election():
         """
         id = ShortUUID().random(length=12)
         return '-'.join(id[i:i+4] for i in range(0, 12, 4))
-
-    def add_candidate(self, candidate):
-        """ Add a candidate to the election
-
-        Args:
-            candidate (str): The candidate's name
-
-        Returns:
-            None
-        """
-        if not isinstance(candidate, str):
-            raise ValueError("Election starting date must be a string")
-        self.candidates.append(candidate)
 
     def add_voter(self, first_name, last_name, email):
         """ Add a voter to the election
