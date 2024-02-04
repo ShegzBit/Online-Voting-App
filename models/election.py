@@ -9,58 +9,127 @@ from uuid import uuid4
 class Election():
     """ The Election class
     """
-    def __init__(self, title, start_date, end_date):
+
+    def __init__(self, title, start_date, end_date, ballot_name, candidates *arg, **kwargs):
         """ Initializes Election class.
 
         Args:
             title (str): The election title
             start_date (str): The election starting date
             end_date (str): The election ending date
-            candidates_list (list): The list of candidates
+            
+            *arg: Variable length argument list
+            **kwargs: Arbitrary keyword arguments
 
         Returns:
             None
         """
-        # Validate the title parameter
-        if not title:
-            raise ValueError("Title is required")
-        if not isinstance(title, str):
-            raise TypeError("Title must be a string")
-
-        # Validate received dates as strings
-        # in the format 'YYYY-MM-DD HH:MM:SS'
-        if not start_date:
-            msg = "Election starting date is required in the " \
-                "format 'YYYY-MM-DD HH:MM:SS'"
-            raise ValueError(msg)
-        if not isinstance(start_date, str):
-            raise TypeError("Election starting date must be a string")
-        if not end_date:
-            msg = "Election ending date is required in the " \
-                "format 'YYYY-MM-DD HH:MM:SS'"
-            raise ValueError(msg)
-        if not isinstance(end_date, str):
-            raise TypeError("Election ending date must be a string")
-        try:
-            start_date = datetime.strptime(start_date, '%Y-%m-%d %H:%M:%S')
-            end_date = datetime.strptime(end_date, '%Y-%m-%d %H:%M:%S')
-        except ValueError:
-            raise ValueError("Invalid date format. Use 'YYYY-MM-DD HH:MM:SS'")
-        if start_date > end_date:
-            msg = "Election starting date must be before the ending date"
-            raise ValueError(msg)
-
+        self.__title = title
+        self.__start_date = start_date
+        self.__end_date = end_date
+        self.id = str(uuid4())
         self.public_key = self.short_uuid()
-        self.private_key = str(uuid4())
-        self.title = title
-        self.start_date = start_date
-        self.end_date = end_date
+        self.status = "Upcoming"
         self.candidates = []
         self.voters = []
-        self.ballots = []
-        self.status = "Upcoming"
-        self.total_votes = 0
+        self.__ballots = [{"name": ballot_name, "candidates": candidates}]
         self.results = []
+        self.total_votes = 0
+
+    @property
+    def title(self):
+        """ The title property
+
+        Args:
+            value (str): The election title
+
+        Raises:
+            ValueError: If the title is empty
+            TypeError: If the title is not a string
+
+        Returns:
+            str: The election title
+        """
+        return self.__title
+   
+    @title.setter
+    def title(self, value):
+        """ The title setter
+        """
+        if not value:
+            raise ValueError("Title is required")
+        if not isinstance(value, str):
+            raise TypeError("Title must be a string")
+        self.__title = value
+
+    @property
+    def start_date(self):
+        """ The start_date property
+
+        Args:
+            value (str): The election starting date
+
+        Raises:
+            ValueError: If the date format is invalid
+            TypeError: If the date is not a string
+
+        Returns:
+            str: The election starting date
+        """
+        return self.__start_date
+
+    @start_date.setter
+    def start_date(self, value):
+        """ The start_date setter in the format 'YYYY-MM-DD HH:MM:SS'
+        """
+        if not value:
+            raise ValueError("Election starting date is required in the "
+                             "format 'YYYY-MM-DD HH:MM:SS'")
+        if not isinstance(value, str):
+            raise TypeError("Election starting date must be a string")
+        try:
+            start_date = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+        except ValueError:
+            raise ValueError("Invalid date format. Use 'YYYY-MM-DD HH:MM:SS'")
+            
+        self.__start_date = start_date
+
+       
+    @property
+    def end_date(self):
+        """ The end_date property
+
+        Args:
+            value (str): The election ending date
+
+        Raises:
+            ValueError: If the date format is invalid
+            TypeError: If the date is not a string
+
+        Returns:
+            str: The election ending date
+        """
+        return self.__end_date
+        
+    @end_date.setter
+    def end_date(self, value):
+        """ The end_date setter in the format 'YYYY-MM-DD HH:MM:SS'
+        """
+        if not value:
+            raise ValueError("Election ending date is required in the "
+                             "format 'YYYY-MM-DD HH:MM:SS'")
+        if not isinstance(value, str):
+            raise TypeError("Election ending date must be a string")
+        try:
+            end_date = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+        except ValueError:
+            raise ValueError("Invalid date format. Use 'YYYY-MM-DD HH:MM:SS'")
+            
+        self.__end_date = end_date
+
+        if self.start_date > self.end_date:
+            msg = "Election starting date must be before the ending date"
+            raise ValueError(msg)
 
     @staticmethod
     def short_uuid():
@@ -69,6 +138,49 @@ class Election():
         id = ShortUUID().random(length=12)
         return '-'.join(id[i:i+4] for i in range(0, 12, 4))
 
+    @property
+    def ballots(self):
+        """ The ballots property
+        """
+        return self.__ballots
+    
+    @ballots.setter
+    def ballots(self, name, candidates=[]):
+        """ Make a ballot
+
+        Args:
+            name (str): The ballot name
+            candidates (list): The list of candidates
+
+        Raises:
+            ValueError: If the ballot name is not a string
+            ValueError: If the candidates list is not a list
+
+        Returns:
+            None
+        """
+        # Check if name is empty
+        if not name:
+            raise ValueError("Ballot name is required")
+
+        # Check if name is a string
+        if not isinstance(name, str):
+            raise ValueError("Ballot name must be a string")
+
+        # Check if candidates is a list
+        if not isinstance(candidates, list):
+            raise ValueError("Candidates list must be a list")
+
+        # Check if the ballot name already exists
+        for ballot in self.__ballots:
+            if ballot["name"] == name:
+                # If it exists, update the candidates list
+                ballot["candidates"].extend(candidates)
+                return
+
+        # If it doesn't exist, add the ballot
+        self.__ballots.append({"name": name, "candidates": candidates})
+    
     def add_voter(self, first_name, last_name, email):
         """ Add a voter to the election
 
@@ -82,31 +194,6 @@ class Election():
         """
         self.voters.append({"first_name": first_name, "last_name": last_name,
                             "email": email})
-
-    def make_ballot(self, ballot_name, candidates_list):
-        """ Make a ballot
-
-        Args:
-            ballot_name (str): The ballot name
-            candidates_list (list): The list of candidates
-
-        Returns:
-            None
-        """
-        # Check if candidates_list is a list
-        if not isinstance(candidates_list, list):
-            raise ValueError("Candidates list must be a list")
-
-        # Check if the ballot name already exists
-        for ballot in self.ballots:
-            if ballot["name"] == ballot_name:
-                # If it exists, update the candidates list
-                ballot["candidate"].extend(candidates_list)
-                return
-
-        # If it doesn't exist, add the ballot
-        self.ballots.append({"name": ballot_name,
-                             "candidates": candidates_list})
 
     def get_voters(self):
         """ Get the list of voters

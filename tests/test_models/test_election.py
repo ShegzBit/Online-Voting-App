@@ -13,7 +13,10 @@ class TestElection(unittest.TestCase):
                     + timedelta(days=2)).strftime('%Y-%m-%d %H:%M:%S')
         self.election = Election("Test Election",
                                  start_date,
-                                 end_date)
+                                 end_date,
+                                 ballots=[{"name": "Ballot 1",
+                                           "candidates": ["Candidate 1",
+                                                          "Candidate 2"]}])
 
     def test_init(self):
         """ Test that new instance is instantiated as expected """
@@ -25,7 +28,7 @@ class TestElection(unittest.TestCase):
         self.assertEqual(self.election.results, [])
 
         self.assertIsInstance(self.election.public_key, str)
-        self.assertIsInstance(self.election.private_key, str)
+        self.assertIsInstance(self.election.id, str)
 
     def test_init_title_validations(self):
         """ Test that title parameter is validated as expected """
@@ -48,7 +51,10 @@ class TestElection(unittest.TestCase):
                      (datetime.now()
                       + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S'),
                      (datetime.now()
-                      + timedelta(days=2)).strftime('%Y-%m-%d %H:%M:%S'))
+                      + timedelta(days=2)).strftime('%Y-%m-%d %H:%M:%S'),
+                      ballots=[{"name": "Ballot 1",
+                               "candidates": ["Candidate 1",
+                                              "Candidate 2"]}])
         self.assertEqual(str(cm.exception), "Title is required")
 
     def test_init_start_date_validation(self):
@@ -56,7 +62,10 @@ class TestElection(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             Election("Test", "test_time",
                      (datetime.now()
-                      + timedelta(days=2)).strftime('%Y-%m-%d %H:%M:%S'))
+                      + timedelta(days=2)).strftime('%Y-%m-%d %H:%M:%S'),
+                      ballots=[{"name": "Ballot 1",
+                               "candidates": ["Candidate 1",
+                                              "Candidate 2"]}])
         self.assertEqual(str(cm.exception),
                          "Invalid date format. Use 'YYYY-MM-DD HH:MM:SS'")
 
@@ -66,7 +75,9 @@ class TestElection(unittest.TestCase):
             Election("Test Election",
                      "",
                      (datetime.now()
-                      + timedelta(days=2)).strftime('%Y-%m-%d %H:%M:%S'))
+                      + timedelta(days=2)).strftime('%Y-%m-%d %H:%M:%S'),
+                      ballots=("Ballot 1",
+                               ["Candidate 1", "Candidate 2"]))
         self.assertEqual(str(cm.exception),
                          ("Election starting date is required in the "
                           "format 'YYYY-MM-DD HH:MM:SS'"))
@@ -77,7 +88,10 @@ class TestElection(unittest.TestCase):
             Election("Test Election",
                      (datetime.now()
                       + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S'),
-                     "")
+                     "",
+                      ballots=[{"name": "Ballot 1",
+                               "candidates": ["Candidate 1",
+                                              "Candidate 2"]}])
         self.assertEqual(str(cm.exception),
                          ("Election ending date is required in the "
                           "format 'YYYY-MM-DD HH:MM:SS'"))
@@ -89,7 +103,10 @@ class TestElection(unittest.TestCase):
                      (datetime.now()
                       + timedelta(days=2)).strftime('%Y-%m-%d %H:%M:%S'),
                      (datetime.now()
-                      + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S'))
+                      + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S'),
+                      ballots=[{"name": "Ballot 1",
+                               "candidates": ["Candidate 1",
+                                              "Candidate 2"]}])
         self.assertEqual(str(cm.exception),
                          ("Election starting date must be before "
                           "the ending date"))
@@ -99,18 +116,18 @@ class TestElection(unittest.TestCase):
         self.assertTrue(isinstance(self.election.public_key, str))
         self.assertEqual(len(self.election.public_key), 14)
 
-    def test_private_key(self):
+    def test_id(self):
         """ Test that private_key is a UUID """
-        self.assertTrue(isinstance(self.election.private_key, str))
-        self.assertEqual(len(self.election.private_key), 36)
+        self.assertTrue(isinstance(self.election.id, str))
+        self.assertEqual(len(self.election.id), 36)
 
     def test_add_voter(self):
         self.election.add_voter("John", "Doe", "john.doe@example.com")
         self.assertIn({"first_name": "John", "last_name": "Doe",
                        "email": "john.doe@example.com"}, self.election.voters)
 
-    def test_make_ballot(self):
-        self.election.make_ballot("Ballot 1", ["Candidate 1", "Candidate 3"])
+    def test_ballot(self):
+        self.election.ballots("Ballot 1", ["Candidate 1", "Candidate 3"])
         self.assertIn({"name": "Ballot 1",
                        "candidates": ["Candidate 1", "Candidate 3"]},
                       self.election.ballots)
