@@ -1,0 +1,60 @@
+*{
+  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
+}
+
+#logo {
+  width: auto;
+  height: 28px;
+  margin: 0 80px;
+  display: block;
+}
+
+.card-title{
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+  line-height: 34px;
+  padding: 8px 0;
+  color: #050D0D;
+}
+
+.card-subtitle{
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 28px;
+  padding: 8px 0;
+  color: #5A6267;
+}
+
+.card{
+  width: 500px;
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+form{
+  margin-top: 50px;
+}
+
+label{
+  font-size: 12px;
+  font-weight: 400;
+  color: #024647;
+  line-height: 18px;
+}
+
+.btn{
+  border-radius: 12px;
+  background: var(--gradient, linear-gradient(275deg, #024647 13.56%, #2C7873 90.72%));
+  height: 48px;
+  text-align: center;
+  margin-top: 24px;
+  line-height: 22px;
+  font-size: 16px;
+  
+}
