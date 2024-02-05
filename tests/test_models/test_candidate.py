@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from models.base import Base, BaseModel
 from models.candidate import Candidate
 
+
 class TestCandidate(unittest.TestCase):
     def setUp(self):
         # Use in-memory SQLite for testing

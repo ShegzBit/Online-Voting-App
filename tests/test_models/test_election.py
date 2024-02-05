@@ -40,9 +40,15 @@ class TestElection(unittest.TestCase):
 
     def test_positions(self):
         """Test the positions property."""
-        self.election.candidates.append(Candidate(first_name="John", last_name="Doe", position="President"))
-        self.election.candidates.append(Candidate(first_name="Jane", last_name="Doe", position="President"))
-        self.election.candidates.append(Candidate(first_name="Bob", last_name="Smith", position="Vice President"))
+        self.election.candidates.append(Candidate(first_name="John",
+                                                  last_name="Doe",
+                                                  position="President"))
+        self.election.candidates.append(Candidate(first_name="Jane",
+                                                  last_name="Doe",
+                                                  position="President"))
+        self.election.candidates.append(Candidate(first_name="Bob",
+                                                  last_name="Smith",
+                                                  position="Vice President"))
         positions = self.election.positions
         self.assertEqual(len(positions), 2)
         self.assertIn("President", positions)
@@ -50,27 +56,47 @@ class TestElection(unittest.TestCase):
 
     def test_ballot_candidates(self):
         """Test the ballots method's handling of candidates."""
-        self.election.candidates.append(Candidate(first_name="John", last_name="Doe", position="President"))
+        self.election.candidates.append(Candidate(first_name="John",
+                                                  last_name="Doe",
+                                                  position="President"))
         self.assertEqual(self.election.ballots[0]["candidates"], ["John Doe"])
 
     def test_ballot_no_duplicates(self):
-        """Test the ballots method with a candidate that already exists in the ballot."""
-        self.election.candidates.append(Candidate(first_name="John", last_name="Doe", position="President"))
+        """
+        Test the ballots method with a candidate
+        that already exists in the ballot.
+        """
+        self.election.candidates.append(Candidate(first_name="John",
+                                                  last_name="Doe",
+                                                  position="President"))
         self.assertEqual(len(self.election.ballots[0]["candidates"]), 1)
         self.assertEqual(self.election.ballots[0]["candidates"][0], "John Doe")
 
     def test_ballots_multiple_positions(self):
         """Test the ballots method with multiple positions."""
-        self.election.candidates.append(Candidate(first_name="John", last_name="Doe", position="President"))
-        self.election.candidates.append(Candidate(first_name="Jane", last_name="Doe", position="Vice President"))
+        self.election.candidates.append(Candidate(first_name="John",
+                                                  last_name="Doe",
+                                                  position="President"))
+        self.election.candidates.append(Candidate(first_name="Jane",
+                                                  last_name="Doe",
+                                                  position="Vice President"))
         self.assertEqual(len(self.election.ballots), 2)
-        self.assertIn({"name": "President", "candidates": ["John Doe"]}, self.election.ballots)
-        self.assertIn({"name": "Vice President", "candidates": ["Jane Doe"]}, self.election.ballots)
+        self.assertIn({"name": "President", "candidates": ["John Doe"]},
+                      self.election.ballots)
+        self.assertIn({"name": "Vice President", "candidates": ["Jane Doe"]},
+                      self.election.ballots)
 
     def test_ballots_multiple_candidates(self):
-        """Test the ballots method with multiple candidates for the same position."""
-        self.election.candidates.append(Candidate(first_name="John", last_name="Doe", position="President"))
-        self.election.candidates.append(Candidate(first_name="Jane", last_name="Doe", position="President"))
+        """
+        Test the ballots method with multiple candidates
+        for the same position.
+        """
+        self.election.candidates.append(Candidate(first_name="John",
+                                                  last_name="Doe",
+                                                  position="President"))
+        self.election.candidates.append(Candidate(first_name="Jane",
+                                                  last_name="Doe",
+                                                  position="President"))
         self.assertEqual(len(self.election.ballots[0]["candidates"]), 2)
         self.assertIn("John Doe", self.election.ballots[0]["candidates"])
         self.assertIn("Jane Doe", self.election.ballots[0]["candidates"])

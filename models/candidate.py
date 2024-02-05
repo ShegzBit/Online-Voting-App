@@ -6,7 +6,6 @@ from sqlalchemy import Column, String, Integer, ForeignKey
 from models.base import BaseModel, Base
 
 
-
 class Candidate(BaseModel, Base):
     """ The Candidate class
     """
@@ -19,7 +18,8 @@ class Candidate(BaseModel, Base):
     manifesto = Column(String(1024), nullable=False)
     votes = Column(Integer, default=0, nullable=False)
     # profile_picture = 
-    election_id = Column(String(60), ForeignKey('elections.id'), nullable=False)
+    election_id = Column(String(60), ForeignKey('elections.id'),
+                         nullable=False)
 
     @property
     def full_name(self):

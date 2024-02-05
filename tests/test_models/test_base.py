@@ -22,10 +22,13 @@ class TestBaseModel(unittest.TestCase):
 
     def test_init_with_args(self):
         """Test the __init__ method with arguments."""
-        base_model = BaseModel(title="Test", start_date="2022-01-01 00:00:00", end_date="2022-01-02 00:00:00")
+        base_model = BaseModel(title="Test", start_date="2022-01-01 00:00:00",
+                               end_date="2022-01-02 00:00:00")
         self.assertEqual(base_model.title, "Test")
-        self.assertEqual(base_model.start_date, datetime.strptime("2022-01-01 00:00:00", '%Y-%m-%d %H:%M:%S'))
-        self.assertEqual(base_model.end_date, datetime.strptime("2022-01-02 00:00:00", '%Y-%m-%d %H:%M:%S'))
+        self.assertEqual(base_model.start_date, datetime
+                         .strptime("2022-01-01 00:00:00", '%Y-%m-%d %H:%M:%S'))
+        self.assertEqual(base_model.end_date, datetime
+                         .strptime("2022-01-02 00:00:00", '%Y-%m-%d %H:%M:%S'))
 
     def test_init_with_invalid_date(self):
         """Test the __init__ method with an invalid date string."""
@@ -56,7 +59,8 @@ class TestBaseModel(unittest.TestCase):
 
     def test_to_dict_with_dates(self):
         """Test the to_dict method with dates."""
-        base_model = BaseModel(title="Test", start_date="2022-01-01 00:00:00", end_date="2022-01-02 00:00:00")
+        base_model = BaseModel(title="Test", start_date="2022-01-01 00:00:00",
+                               end_date="2022-01-02 00:00:00")
         expected_dict = {
             "id": base_model.id,
             "title": "Test",
