@@ -7,7 +7,7 @@ from sqlalchemy import (Column, String, DateTime, PickleType, Integer,
 from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.orm import relationship
 
-from model.base import BaseModel, Base, short_uuid
+from models.base import BaseModel, Base, short_uuid
 
 
 class Election(BaseModel, Base):

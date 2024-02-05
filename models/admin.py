@@ -39,8 +39,9 @@ class Admin(BaseModel, Base):
     username = Column(String(120), nullable=False, unique=True)
     __password = Column(String(120), nullable=False)
     email = Column(String(120), nullable=False, unique=True)
-    elections = Column(MutableDict.as_mutable(PickleType), nullable=False, default=dict())
-    
+    elections = Column(MutableDict.as_mutable(PickleType), nullable=False,
+                       default=dict())
+
     def __init__(self, *args, **kwargs):
         """
         Admin Class construtor
@@ -62,7 +63,8 @@ class Admin(BaseModel, Base):
         """
         keywords = ['firstname', 'lastname', 'password', 'email']
         if any(x in keywords and x not in kwargs for x in keywords):
-            raise TypeError('firstname, lastname, email and password are required')
+            raise TypeError('firstname, lastname, email and password'
+                            'are required')
         new_election = Election(kwargs)
         key = 'Election.' + new_election.id
         self.elections.update({key: new_election})

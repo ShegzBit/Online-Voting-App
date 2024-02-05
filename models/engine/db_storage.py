@@ -15,6 +15,7 @@ from models.election import Election
 
 load_dotenv()
 
+
 class DBStorage:
     models = [Admin]
     """
@@ -31,9 +32,13 @@ class DBStorage:
         PWD = os.getenv('OVS_MYSQL_PWD')
         HOST = os.getenv('OVS_MYSQL_HOST')
         DB = os.getenv('OVS_MYSQL_DB')
+        ENV = os.getenv('OVS_ENV')
 
         url = f'mysql+mysqldb://{USER}:{PWD}@{HOST}/{DB}'
         self.__engine = create_engine(url, pool_pre_ping=True)
+
+        if ENV == 'test':
+            Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """
@@ -41,7 +46,7 @@ class DBStorage:
         """
         session = self.__session
         objects = []
-        if not cls is None:
+        if cls is not None:
             objects.extend(session.query(cls).all())
         else:
             for model in DBStorage.models:
@@ -65,7 +70,7 @@ class DBStorage:
         Takes a new obj and adds it to the current session
         """
         self.__session.add(obj)
-    
+
     def reload(self):
         """
         Reload data from database

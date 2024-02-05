@@ -3,6 +3,7 @@ import unittest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime, timedelta
+from models.base import Base, BaseModel, short_uuid
 from models.election import Election
 
 

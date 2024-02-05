@@ -10,11 +10,12 @@ from uuid import uuid4
 
 Base = declarative_base()
 
+
 def short_uuid():
-        """ Customize the public key
-        """
-        id = ShortUUID().random(length=12)
-        return '-'.join(id[i:i+4] for i in range(0, 12, 4))
+    """ Customize the public key
+    """
+    id = ShortUUID().random(length=12)
+    return '-'.join(id[i:i+4] for i in range(0, 12, 4))
 
 
 class BaseModel():
