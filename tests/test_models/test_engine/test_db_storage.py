@@ -82,6 +82,3 @@ class TestDBStorage(unittest.TestCase):
     def tearDown(self):
         """Tear down test fixtures"""
         self.session.close()
-
-if __name__ == '__main__':
-    unittest.main()

@@ -4,7 +4,7 @@
 from datetime import datetime
 from sqlalchemy import (Column, String, DateTime, PickleType, Integer,
                         ForeignKey)
-from sqlalchemy.ext.mutable import MutableList
+from sqlalchemy.ext.mutable import MutableList, MutableSet
 from sqlalchemy.orm import relationship
 
 from models.base import BaseModel, Base, short_uuid
@@ -24,34 +24,29 @@ class Election(BaseModel, Base):
     candidates = relationship("Candidate", backref="election",
                               cascade="all, delete")
     voters = Column(MutableList.as_mutable(PickleType), default=[])
-    ballots = Column(MutableList.as_mutable(PickleType), default=[],
-                     nullable=False)
     results = Column(MutableList.as_mutable(PickleType), default=[],
                      nullable=False)
     total_votes = Column(Integer, default=0, nullable=False)
 
-    def make_ballot(self, ballot_name):
-        """ Make a ballot
-
-        Args:
-            ballot_name (str): The ballot name
-
-        Returns:
-            None
+    @property
+    def positions(self):
+        """ Get the positions for the election
         """
-        # Get the list of candidates for the ballot
-        candidates_list = [candidate.full_name for candidate in self.candidates
-                           if candidate.position == ballot_name]
+        positions = set(candidate.position for candidate in self.candidates)
+        return positions
 
-        # Check if the ballot name already exists
-        for ballot in self.ballots:
-            if ballot["name"] == ballot_name:
-                # If it exists, update the candidates list
-                ballot["candidates"] = candidates_list
-                return
+    @property
+    def ballots(self):
+        """ Make a ballot
+        """
+        ballots = []
+        for position in self.positions:
+            candidates_list = [candidate.full_name
+                               for candidate in self.candidates
+                               if candidate.position == position]
+            ballots.append({"name": position, "candidates": candidates_list})
 
-        # If it doesn't exist, add the ballot
-        self.ballots.append({"name": ballot_name, "candidates": candidates_list})
+        return ballots
 
     def make_results(self):
         """ Compute the election results
@@ -104,11 +99,3 @@ class Election(BaseModel, Base):
             self.status = "Completed"
 
         return self.status
-
-    def to_dict(self):
-        """ Returns dictionary representation of an election instance
-        """
-        # Get a copy of instance dict
-        dict_copy = self.__dict__.copy()
-        dict_copy["__class__"] = f"{self.__class__.__name__}"
-        return dict_copy

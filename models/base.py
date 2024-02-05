@@ -32,8 +32,8 @@ class BaseModel():
         self.created_at = datetime.now()
         if kwargs:
             for key, value in kwargs.items():
-                if key == 'created_at':
-                    value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f')
+                if key in ('created_at', 'start_date', 'end_date') and type(value) is str:
+                    value = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
                 if key != '__class__':
                     setattr(self, key, value)
 
@@ -42,6 +42,13 @@ class BaseModel():
         """
         # Get a copy of instance dict
         dict_copy = self.__dict__.copy()
+        
+        dict_copy['created_at'] = self.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        if 'start_date' in dict_copy:
+            dict_copy['start_date'] = dict_copy['start_date'].strftime('%Y-%m-%d %H:%M:%S')
+        if 'end_date' in dict_copy:
+            dict_copy['end_date'] = dict_copy['end_date'].strftime('%Y-%m-%d %H:%M:%S')
+        
         dict_copy["__class__"] = f"{self.__class__.__name__}"
         if "_sa_instance_state" in dict_copy:
             del dict_copy["_sa_instance_state"]
