@@ -37,7 +37,15 @@ class BaseModel():
                 if key != '__class__':
                     setattr(self, key, value)
 
-        
+    def to_dict(self):
+        """ Returns dictionary representation of an instance
+        """
+        # Get a copy of instance dict
+        dict_copy = self.__dict__.copy()
+        dict_copy["__class__"] = f"{self.__class__.__name__}"
+        if "_sa_instance_state" in dict_copy:
+            del dict_copy["_sa_instance_state"]
+        return dict_copy    
 
     def save(self):
         """ Save the instance to the database
@@ -55,5 +63,4 @@ class BaseModel():
 
     def __str__(self):
         """Returns a string representation of the instance"""
-        cls = (str(type(self)).split('.')[-1]).split('\'')[0]
-        return '[{}] ({}) {}'.format(cls, self.id, self.to_dict())
+        return '[{}] ({}) {}'.format(self.__class__.__name__, self.id, self.to_dict())
