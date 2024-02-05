@@ -8,9 +8,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 import models
 from sqlalchemy.orm.scoping import scoped_session
 from models.election import Election
-
 from models.admin import Admin
-
 
 Base = declarative_base()
 load_dotenv()
@@ -36,6 +34,7 @@ class DBStorage:
         url = f'mysql+mysqldb://{USER}:{PWD}@{HOST}/{DB}'
         self.__engine = create_engine(url, pool_pre_ping=True)
         self.__Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        self.__session = scoped_session(self.__Session)()
 
     def all(self, cls=None):
         """
