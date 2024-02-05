@@ -20,3 +20,9 @@ class Candidate(BaseModel, Base):
     votes = Column(Integer, default=0, nullable=False)
     # profile_picture = 
     election_id = Column(String(60), ForeignKey('elections.id'), nullable=False)
+
+    @property
+    def full_name(self):
+        """ Generate a candidate's full name
+        """
+        return self.first_name + ' ' + self.last_name
