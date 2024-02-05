@@ -1,25 +1,19 @@
 """
 Storage Handler for OVS.
 """
-from dotenv import load_dotenv
 import os
+
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker, scoped_session
+
 import models
-from sqlalchemy.orm.scoping import scoped_session
+from models.admin import Admin
+from models.base import BaseModel, Base
 from models.election import Election
 
-from models.admin import Admin
 
-
-Base = declarative_base()
 load_dotenv()
-
-USER = os.getenv('OVS_MYSQL_USER')
-PWD = os.getenv('OVS_MYSQL_PWD')
-HOST = os.getenv('OVS_MYSQL_HOST')
-DB = os.getenv('OVS_MYSQL_DB')
-
 
 class DBStorage:
     models = [Admin]
@@ -33,9 +27,13 @@ class DBStorage:
         """
         Storage engine construction
         """
+        USER = os.getenv('OVS_MYSQL_USER')
+        PWD = os.getenv('OVS_MYSQL_PWD')
+        HOST = os.getenv('OVS_MYSQL_HOST')
+        DB = os.getenv('OVS_MYSQL_DB')
+
         url = f'mysql+mysqldb://{USER}:{PWD}@{HOST}/{DB}'
         self.__engine = create_engine(url, pool_pre_ping=True)
-        self.__Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
 
     def all(self, cls=None):
         """
@@ -67,14 +65,15 @@ class DBStorage:
         Takes a new obj and adds it to the current session
         """
         self.__session.add(obj)
-        return obj
     
     def reload(self):
         """
         Reload data from database
         """
         Base.metadata.create_all(self.__engine)
-        self.__session = scoped_session(self.__Session)()
+        session_factory = sessionmaker(bind=self.__engine,
+                                       expire_on_commit=False)
+        self.__session = scoped_session(session_factory)
 
     def save(self):
         """
