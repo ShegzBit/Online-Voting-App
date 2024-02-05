@@ -19,9 +19,8 @@ class TestElection(unittest.TestCase):
             title="Test Election",
             start_date=datetime.now() + timedelta(days=1),
             end_date=datetime.now() + timedelta(days=2),
-            public_key=short_uuid(),
+            public_id=short_uuid(),
             status="Upcoming",
-            candidate_id="test_candidate_id",
             voters=[],
             ballots=[],
             results=[],
@@ -42,8 +41,8 @@ class TestElection(unittest.TestCase):
 
     def test_public_key(self):
         """ Test that public_key is a short UUID """
-        self.assertTrue(isinstance(self.election.public_key, str))
-        self.assertEqual(len(self.election.public_key), 14)
+        self.assertTrue(isinstance(self.election.public_id, str))
+        self.assertEqual(len(self.election.public_id), 14)
 
     def test_id(self):
         """ Test that private_key is a UUID """

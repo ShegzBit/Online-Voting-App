@@ -21,8 +21,6 @@ class Election(BaseModel, Base):
     public_id = Column(String(60), default=short_uuid(), nullable=False)
     status = Column(String(32), default="Upcoming", nullable=False)
 
-    candidate_id = Column(String(60), ForeignKey('candidates.id'),
-                          nullable=False)
     candidates = relationship("Candidate", backref="election",
                               cascade="all, delete")
     voters = Column(MutableList.as_mutable(PickleType), default=[])
