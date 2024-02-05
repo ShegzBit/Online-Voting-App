@@ -30,30 +30,28 @@ class Election(BaseModel, Base):
                      nullable=False)
     total_votes = Column(Integer, default=0, nullable=False)
 
-    def make_ballot(self, ballot_name, candidates_list):
+    def make_ballot(self, ballot_name):
         """ Make a ballot
 
         Args:
             ballot_name (str): The ballot name
-            candidates_list (list): The list of candidates
 
         Returns:
             None
         """
-        # Check if candidates_list is a list
-        if not isinstance(candidates_list, list):
-            raise ValueError("Candidates list must be a list")
+        # Get the list of candidates for the ballot
+        candidates_list = [candidate.full_name for candidate in self.candidates
+                           if candidate.position == ballot_name]
 
         # Check if the ballot name already exists
         for ballot in self.ballots:
             if ballot["name"] == ballot_name:
                 # If it exists, update the candidates list
-                ballot["candidate"].extend(candidates_list)
+                ballot["candidates"] = candidates_list
                 return
 
         # If it doesn't exist, add the ballot
-        self.ballots.append({"name": ballot_name,
-                             "candidates": candidates_list})
+        self.ballots.append({"name": ballot_name, "candidates": candidates_list})
 
     def make_results(self):
         """ Compute the election results
