@@ -25,6 +25,20 @@ class BaseModel():
                 nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow(), nullable=False)
 
+    def __init__(self, *args, **kwargs):
+        """ Constructor for BaseModel
+        """
+        self.id = str(uuid4())
+        self.created_at = datetime.now()
+        if kwargs:
+            for key, value in kwargs.items():
+                if key == 'created_at':
+                    value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f')
+                if key != '__class__':
+                    setattr(self, key, value)
+
+        
+
     def save(self):
         """ Save the instance to the database
         """
