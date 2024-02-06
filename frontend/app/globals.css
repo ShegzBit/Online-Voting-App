@@ -50,11 +50,18 @@ label{
 
 .btn{
   border-radius: 12px;
-  background: var(--gradient, linear-gradient(275deg, #024647 13.56%, #2C7873 90.72%));
   height: 48px;
   text-align: center;
   margin-top: 24px;
   line-height: 22px;
   font-size: 16px;
   
+}
+
+.btn-gradient{
+  background: var(--gradient, linear-gradient(275deg, #024647 13.56%, #2C7873 90.72%));
+}
+
+.base-color{
+  background-color: #1B4341;
 }
