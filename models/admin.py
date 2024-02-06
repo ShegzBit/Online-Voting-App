@@ -46,8 +46,14 @@ class Admin(BaseModel, Base):
         """
         Admin Class construtor
         """
+        # ensure necessary argurments are passed
+        keywords = ['firstname', 'lastname', 'password', 'email']
+        if any(x in keywords and x not in kwargs for x in keywords):
+            raise TypeError('firstname, lastname, email and password'
+                            'are required')
         for prop, value in kwargs.items():
-            if prop not in ['id', 'created_at', 'elect_cred', 'password']:
+            # remove arguments that can't be set by users
+            if prop not in ['id', 'created_at', 'password']:
                 setattr(self, prop, value)
             if prop == 'created_at':
                 value = dt.fromisoformat(value)
@@ -61,7 +67,7 @@ class Admin(BaseModel, Base):
         """
         Creates a new election under admin
         """
-        keywords = ['firstname', 'lastname', 'password', 'email']
+        keywords = ['title', 'start_date', 'end_date', 'voters_id']
         if any(x in keywords and x not in kwargs for x in keywords):
             raise TypeError('firstname, lastname, email and password'
                             'are required')

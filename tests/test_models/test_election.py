@@ -26,7 +26,8 @@ class TestElection(unittest.TestCase):
             status="Upcoming",
             voters=[],
             results={},
-            total_votes=0
+            total_votes=0,
+            voters_id=['voter1']
         )
 
     def test_election_creation(self):
@@ -164,6 +165,39 @@ class TestElection(unittest.TestCase):
         self.assertEqual(len(self.election.id), 36)
 
     def test_add_voter(self):
-        self.election.add_voter("John", "Doe", "john.doe@example.com")
-        self.assertIn({"first_name": "John", "last_name": "Doe",
-                       "email": "john.doe@example.com"}, self.election.voters)
+        """Test the add_voter method."""
+        self.election.candidates.append(Candidate(first_name="John",
+                                                  last_name="Doe",
+                                                  position="President",
+                                                  id="candidate1"))
+        self.election.add_voter(first_name="Jane",
+                                last_name="Doe",
+                                email="jane.doe@example.com",
+                                candidate_id="candidate1",
+                                voter_id="voter1")
+        self.assertEqual(len(self.election.voters), 1)
+        self.assertEqual(self.election.voters[0]["first_name"], "Jane")
+        self.assertEqual(self.election.voters[0]["last_name"], "Doe")
+        self.assertEqual(self.election.voters[0]["email"], "jane.doe@example.com")
+        self.assertEqual(self.election.candidates[0].votes, 1)
+
+    def test_add_voter_invalid_arguments(self):
+        """Test the add_voter method with invalid arguments."""
+        with self.assertRaises(ValueError):
+            self.election.add_voter(first_name="Jane",
+                                    last_name="Doe",
+                                    email="jane.doe@example.com",
+                                    voter_id="voter1")
+
+    def test_add_voter_invalid_voter_id(self):
+        """Test the add_voter method with an invalid voter id."""
+        self.election.candidates.append(Candidate(first_name="John",
+                                                  last_name="Doe",
+                                                  position="President",
+                                                  id="candidate1"))
+        with self.assertRaises(ValueError):
+            self.election.add_voter(first_name="Jane",
+                                    last_name="Doe",
+                                    email="jane.doe@example.com",
+                                    candidate_id="candidate1",
+                                    voter_id="invalid_voter_id")
