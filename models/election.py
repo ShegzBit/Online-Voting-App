@@ -28,6 +28,7 @@ class Election(BaseModel, Base):
     results = Column(MutableDict.as_mutable(PickleType), default={},
                      nullable=False)
     total_votes = Column(Integer, default=0, nullable=False)
+    
 
     @property
     def positions(self):
