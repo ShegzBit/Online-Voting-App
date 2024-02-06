@@ -26,7 +26,7 @@ class Candidate(BaseModel, Base):
         """ Generate a candidate's full name
         """
         return self.first_name + ' ' + self.last_name
-    
+
     def update(self, **kwargs):
         """ Update the candidate's attributes
         """

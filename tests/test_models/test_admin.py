@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 import unittest
 from unittest.mock import patch
-from models.admin import Admin
-from models.election import Election
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
+from models.admin import Admin
+from models.election import Election
 
 
 class TestAdminModel(unittest.TestCase):

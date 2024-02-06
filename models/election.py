@@ -182,7 +182,6 @@ class Election(BaseModel, Base):
         else:
             self.status = "Completed"
 
-        return self.status
     
     def activate_election(self):
         """ Activate the election
