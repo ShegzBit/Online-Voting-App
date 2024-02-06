@@ -64,19 +64,31 @@ class Election(BaseModel, Base):
                                 for candidate in self.candidates])
         self.end_election()
 
-    def add_voter(self, first_name, last_name, email):
+    def add_voter(self, *args, **kwargs):
         """ Add a voter to the election
 
         Args:
             first_name (str): The voter's first name
             last_name (str): The voter's last name
             email (str): The voter's email
+            candidate_id (str): The voter's candidate id
+            voter_id (str): The voter's id
+
+            ValueError indicates invalid voter's id
 
         Returns:
             None
         """
-        self.voters.append({"first_name": first_name, "last_name": last_name,
-                            "email": email})
+        keywords = ['first_name', 'last_name', 'email', 'candidate_id']
+        if not all(keyword in kwargs for keyword in keywords):
+            raise ValueError("Invalid arguments")
+        if not kwargs.get('voter_id') in self.voters_id:
+            raise ValueError("Invalid voter id")
+        candidate = [candidate for candidate in self.candidates
+                     if candidate.id == kwargs.get('candidate_id')][0]
+        candidate.count_vote()
+        self.voters.append({"first_name": kwargs.get('first_name'), "last_name": kwargs.get('last_name'),
+                            "email": kwargs.get('email')})
 
     def get_voters(self):
         """ Get the list of voters
