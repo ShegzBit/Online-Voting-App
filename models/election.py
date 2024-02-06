@@ -33,6 +33,12 @@ class Election(BaseModel, Base):
 
     def __init__(self, *args, **kwargs):
         """ Initialize the Election object
+        args:
+            title: str - title of election
+            start_date: datetime - start date of election
+            end_date: datetime - end date of election
+
+            ValueError: if any of the above arguments are not passed
         """
         if not all(key in kwargs for key in ['title', 'start_date', 'end_date']):
             raise ValueError("Invalid arguments")
@@ -74,6 +80,7 @@ class Election(BaseModel, Base):
         self.total_votes = sum([candidate.votes for candidate in self.candidates])
         if close is True:
             self.end_election()
+        return results
 
     def add_voter(self, **kwargs):
         """ Add a voter to the election
@@ -100,10 +107,11 @@ class Election(BaseModel, Base):
                          if candidate.id == kwargs.get('candidate_id')][0]
         except IndexError:
             raise ValueError("Invalid candidate id")
-        candidate.count_vote()
-        self.voters.append({"first_name": kwargs.get('first_name'), "last_name": kwargs.get('last_name'),
+        if self.get_election_status() == "Ongoing":
+            candidate.count_vote()
+            self.voters.append({"first_name": kwargs.get('first_name'), "last_name": kwargs.get('last_name'),
                             "email": kwargs.get('email')})
-        
+
     def add_candidate(self, **kwargs):
         """ Add a candidate to the election
 
@@ -119,17 +127,18 @@ class Election(BaseModel, Base):
         Returns:
             None
         """
-        keywords = ['first_name', 'last_name', 'party', 'position', 'manifesto']
+        keywords = ['first_name', 'last_name', 'position']
         if not all(keyword in kwargs for keyword in keywords):
             raise ValueError("Invalid arguments")
         new_candidate = Candidate(election_id=self.id, **kwargs)
+        new_candidate.save()
         self.candidates.append(new_candidate)
 
     def add_voters_id(self, ids=[]):
         """ Add voters id to the election
         """
         self.voters_id.extend(ids)
-        self.expected_voters = len(ids)
+        self.expected_voters = len(self.votes_id)
 
     def get_voters(self):
         """ Get the list of voters
@@ -139,6 +148,10 @@ class Election(BaseModel, Base):
     def start_election(self):
         """ Start the election
         """
+        if len(candidates) == 0:
+            raise ValueError("No candidates added")
+        if len(voters_id) == 0:
+            raise ValueError("No voters added")
         self.status = "Ongoing"
 
     def end_election(self):
@@ -149,13 +162,12 @@ class Election(BaseModel, Base):
     def get_results(self):
         """ Get the election results
         """
-        try:
-            return self.results
-        except AttributeError:
-            if get_election_status == 'Upcoming':
-                return {"status": "Upcoming", "result": "No result yet"}
-            elif status == 'Ongoing':
-                {'status': 'Ongoing', 'results': self.compute_results(close=False)}
+        if get_election_status() == 'Upcoming':
+            return {"status": "Upcoming", "result": {"value": "not available"}}
+        elif get_election_status() == 'Ongoing':
+            return {'status': 'Ongoing', 'results': self.compute_results(close=False)}
+        else:
+            return {'status': 'Completed', 'results': self.compute_results()}
 
 
     def get_election_status(self):
@@ -175,10 +187,6 @@ class Election(BaseModel, Base):
     def activate_election(self):
         """ Activate the election
         """
-        if len(candidates) == 0:
-            raise ValueError("No candidates added")
-        if len(voters_id) == 0:
-            raise ValueError("No voters added")
         if self.start_date > datetime.now():
             self.start_election()
         start_delay = self.start_date - datetime.now()

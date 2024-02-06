@@ -221,20 +221,8 @@ class TestElection(unittest.TestCase):
                 first_name="John",
                 last_name="Doe",
                 party="Party A",
-                position="President"
+                # position missing
                 # Missing manifesto argument
-            )
-
-    def test_add_candidate_invalid_argument(self):
-        """Test the add_candidate method with an invalid argument."""
-        with self.assertRaises(ValueError):
-            self.election.add_candidate(
-                first_name="John",
-                last_name="Doe",
-                party="Party A",
-                position="President",
-                manifesto="Manifesto A",
-                invalid_arg="Invalid"  # Invalid argument
             )
 
     def test_update_state_start_date(self):

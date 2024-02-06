@@ -4,30 +4,13 @@ Module containing admin model
 """
 from datetime import datetime as dt
 from uuid import uuid4
-from models.base import BaseModel, short_uuid
-from sqlalchemy import Column, String, Date, PickleType
+from models.base import BaseModel, short_uuid, Base
+from sqlalchemy import Column, String, Date, PickleType, Integer
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.mutable import MutableDict
+from models.election import Election
 
-Base = declarative_base()
-
-
-class Election:
-    id = 'ajbjkadak'
-    def __init__(self, *args, **kwargs):
-        """
-        Election class constructor
-        """
-        for prop, value in kwargs.items():
-            setattr(self, prop, value)
-        self.id = short_uuid()
-        self.created_at = dt.utcnow()
-        self.status = 'pending'
-        self.result = {}
-        self.candidates = []
-        self.voters = []
-        self.votes = {}
 
 class Admin(BaseModel, Base):
     """
@@ -86,6 +69,7 @@ class Admin(BaseModel, Base):
             raise ValueError('firstname, lastname, email and password'
                             'are required')
         new_election = Election(kwargs)
+        new_election.save()
         key = 'Election.' + new_election.id
         self.elections.update({key: new_election})
         return new_election
@@ -94,17 +78,10 @@ class Admin(BaseModel, Base):
         """
         Returns the state of the object in a dictionary format
         """
-        dictionary = {}
-        dictionary.update(self.__dict__)
-        dictionary.update({'__class__':
-                          (str(type(self)).split('.')[-1]).split('\'')[0]})
-        dictionary['created_at'] = self.created_at.isoformat()
-        try:
-            del dictionary['_Admin__password']
-            del dictionary['_sa_instance_state']
-        except Exception:
-            return dictionary
-        return dictionary
+        super_dict = super().to_dict()
+        if '_Admin__password' in super_dict:
+            del super_dict['_Admin__password']
+        return super_dict
 
     def get_result(self, election_id):
         """
