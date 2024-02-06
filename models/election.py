@@ -4,7 +4,7 @@
 from datetime import datetime
 from sqlalchemy import (Column, String, DateTime, PickleType, Integer,
                         ForeignKey)
-from sqlalchemy.ext.mutable import MutableList, MutableSet
+from sqlalchemy.ext.mutable import MutableList, MutableDict
 from sqlalchemy.orm import relationship
 
 from models.base import BaseModel, Base, short_uuid
@@ -23,8 +23,9 @@ class Election(BaseModel, Base):
 
     candidates = relationship("Candidate", backref="election",
                               cascade="all, delete")
+    voters_id = Column(MutableList.as_mutable(PickleType), default=[])
     voters = Column(MutableList.as_mutable(PickleType), default=[])
-    results = Column(MutableList.as_mutable(PickleType), default=[],
+    results = Column(MutableDict.as_mutable(PickleType), default={},
                      nullable=False)
     total_votes = Column(Integer, default=0, nullable=False)
 
@@ -48,9 +49,19 @@ class Election(BaseModel, Base):
 
         return ballots
 
-    def make_results(self):
+    def compute_results(self):
         """ Compute the election results
         """
+        results = {}
+        for position in self.positions:
+            candidates = [candidate for candidate in self.candidates
+                          if candidate.position == position]
+            results[position] = {candidate.full_name: candidate.votes
+                                for candidate in candidates}
+
+        self.results = results
+        self.total_votes = sum([candidate.votes for candidate in self.candidates])
+        self.end_election()
 
     def add_voter(self, first_name, last_name, email):
         """ Add a voter to the election

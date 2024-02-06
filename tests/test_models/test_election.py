@@ -25,7 +25,7 @@ class TestElection(unittest.TestCase):
             public_id=short_uuid(),
             status="Upcoming",
             voters=[],
-            results=[],
+            results={},
             total_votes=0
         )
 
@@ -104,6 +104,51 @@ class TestElection(unittest.TestCase):
     def test_ballots_no_candidates(self):
         """Test the ballots method with no candidates."""
         self.assertEqual(len(self.election.ballots), 0)
+
+    def test_compute_results_no_votes(self):
+        """Test the compute_results method with no votes."""
+        self.election.candidates.append(Candidate(first_name="John",
+                                                  last_name="Doe",
+                                                  position="President"))
+        self.election.candidates.append(Candidate(first_name="Jane",
+                                                  last_name="Doe",
+                                                  position="Vice President"))
+        self.election.compute_results()
+        expected_results = {
+            "President": {"John Doe": 0},
+            "Vice President": {"Jane Doe": 0}
+        }
+        self.assertEqual(self.election.results, expected_results)
+
+    def test_compute_results_with_votes(self):
+        """Test the compute_results method with votes."""
+        john = Candidate(first_name="John", last_name="Doe", position="President")
+        john.votes = 5
+        self.election.candidates.append(john)
+        print(john)
+        jane = Candidate(first_name="Jane", last_name="Doe", position="Vice President")
+        jane.votes = 3
+        self.election.candidates.append(jane)
+        self.election.compute_results()
+        expected_results = {
+            "President": {"John Doe": 5},
+            "Vice President": {"Jane Doe": 3}
+        }
+        self.assertEqual(self.election.results, expected_results)
+
+    def test_compute_results_multiple_candidates_same_position(self):
+        """Test the compute_results method with multiple candidates for the same position."""
+        john = Candidate(first_name="John", last_name="Doe", position="President")
+        john.votes = 5
+        self.election.candidates.append(john)
+        alice = Candidate(first_name="Alice", last_name="Smith", position="President")
+        alice.votes = 3
+        self.election.candidates.append(alice)
+        self.election.compute_results()
+        expected_results = {
+            "President": {"John Doe": 5, "Alice Smith": 3}
+        }
+        self.assertEqual(self.election.results, expected_results)
 
     def tearDown(self):
         self.session.close()

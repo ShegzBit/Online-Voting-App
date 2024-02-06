@@ -32,8 +32,8 @@ class BaseModel():
         self.created_at = datetime.now()
         if kwargs:
             for key, value in kwargs.items():
-                if key in ('created_at', 'start_date', 'end_date')
-                and type(value) is str:
+                if (key in ('created_at', 'start_date', 'end_date')
+                    and type(value) is str):
                     value = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
                 if key != '__class__':
                     setattr(self, key, value)
