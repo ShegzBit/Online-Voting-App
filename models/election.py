@@ -60,7 +60,8 @@ class Election(BaseModel, Base):
                                 for candidate in candidates}
 
         self.results = results
-        self.total_votes = sum([candidate.votes for candidate in self.candidates])
+        self.total_votes = sum([candidate.votes
+                                for candidate in self.candidates])
         self.end_election()
 
     def add_voter(self, first_name, last_name, email):
