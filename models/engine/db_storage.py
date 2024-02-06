@@ -10,6 +10,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 import models
 from models.admin import Admin
 from models.base import BaseModel, Base
+from models.candidate import Candidate
 from models.election import Election
 
 
@@ -32,13 +33,9 @@ class DBStorage:
         PWD = os.getenv('OVS_MYSQL_PWD')
         HOST = os.getenv('OVS_MYSQL_HOST')
         DB = os.getenv('OVS_MYSQL_DB')
-        ENV = os.getenv('OVS_ENV')
 
         url = f'mysql+mysqldb://{USER}:{PWD}@{HOST}/{DB}'
         self.__engine = create_engine(url, pool_pre_ping=True)
-
-        if ENV == 'test':
-            Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """

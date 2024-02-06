@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS ovs_dev_db;
+
 -- Prepares the MySQL server for this project
 CREATE DATABASE IF NOT EXISTS ovs_dev_db;
 CREATE USER IF NOT EXISTS 'ovs_dev'@'localhost' IDENTIFIED BY 'ovs_dev_pwd';

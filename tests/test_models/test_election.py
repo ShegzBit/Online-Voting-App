@@ -1,9 +1,12 @@
 #!/usr/bin/python3
+from datetime import datetime, timedelta
 import unittest
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from datetime import datetime, timedelta
+
 from models.base import Base, BaseModel, short_uuid
+from models.candidate import Candidate
 from models.election import Election
 
 
@@ -19,12 +22,10 @@ class TestElection(unittest.TestCase):
             title="Test Election",
             start_date=datetime.now() + timedelta(days=1),
             end_date=datetime.now() + timedelta(days=2),
-            public_key=short_uuid(),
+            public_id=short_uuid(),
             status="Upcoming",
-            candidate_id="test_candidate_id",
             voters=[],
-            ballots=[],
-            results=[],
+            results={},
             total_votes=0
         )
 
@@ -37,13 +38,125 @@ class TestElection(unittest.TestCase):
         self.assertEqual(retrieved_election.status, "Upcoming")
         self.assertEqual(retrieved_election.total_votes, 0)
 
+    def test_positions(self):
+        """Test the positions property."""
+        self.election.candidates.append(Candidate(first_name="John",
+                                                  last_name="Doe",
+                                                  position="President"))
+        self.election.candidates.append(Candidate(first_name="Jane",
+                                                  last_name="Doe",
+                                                  position="President"))
+        self.election.candidates.append(Candidate(first_name="Bob",
+                                                  last_name="Smith",
+                                                  position="Vice President"))
+        positions = self.election.positions
+        self.assertEqual(len(positions), 2)
+        self.assertIn("President", positions)
+        self.assertIn("Vice President", positions)
+
+    def test_ballot_candidates(self):
+        """Test the ballots method's handling of candidates."""
+        self.election.candidates.append(Candidate(first_name="John",
+                                                  last_name="Doe",
+                                                  position="President"))
+        self.assertEqual(self.election.ballots[0]["candidates"], ["John Doe"])
+
+    def test_ballot_no_duplicates(self):
+        """
+        Test the ballots method with a candidate
+        that already exists in the ballot.
+        """
+        self.election.candidates.append(Candidate(first_name="John",
+                                                  last_name="Doe",
+                                                  position="President"))
+        self.assertEqual(len(self.election.ballots[0]["candidates"]), 1)
+        self.assertEqual(self.election.ballots[0]["candidates"][0], "John Doe")
+
+    def test_ballots_multiple_positions(self):
+        """Test the ballots method with multiple positions."""
+        self.election.candidates.append(Candidate(first_name="John",
+                                                  last_name="Doe",
+                                                  position="President"))
+        self.election.candidates.append(Candidate(first_name="Jane",
+                                                  last_name="Doe",
+                                                  position="Vice President"))
+        self.assertEqual(len(self.election.ballots), 2)
+        self.assertIn({"name": "President", "candidates": ["John Doe"]},
+                      self.election.ballots)
+        self.assertIn({"name": "Vice President", "candidates": ["Jane Doe"]},
+                      self.election.ballots)
+
+    def test_ballots_multiple_candidates(self):
+        """
+        Test the ballots method with multiple candidates
+        for the same position.
+        """
+        self.election.candidates.append(Candidate(first_name="John",
+                                                  last_name="Doe",
+                                                  position="President"))
+        self.election.candidates.append(Candidate(first_name="Jane",
+                                                  last_name="Doe",
+                                                  position="President"))
+        self.assertEqual(len(self.election.ballots[0]["candidates"]), 2)
+        self.assertIn("John Doe", self.election.ballots[0]["candidates"])
+        self.assertIn("Jane Doe", self.election.ballots[0]["candidates"])
+
+    def test_ballots_no_candidates(self):
+        """Test the ballots method with no candidates."""
+        self.assertEqual(len(self.election.ballots), 0)
+
+    def test_compute_results_no_votes(self):
+        """Test the compute_results method with no votes."""
+        self.election.candidates.append(Candidate(first_name="John",
+                                                  last_name="Doe",
+                                                  position="President"))
+        self.election.candidates.append(Candidate(first_name="Jane",
+                                                  last_name="Doe",
+                                                  position="Vice President"))
+        self.election.compute_results()
+        expected_results = {
+            "President": {"John Doe": 0},
+            "Vice President": {"Jane Doe": 0}
+        }
+        self.assertEqual(self.election.results, expected_results)
+
+    def test_compute_results_with_votes(self):
+        """Test the compute_results method with votes."""
+        john = Candidate(first_name="John", last_name="Doe", position="President")
+        john.votes = 5
+        self.election.candidates.append(john)
+        print(john)
+        jane = Candidate(first_name="Jane", last_name="Doe", position="Vice President")
+        jane.votes = 3
+        self.election.candidates.append(jane)
+        self.election.compute_results()
+        expected_results = {
+            "President": {"John Doe": 5},
+            "Vice President": {"Jane Doe": 3}
+        }
+        self.assertEqual(self.election.results, expected_results)
+
+    def test_compute_results_multiple_candidates_same_position(self):
+        """Test the compute_results method with multiple candidates for the same position."""
+        john = Candidate(first_name="John", last_name="Doe", position="President")
+        john.votes = 5
+        self.election.candidates.append(john)
+        alice = Candidate(first_name="Alice", last_name="Smith", position="President")
+        alice.votes = 3
+        self.election.candidates.append(alice)
+        self.election.compute_results()
+        expected_results = {
+            "President": {"John Doe": 5, "Alice Smith": 3}
+        }
+        self.assertEqual(self.election.results, expected_results)
+
     def tearDown(self):
         self.session.close()
 
     def test_public_key(self):
         """ Test that public_key is a short UUID """
-        self.assertTrue(isinstance(self.election.public_key, str))
-        self.assertEqual(len(self.election.public_key), 14)
+        self.assertTrue(isinstance(self.election.public_id, str))
+        self.assertEqual(len(self.election.public_id), 14)
 
     def test_id(self):
         """ Test that private_key is a UUID """
@@ -54,9 +167,3 @@ class TestElection(unittest.TestCase):
         self.election.add_voter("John", "Doe", "john.doe@example.com")
         self.assertIn({"first_name": "John", "last_name": "Doe",
                        "email": "john.doe@example.com"}, self.election.voters)
-
-    def test_ballot(self):
-        self.election.ballots("Ballot 1", ["Candidate 1", "Candidate 3"])
-        self.assertIn({"name": "Ballot 1",
-                       "candidates": ["Candidate 1", "Candidate 3"]},
-                      self.election.ballots)
