@@ -45,19 +45,26 @@ class Admin(BaseModel, Base):
     def __init__(self, *args, **kwargs):
         """
         Admin Class construtor
+        arg:
+            firstname: str - firstname of admin
+            lastname: str - lastname of admin
+            email: str - email of admin
+            password: str - password of admin
+
+            ValueError: if any of the above arguments are not passed
         """
         # ensure necessary argurments are passed
         keywords = ['firstname', 'lastname', 'password', 'email']
         if any(x in keywords and x not in kwargs for x in keywords):
-            raise TypeError('firstname, lastname, email and password'
+            raise ValueError('firstname, lastname, email and password'
                             'are required')
         for prop, value in kwargs.items():
             # remove arguments that can't be set by users
-            if prop not in ['id', 'created_at', 'password']:
-                setattr(self, prop, value)
-            if prop == 'created_at':
-                value = dt.fromisoformat(value)
-                setattr(self, prop, value)
+            if (key in ('created_at', 'start_date', 'end_date')
+                    and type(value) is str):
+                    value = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+            if not key in ['__class__', 'password']:
+                setattr(self, key, value)
         self.id = uuid4()
         self.__password = kwargs.get('password')
         self.created_at = dt.utcnow()
@@ -66,10 +73,17 @@ class Admin(BaseModel, Base):
     def new_election(self, *args, **kwargs):
         """
         Creates a new election under admin
+        args:
+            title: str - title of election
+            start_date: str - start date of election
+            end_date: str - end date of election
+            voters_id: list - list of voters id
+
+            ValueError: if any of the above arguments are not passed
         """
         keywords = ['title', 'start_date', 'end_date', 'voters_id']
         if any(x in keywords and x not in kwargs for x in keywords):
-            raise TypeError('firstname, lastname, email and password'
+            raise ValueError('firstname, lastname, email and password'
                             'are required')
         new_election = Election(kwargs)
         key = 'Election.' + new_election.id
@@ -99,7 +113,7 @@ class Admin(BaseModel, Base):
         """
         key = 'Election.' + election_id
         election = self.elections.get(key, None)
-        return {'status': election.status, 'result': election.result}
+        return election.get_results()
 
     def update_election(self, election_id, *args, **kwargs):
         """
@@ -107,5 +121,5 @@ class Admin(BaseModel, Base):
         """
         key = 'Election.' + election_id
         election = self.elections.get(key, None)
-        election.update(kwargs)
+        election.update_state(kwargs)
         return election

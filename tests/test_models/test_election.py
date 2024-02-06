@@ -151,9 +151,6 @@ class TestElection(unittest.TestCase):
         }
         self.assertEqual(self.election.results, expected_results)
 
-    def tearDown(self):
-        self.session.close()
-
     def test_public_key(self):
         """ Test that public_key is a short UUID """
         self.assertTrue(isinstance(self.election.public_id, str))
@@ -201,3 +198,93 @@ class TestElection(unittest.TestCase):
                                     email="jane.doe@example.com",
                                     candidate_id="candidate1",
                                     voter_id="invalid_voter_id")
+    def test_add_candidate(self):
+        """Test the add_candidate method with valid arguments."""
+        self.election.add_candidate(
+            first_name="John",
+            last_name="Doe",
+            party="Party A",
+            position="President",
+            manifesto="Manifesto A"
+        )
+        self.assertEqual(len(self.election.candidates), 1)
+        self.assertEqual(self.election.candidates[0].first_name, "John")
+        self.assertEqual(self.election.candidates[0].last_name, "Doe")
+        self.assertEqual(self.election.candidates[0].party, "Party A")
+        self.assertEqual(self.election.candidates[0].position, "President")
+        self.assertEqual(self.election.candidates[0].manifesto, "Manifesto A")
+
+    def test_add_candidate_missing_argument(self):
+        """Test the add_candidate method with a missing argument."""
+        with self.assertRaises(ValueError):
+            self.election.add_candidate(
+                first_name="John",
+                last_name="Doe",
+                party="Party A",
+                position="President"
+                # Missing manifesto argument
+            )
+
+    def test_add_candidate_invalid_argument(self):
+        """Test the add_candidate method with an invalid argument."""
+        with self.assertRaises(ValueError):
+            self.election.add_candidate(
+                first_name="John",
+                last_name="Doe",
+                party="Party A",
+                position="President",
+                manifesto="Manifesto A",
+                invalid_arg="Invalid"  # Invalid argument
+            )
+
+    def test_update_state_start_date(self):
+        """Test updating the start_date of the election."""
+        new_start_date = datetime.now() + timedelta(days=3)
+        self.election.update_state(start_date=new_start_date.strftime('%Y-%m-%d %H:%M:%S'))
+        self.assertEqual(self.election.start_date, new_start_date)
+
+    def test_update_state_end_date(self):
+        """Test updating the end_date of the election."""
+        new_end_date = datetime.now() + timedelta(days=4)
+        self.election.update_state(end_date=new_end_date.strftime('%Y-%m-%d %H:%M:%S'))
+        self.assertEqual(self.election.end_date, new_end_date)
+
+    def test_update_state_voters_id(self):
+        """Test updating the voters_id of the election."""
+        new_voters_id = ['voter2', 'voter3']
+        self.election.update_state(voters_id=new_voters_id)
+        self.assertEqual(self.election.voters_id, ['voter1', 'voter2', 'voter3'])
+    
+    def test_update_state_invalid_date_format(self):
+        """Test updating the election with an invalid date format."""
+        with self.assertRaises(ValueError):
+            self.election.update_state(start_date='invalid_date_format')
+        
+    def test_update_state_candidates(self):
+        """Test updating the candidates of the election."""
+        new_candidates = [
+            {'first_name': 'Alice', 'last_name': 'Johnson', 'party': 'Party A', 'position': 'Treasurer', 'manifesto': 'I will work hard!'},
+            {'first_name': 'Bob', 'last_name': 'Williams', 'party': 'Party B', 'position': 'Secretary', 'manifesto': 'I will bring change!'},
+            {'first_name': 'Charlie', 'last_name': 'Brown', 'party': 'Party C', 'position': 'President', 'manifesto': 'I will make a difference!'}
+        ]
+        self.election.candidates = []
+        self.election.update_state(candidates=new_candidates)
+        self.assertEqual(len(self.election.candidates), 3)
+        self.assertEqual(self.election.candidates[0].first_name, 'Alice')
+        self.assertEqual(self.election.candidates[0].last_name, 'Johnson')
+        self.assertEqual(self.election.candidates[0].party, 'Party A')
+        self.assertEqual(self.election.candidates[0].position, 'Treasurer')
+        self.assertEqual(self.election.candidates[0].manifesto, 'I will work hard!')
+        self.assertEqual(self.election.candidates[1].first_name, 'Bob')
+        self.assertEqual(self.election.candidates[1].last_name, 'Williams')
+        self.assertEqual(self.election.candidates[1].party, 'Party B')
+        self.assertEqual(self.election.candidates[1].position, 'Secretary')
+        self.assertEqual(self.election.candidates[1].manifesto, 'I will bring change!')
+        self.assertEqual(self.election.candidates[2].first_name, 'Charlie')
+        self.assertEqual(self.election.candidates[2].last_name, 'Brown')
+        self.assertEqual(self.election.candidates[2].party, 'Party C')
+        self.assertEqual(self.election.candidates[2].position, 'President')
+        self.assertEqual(self.election.candidates[2].manifesto, 'I will make a difference!')
+
+    def tearDown(self):
+        self.session.close()
