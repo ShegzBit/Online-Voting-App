@@ -17,7 +17,7 @@ class Candidate(BaseModel, Base):
     position = Column(String(128), nullable=False)
     manifesto = Column(String(1024), default="", nullable=False)
     votes = Column(Integer, default=0, nullable=False)
-    # profile_picture = 
+    # profile_picture = Column(String(128), default="api/v1/image/default.png", nullable=False)
     election_id = Column(String(60), ForeignKey('elections.id'),
                          nullable=False)
 
