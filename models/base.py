@@ -35,7 +35,7 @@ class BaseModel():
                 if (key in ('created_at', 'start_date', 'end_date')
                     and type(value) is str):
                     value = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
-                if key != '__class__':
+                if key not in ('__class__', '_sa_instance_state'):
                     setattr(self, key, value)
 
     def to_dict(self):
