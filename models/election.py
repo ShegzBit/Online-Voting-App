@@ -2,13 +2,14 @@
 """ This module defines the Election class
 """
 from datetime import datetime, timedelta
-from threading import Thread
+from threading import Timer
 from sqlalchemy import (Column, String, DateTime, PickleType, Integer,
                         ForeignKey)
-from sqlalchemy.ext.mutable import MutableList, MutableDict
+from sqlalchemy.ext.mutable import MutableList, MutableDict, MutableSet
 from sqlalchemy.orm import relationship
 
 from models.base import BaseModel, Base, short_uuid
+from models.candidate import Candidate
 
 
 class Election(BaseModel, Base):
@@ -22,9 +23,9 @@ class Election(BaseModel, Base):
     public_id = Column(String(60), default=short_uuid(), nullable=False)
     status = Column(String(32), default="Upcoming", nullable=False)
 
-    candidates = relationship("Candidate", backref="election",
-                              cascade="all, delete")
-    voters_id = Column(MutableList.as_mutable(PickleType), default=[])
+    candidates = relationship('Candidate', backref='election',
+                              cascade='all, delete')
+    voters_id = Column(MutableSet.as_mutable(PickleType), default={})
     voters = Column(MutableList.as_mutable(PickleType), default=[])
     results = Column(MutableDict.as_mutable(PickleType), default={},
                      nullable=False)
@@ -80,6 +81,7 @@ class Election(BaseModel, Base):
         self.total_votes = sum([candidate.votes for candidate in self.candidates])
         if close is True:
             self.end_election()
+            self.save()
         return results
 
     def add_voter(self, **kwargs):
@@ -111,6 +113,7 @@ class Election(BaseModel, Base):
             candidate.count_vote()
             self.voters.append({"first_name": kwargs.get('first_name'), "last_name": kwargs.get('last_name'),
                             "email": kwargs.get('email')})
+            self.save()
 
     def add_candidate(self, **kwargs):
         """ Add a candidate to the election
@@ -131,14 +134,15 @@ class Election(BaseModel, Base):
         if not all(keyword in kwargs for keyword in keywords):
             raise ValueError("Invalid arguments")
         new_candidate = Candidate(election_id=self.id, **kwargs)
+        #self.candidates.append(new_candidate)
         new_candidate.save()
-        self.candidates.append(new_candidate)
 
-    def add_voters_id(self, ids=[]):
+    def add_voters_id(self, ids={}):
         """ Add voters id to the election
         """
-        self.voters_id.extend(ids)
-        self.expected_voters = len(self.votes_id)
+        self.voters_id.update(ids)
+        self.expected_voters = len(self.voters_id)
+        self.save()
 
     def get_voters(self):
         """ Get the list of voters
@@ -148,9 +152,9 @@ class Election(BaseModel, Base):
     def start_election(self):
         """ Start the election
         """
-        if len(candidates) == 0:
+        if len(self.candidates) == 0:
             raise ValueError("No candidates added")
-        if len(voters_id) == 0:
+        if len(self.voters_id) == 0:
             raise ValueError("No voters added")
         self.status = "Ongoing"
 
@@ -162,13 +166,12 @@ class Election(BaseModel, Base):
     def get_results(self):
         """ Get the election results
         """
-        if get_election_status() == 'Upcoming':
+        if self.get_election_status() == 'Upcoming':
             return {"status": "Upcoming", "result": {"value": "not available"}}
-        elif get_election_status() == 'Ongoing':
+        elif self.get_election_status() == 'Ongoing':
             return {'status': 'Ongoing', 'results': self.compute_results(close=False)}
         else:
             return {'status': 'Completed', 'results': self.compute_results()}
-
 
     def get_election_status(self):
         """ Determine election status
@@ -182,16 +185,19 @@ class Election(BaseModel, Base):
         else:
             self.status = "Completed"
 
+        return self.status
+
     
     def activate_election(self):
         """ Activate the election
         """
-        if self.start_date > datetime.now():
+        # if self.start_date > datetime.now():
+        if self.get_election_status() == "Ongoing":
             self.start_election()
-        start_delay = self.start_date - datetime.now()
-        Timer(start_delay.total_seconds(), self.start_election).start()
-        end_delay = self.end_date - datetime.now()
-        Timer(end_delay.total_seconds(), self.end_election).start()
+        # start_delay = self.start_date - datetime.now()
+        # Timer(start_delay.total_seconds(), self.start_election).start()
+        # end_delay = self.end_date - datetime.now()
+        # Timer(end_delay.total_seconds(), self.end_election).start()
         return True
     
     def update_state(self, **kwargs):
