@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from models.admin import Admin
+from models.candidate import Candidate
 from models.election import Election
 
 
@@ -20,10 +21,9 @@ class TestAdminModel(unittest.TestCase):
 
     def test_new_election(self):
         """Test the new_election method"""
-        election = self.admin.new_election(firstname='Election',
-                                           lastname='Test',
-                                           email='election@example.com',
-                                           password='password')
+        election = self.admin.new_election(title='Election Test',
+                                           start_date='2019-01-01 00:00:00',
+                                          end_date='2019-01-01 00:00:00')
         self.assertIsInstance(election, Election)
         self.assertIn('Election.' + election.id, self.admin.elections)
 
@@ -39,25 +39,33 @@ class TestAdminModel(unittest.TestCase):
 
     def test_get_result(self):
         """Test the get_result method"""
-        election = self.admin.new_election(firstname='Election',
-                                           lastname='Test',
-                                           email='election@example.com',
-                                           password='password')
+        election = self.admin.new_election(title='Election Test',
+                                           start_date='2019-01-01 00:00:00',
+                                           end_date='2019-01-01 00:00:00',
+                                           voters_id={'1', '2', '3'},
+                                           candidates=[Candidate(first_name='Test',
+                                                                 last_name='Candidate',
+                                                                position='Test Position')])
+
         result = self.admin.get_result(election.id)
         self.assertEqual(result['status'], election.status)
         self.assertEqual(result['result'], election.result)
 
     def test_update_election(self):
         """Test the update_election method"""
-        election = self.admin.new_election(firstname='Election',
-                                           lastname='Test',
-                                           email='election@example.com',
-                                           password='password')
+        election = self.admin.new_election(title='Election Test',
+                                           start_date='2019-01-01 00:00:00',
+                                           end_date='2019-01-01 00:00:00',
+                                           voters_id={'1', '2', '3'},
+                                           candidates=[Candidate(first_name='Test',
+                                                                 last_name='Candidate',
+                                                                position='Test Position')])
+        
         updated_election = self.admin.update_election(election.id,
-                                                      firstname='Updated',
-                                                      lastname='Election')
-        self.assertEqual(updated_election.firstname, 'Updated')
-        self.assertEqual(updated_election.lastname, 'Election')
+                                                      first_name='Updated',
+                                                      last_name='Election')
+        self.assertEqual(updated_election.first_name, 'Updated')
+        self.assertEqual(updated_election.last_name, 'Election')
 
     def tearDown(self):
         """Tear down test fixtures"""

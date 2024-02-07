@@ -41,7 +41,7 @@ class Admin(BaseModel, Base):
         if any(x in keywords and x not in kwargs for x in keywords):
             raise ValueError('firstname, lastname, email and password'
                             'are required')
-        for prop, value in kwargs.items():
+        for key, value in kwargs.items():
             # remove arguments that can't be set by users
             if (key in ('created_at', 'start_date', 'end_date')
                     and type(value) is str):
@@ -64,11 +64,7 @@ class Admin(BaseModel, Base):
 
             ValueError: if any of the above arguments are not passed
         """
-        keywords = ['title', 'start_date', 'end_date', 'voters_id']
-        if any(x in keywords and x not in kwargs for x in keywords):
-            raise ValueError('firstname, lastname, email and password'
-                            'are required')
-        new_election = Election(kwargs)
+        new_election = Election(**kwargs)
         new_election.save()
         key = 'Election.' + new_election.id
         self.elections.update({key: new_election})
