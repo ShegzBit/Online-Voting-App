@@ -1,5 +1,5 @@
 import Fab from './Fab';
-import Modal from './Modal';
+import NewProjectModal from './modals/NewProject';
 
 export default function NewUserDashBoard({ toggle, isNew }) {
 
@@ -17,7 +17,7 @@ export default function NewUserDashBoard({ toggle, isNew }) {
             <p className='text-muted lh-sm px-0 text-center' style={{ fontSize: ".8rem"}}>You have no projects yet. Create a new project now</p>
             <hr />
             <Fab />
-            <Modal />
+            <NewProjectModal />
         </div>
     )
 }
