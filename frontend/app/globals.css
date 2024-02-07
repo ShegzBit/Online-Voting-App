@@ -1,5 +1,4 @@
 *{
-  font-family: 'Open Sans', sans-serif;
   font-family: 'Roboto', sans-serif;
 }
 
@@ -10,6 +9,9 @@
   display: block;
 }
 
+.text-title {
+  font-family: 'Open Sans', sans-serif;
+}
 .card-title{
   font-family: 'Open Sans', sans-serif;
   font-weight: 800;
@@ -63,5 +65,9 @@ label{
 }
 
 .base-color{
+  background-color: #1B4341;
+}
+
+input[type="radio"]:checked {
   background-color: #1B4341;
 }
