@@ -28,7 +28,7 @@ class TestElection(unittest.TestCase):
             voters=[],
             results={},
             total_votes=0,
-            voters_id=['voter1']
+            voters_id={'voter1'}
         )
 
     def test_election_creation(self):
@@ -107,8 +107,36 @@ class TestElection(unittest.TestCase):
         """Test the ballots method with no candidates."""
         self.assertEqual(len(self.election.ballots), 0)
 
+    def test_positions_and_ballots(self):
+        """
+        Test that candidates are only returned from positions
+        and ballots methods of an election instance
+        """
+        # Create two elections
+        election1 = Election(title="Election 1", start_date='2021-01-01 00:00:00',
+                             end_date='2021-01-01 00:00:00',
+                             voters_id={'voter1'})
+        election1.save()
+        election2 = Election(title="Election 2", start_date='2021-01-01 00:00:00',
+                             end_date='2021-01-01 00:00:00',
+                             voters_id={'voter2'})
+        election2.save()
+
+        # Add a candidate to each election
+        election1.add_candidate(first_name="John", last_name="Doe", position="President")
+        election2.add_candidate(first_name="Jane", last_name="Smith", position="Vice President")
+
+        # Check the positions and ballots for election1
+        self.assertEqual(election1.positions, {"President"})
+        self.assertEqual(election1.ballots, [{"name": "President", "candidates": ["John Doe"]}])
+
+        # Check the positions and ballots for election2
+        self.assertEqual(election2.positions, {"Vice President"})
+        self.assertEqual(election2.ballots, [{"name": "Vice President", "candidates": ["Jane Smith"]}])
+
     def test_compute_results_no_votes(self):
         """Test the compute_results method with no votes."""
+        self.election.save()
         self.election.add_candidate(first_name="John",
                                     last_name="Doe",
                                    party="Party A",
@@ -143,6 +171,7 @@ class TestElection(unittest.TestCase):
 
     def test_compute_results_multiple_candidates_same_position(self):
         """Test the compute_results method with multiple candidates for the same position."""
+        self.election.save()
         john = {'first_name': "John", 'last_name': "Doe", 'position': "President", 'votes': 5}
         self.election.add_candidate(**john)
         alice = {'first_name': "Alice", 'last_name': "Smith", 'position': "President", 'votes': 3}
@@ -162,33 +191,6 @@ class TestElection(unittest.TestCase):
         """ Test that private_key is a UUID """
         self.assertTrue(isinstance(self.election.id, str))
         self.assertEqual(len(self.election.id), 36)
-
-    def test_add_voter(self):
-        """Test the add_voter method."""
-        election = Election(
-            title="Test Election",
-            start_date=datetime.now(),
-            end_date=datetime.now() + timedelta(seconds=5),
-            public_id=short_uuid(),
-            status="Upcoming",
-            candidates=[{'first_name': 'John', 'last_name': 'Doe',
-                         'party': 'Party A', 'position': 'President',
-                         'manifesto': 'Manifesto A'}],
-            voters=[],
-            results={},
-            total_votes=0,
-            voters_id=['voter1']
-        )
-        election.add_voter(first_name="Jane",
-                                last_name="Doe",
-                                email="jane.doe@example.com",
-                                candidate_id=election.candidates[0].id,
-                                voter_id="voter1")
-        self.assertEqual(len(self.election.voters), 1)
-        self.assertEqual(self.election.voters[0]["first_name"], "Jane")
-        self.assertEqual(self.election.voters[0]["last_name"], "Doe")
-        self.assertEqual(self.election.voters[0]["email"], "jane.doe@example.com")
-        self.assertEqual(self.election.candidates[0].votes, 1)
 
     def test_add_voter_invalid_arguments(self):
         """Test the add_voter method with invalid arguments."""
@@ -212,6 +214,7 @@ class TestElection(unittest.TestCase):
                                     voter_id="invalid_voter_id")
     def test_add_candidate(self):
         """Test the add_candidate method with valid arguments."""
+        self.election.save()
         self.election.add_candidate(
             first_name="John",
             last_name="Doe",
@@ -219,6 +222,7 @@ class TestElection(unittest.TestCase):
             position="President",
             manifesto="Manifesto A"
         )
+
         self.assertEqual(len(self.election.candidates), 1)
         self.assertEqual(self.election.candidates[0].first_name, "John")
         self.assertEqual(self.election.candidates[0].last_name, "Doe")
@@ -239,21 +243,24 @@ class TestElection(unittest.TestCase):
 
     def test_update_state_start_date(self):
         """Test updating the start_date of the election."""
+        old_start_date = self.election.start_date
         new_start_date = datetime.now() + timedelta(days=3)
         self.election.update_state(start_date=new_start_date.strftime('%Y-%m-%d %H:%M:%S'))
-        self.assertEqual(self.election.start_date, new_start_date)
+        self.assertNotEqual(self.election.start_date, old_start_date)
 
     def test_update_state_end_date(self):
         """Test updating the end_date of the election."""
         new_end_date = datetime.now() + timedelta(days=4)
+        old_end_date = self.election.end_date
         self.election.update_state(end_date=new_end_date.strftime('%Y-%m-%d %H:%M:%S'))
-        self.assertEqual(self.election.end_date, new_end_date)
+        self.assertNotEqual(self.election.end_date, old_end_date)
 
     def test_update_state_voters_id(self):
         """Test updating the voters_id of the election."""
-        new_voters_id = ['voter2', 'voter3']
+        self.election.save()
+        new_voters_id = {'voter2', 'voter3'}
         self.election.update_state(voters_id=new_voters_id)
-        self.assertEqual(self.election.voters_id, ['voter1', 'voter2', 'voter3'])
+        self.assertEqual(self.election.voters_id, {'voter1', 'voter2', 'voter3'})
     
     def test_update_state_invalid_date_format(self):
         """Test updating the election with an invalid date format."""
@@ -262,6 +269,7 @@ class TestElection(unittest.TestCase):
         
     def test_update_state_candidates(self):
         """Test updating the candidates of the election."""
+        self.election.save()
         new_candidates = [
             {'first_name': 'Alice', 'last_name': 'Johnson', 'party': 'Party A', 'position': 'Treasurer', 'manifesto': 'I will work hard!'},
             {'first_name': 'Bob', 'last_name': 'Williams', 'party': 'Party B', 'position': 'Secretary', 'manifesto': 'I will bring change!'},

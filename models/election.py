@@ -44,8 +44,6 @@ class Election(BaseModel, Base):
         if not all(key in kwargs for key in ['title', 'start_date', 'end_date']):
             raise ValueError("Invalid arguments")
         super().__init__(*args, **kwargs)
-        for candidate in kwargs.get('candidates', []):
-            self.add_candidate(**candidate)
         self.activate_election()
 
 
@@ -136,7 +134,7 @@ class Election(BaseModel, Base):
         if not all(keyword in kwargs for keyword in keywords):
             raise ValueError("Invalid arguments")
         new_candidate = Candidate(election_id=self.id, **kwargs)
-        self.candidates.append(new_candidate)
+        #self.candidates.append(new_candidate)
         new_candidate.save()
 
     def add_voters_id(self, ids={}):
