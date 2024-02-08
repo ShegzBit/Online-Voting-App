@@ -1,29 +1,26 @@
 import Button from "../Button"
 import ProjectDetails from "./ProjectDetails"
 import { useState } from 'react';
-import bootstrap from 'bootstrap';
+import { Modal } from 'react-bootstrap';
 
-export default function NewProjectModal() {
-    const [showDetailsModal, setShowDetailsModal] = useState(false)
+export default function NewProjectModal({isOpen, setIsOpen}) {
+    const [showDetails, setShowDetails] = useState(false)
 
     const handleShowProjDetails = () => {
-        const myModal = new Modal(document.getElementById('newProject'))
-        console.log("Hello")
-        myModal.toggle()
-
-        setShowDetailsModal(true)
+        // We close the modal and open the project details modal
+        setIsOpen()
+        setShowDetails(!showDetails)
     }
 
 
     return (
         <>
-            <div className={`modal fade ${showDetailsModal ? 'd-none' : 'show'}`} style={{ display: `${showDetailsModal ? 'none' : ''}`}} id="newProject" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="exampleModalLabel">New Project</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
+            <Modal show={isOpen} onHide={setIsOpen}>
+                {/* <div className="modal-dialog"> */}
+                    {/* <div className="modal-content"> */}
+                    <Modal.Header closeButton>
+                        <Modal.Title>New Project</Modal.Title>
+                    </Modal.Header>
                         <div className="modal-body">
                             <ul className="list-group">
                                 <li className="list-group-item border-0 d-flex">
@@ -50,13 +47,13 @@ export default function NewProjectModal() {
                             </ul>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-outline-secondary px-5" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-gradient btn-primary" aria-label="Create project" data-bs-toggle="modal" data-bs-target="#projDetails">Create Project</button>
+                            <button onClick={setIsOpen} type="button" className="btn btn-outline-secondary px-5">Close</button>
+                            <button onClick={handleShowProjDetails} type="button" className="btn btn-gradient btn-primary" aria-label="Create project">Create Project</button>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <ProjectDetails />
+                    {/* </div> */}
+                {/* </div> */}
+            </Modal>
+            <ProjectDetails show={showDetails} onHide={handleShowProjDetails} />
         </>
     )
 }
