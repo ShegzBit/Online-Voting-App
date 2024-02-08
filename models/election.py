@@ -11,6 +11,7 @@ import json
 
 from models.base import BaseModel, Base, short_uuid, is_jsonnable, is_iterable
 from models.candidate import Candidate
+import models
 
 
 class Election(BaseModel, Base):
@@ -252,5 +253,7 @@ class Election(BaseModel, Base):
                 elif type(value) is set:
                     dict_state[prop] = list(value)
                 elif is_iterable(value):
-                    dict_state[prop] = [v.to_dict() for v in value]
+                    if len(value) > 0:
+                        if all(hasattr(v, 'to_dict') for v in value):
+                            dict_state[prop] = [v.to_dict() for v in value]
         return dict_state

@@ -89,7 +89,8 @@ class Admin(BaseModel, Base):
                 elif type(value) is set:
                     dict_state[prop] = list(value)
                 elif is_iterable(value):
-                    dict_state[prop] = [v.to_dict() for v in value]
+                    if all(hasattr(v, 'to_dict') for v in value):
+                        dict_state[prop] = [v.to_dict() for v in value]
         return dict_state
 
     def get_result(self, election_id):

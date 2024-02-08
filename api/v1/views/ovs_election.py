@@ -47,7 +47,7 @@ def create_election():
         abort(400, jsonify({'error': 'Admin not found'}))
     try:
         new_election = admin.new_election(**election, voters_id=voters_id)
-        election.update_state(candidates=candidates)
+        new_election.update_state(candidates=candidates)
     except ValueError as e:
         print(e)
         print(data)
