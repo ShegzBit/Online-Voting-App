@@ -1,23 +1,29 @@
 import Button from "../Button"
 import ProjectCreated from "./NewProjectCreated"
 import { useState } from "react"
+import { Modal } from "react-bootstrap"
 
 
-export default function ProjectDetails() {
+export default function ProjectDetails({ show, onHide }) {
     const [showModal, setShowModal] = useState(false)
 
-    const handleShow = () => {
-        setShowModal(true)
+    const handleShow = (key) => {
+        // if (key === 'open') {
+        //     setShowModal(true)
+        // } else {
+        //     setShowModal(false)
+        // }
+        onHide()
+        setShowModal(!showModal)
     }
     return (
         <>
-            <div href="projDetails" className={`modal fade ${showModal ? 'd-none' : ''}`} id="projDetails" tabIndex="-1" aria-labelledby="projDetails" aria-hidden="true" style={{ display: `${showModal ? 'none' : ''}`}}>
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="exampleModalLabel">Project Details</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
+            <Modal show={show} onHide={onHide}>
+                {/* <div className="modal-dialog">
+                    <div className="modal-content"> */}
+                    <Modal.Header closeButton>
+                        <Modal.Title>New Project</Modal.Title>
+                    </Modal.Header>
                         <div className="modal-body">
                         <div className="mb-3">
                             <label htmlFor="projectName" className="form-label">Enter project name</label>
@@ -38,12 +44,12 @@ export default function ProjectDetails() {
                         </div>
                         <div className="modal-footer">
                             {/* <button type="button" className="btn btn-outline-secondary px-5" data-bs-dismiss="modal">Close</button> */}
-                            <button onClick={handleShow} type="button" className="btn btn-gradient btn-primary w-100" aria-label="Create project" data-bs-toggle="modal" data-bs-target="#projCreated">Continue</button>
+                            <button onClick={handleShow} type="button" className="btn btn-gradient btn-primary w-100" aria-label="Create project">Continue</button>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <ProjectCreated />
+                    {/* </div>
+                </div> */}
+            </Modal>
+            <ProjectCreated show={showModal} onHide={handleShow} />
         </>
     )
 }
