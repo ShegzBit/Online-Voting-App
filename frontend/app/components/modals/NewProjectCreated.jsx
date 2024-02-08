@@ -1,24 +1,23 @@
 import Button from "../Button"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { Modal } from "react-bootstrap"
 
-export default function ProjectCreated() {
+export default function ProjectCreated({ show, onHide }) {
+    const [isOpen, setIsOpen] = useState(show)
     const router = useRouter()
     const handleClick = () => {
-        // Check validations and redirect
-        // redirect(`/elections/${1}`)
-        console.log("hello")
+        // onHide()
         router.push("/elections/1")
-        window.location.reload
     }
     return (
         <>
-            <div className="modal fade" id="projCreated" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="exampleModalLabel">New Project</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
+            <Modal show={show}>
+                {/* <div className="modal-dialog">
+                    <div className="modal-content"> */}
+                    <Modal.Header>
+                        <Modal.Title>New Project</Modal.Title>
+                    </Modal.Header>
                         <div className="modal-body">
                             <h1 className="display-6">Hooray! 🎉 Your project was created</h1>
                             <p>Take it to the next level by adding additional voting options. Engage your audience and make your project shine!</p>
@@ -27,9 +26,9 @@ export default function ProjectCreated() {
                             {/* <button onClick={handleClick} type="button" className="btn btn-outline-secondary px-5">Finish setting up</button> */}
                             <Button cb={handleClick} text="Finish setting up" classNames="px-5 w-100" />
                         </div>
-                    </div>
-                </div>
-            </div>
+                    {/* </div>
+                </div> */}
+            </Modal>
         </>
     )
 }
