@@ -8,6 +8,7 @@ from sqlalchemy.orm import sessionmaker
 from models.admin import Admin
 from models.candidate import Candidate
 from models.election import Election
+from models import storage
 
 
 class TestAdminModel(unittest.TestCase):
@@ -15,7 +16,7 @@ class TestAdminModel(unittest.TestCase):
         """Set up test fixtures"""
         self.engine = create_engine('sqlite:///:memory:')
         self.session = sessionmaker(bind=self.engine)()
-        self.admin = Admin(firstname='Test', lastname='User',
+        self.admin = Admin(first_name='Test', last_name='User',
                            username='testuser',
                            email='test@example.com', password='password')
 
@@ -30,8 +31,8 @@ class TestAdminModel(unittest.TestCase):
     def test_to_dict(self):
         """Test the to_dict method"""
         dictionary = self.admin.to_dict()
-        self.assertEqual(dictionary['firstname'], 'Test')
-        self.assertEqual(dictionary['lastname'], 'User')
+        self.assertEqual(dictionary['first_name'], 'Test')
+        self.assertEqual(dictionary['last_name'], 'User')
         self.assertEqual(dictionary['username'], 'testuser')
         self.assertEqual(dictionary['email'], 'test@example.com')
         self.assertNotIn('_Admin__password', dictionary)
@@ -49,7 +50,7 @@ class TestAdminModel(unittest.TestCase):
 
         result = self.admin.get_result(election.id)
         self.assertEqual(result['status'], election.status)
-        self.assertEqual(result['result'], election.result)
+        self.assertEqual(result['result'], election.results)
 
     def test_update_election(self):
         """Test the update_election method"""
@@ -70,3 +71,116 @@ class TestAdminModel(unittest.TestCase):
     def tearDown(self):
         """Tear down test fixtures"""
         self.session.close()
+
+class TestAdmin(unittest.TestCase):
+    def setUp(self):
+        """
+        Set up for the tests
+        """
+        self.admin1 = Admin(first_name='John', last_name='Doe', email='me@you.us', password='1234')
+        self.admin2 = Admin(first_name='Jane', last_name='Doe', email='you@me.us', password='1234')
+        storage.new(self.admin1)
+        storage.new(self.admin2)
+        storage.save()
+
+    def test_get_by_attr(self):
+        """
+        Test get_by_attr method
+        """
+        admin = Admin.get_by_attr('first_name', 'John')
+        self.assertEqual(admin.email, self.admin1.email)
+
+        admin = Admin.get_by_attr('email', 'you@me.us')
+        self.assertEqual(admin.email, self.admin2.email)
+
+        admin = Admin.get_by_attr('last_name', 'Smith')
+        self.assertIsNone(admin)
+
+    def tearDown(self):
+        """
+        Tear down for the tests
+        """
+        storage.delete(self.admin1)
+        storage.delete(self.admin2)
+        storage.save()
+
+
+class TestAdminPassword(unittest.TestCase):
+    def setUp(self):
+        """
+        Set up for the tests
+        """
+        self.admin1 = Admin(first_name='John', last_name='Doe', email='me@you.us', password='1234')
+        storage.new(self.admin1)
+        storage.save()
+
+    def test_valid_password(self):
+        """
+        Test is_valid_password method with valid password
+        """
+        self.assertTrue(self.admin1.is_valid_password('1234'))
+
+    def test_invalid_password(self):
+        """
+        Test is_valid_password method with invalid password
+        """
+        self.assertFalse(self.admin1.is_valid_password('wrong_password'))
+
+    def tearDown(self):
+        """
+        Tear down for the tests
+        """
+        storage.delete(self.admin1)
+        storage.save()
+
+# FILEPATH: /Ubuntu/home/shegz/Online-Voting-App/tests/test_models/test_admin.py
+
+class TestAdminUpdateState(unittest.TestCase):
+    def setUp(self):
+        """
+        Set up for the tests
+        """
+        self.admin1 = Admin(first_name='John', last_name='Doe', email='me@you.us', password='1234')
+        storage.new(self.admin1)
+        storage.save()
+
+    def test_update_state_valid_password(self):
+        """
+        Test update_state method with valid old password
+        """
+        updated_admin = self.admin1.update_state(old_password='1234', new_password='5678')
+        self.assertTrue(updated_admin.is_valid_password('5678'))
+
+    def test_update_state_invalid_password(self):
+        """
+        Test update_state method with invalid old password
+        """
+        with self.assertRaises(ValueError):
+            updated_admin = self.admin1.update_state(old_password='wrong_password', new_password='5678')
+
+    def test_update_state_other_attributes(self):
+        """
+        Test update_state method with other attributes
+        """
+        updated_admin = self.admin1.update_state(first_name='Jane', last_name='Smith')
+        self.assertEqual(updated_admin.first_name, 'Jane')
+        self.assertEqual(updated_admin.last_name, 'Smith')
+
+    def test_update_state_protected_attributes(self):
+        """
+        Test update_state method with protected attributes
+        """
+        updated_admin = self.admin1.update_state(id='new_id', created_at='new_date', elections='new_elections')
+        self.assertNotEqual(updated_admin.id, 'new_id')
+        self.assertNotEqual(updated_admin.created_at, 'new_date')
+        self.assertNotEqual(updated_admin.elections, 'new_elections')
+
+    def tearDown(self):
+        """
+        Tear down for the tests
+        """
+        storage.delete(self.admin1)
+        storage.save()
+
+if __name__ == '__main__':
+    unittest.main()

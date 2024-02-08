@@ -1,0 +1,27 @@
+{
+    "admin_id": "ac09ae87-711f-4c44-a19c-38723848b639",
+    "election": {
+        "title": "Election API Test",
+        "start_date": "2024-02-07T13:48:48",
+        "end_date": "2024-02-07T13:48:48",
+        "description": "This is a test election"
+    },
+    "candidates": [
+        {
+            "first_name": "John",
+            "last_name": "Doe",
+            "positon": "President"
+        },
+        {
+            "first_name": "Jane",
+            "last_name": "Doe",
+            "positon": "President"
+        },
+        {
+            "first_name": "Fawaz",
+            "last_name": "Abdganiyu",
+            "positon": "Prime Minister"
+        }
+    ],
+    "voters_id": ["voter1", "voter2", "voter2", "some other voters"]
+}

@@ -6,6 +6,7 @@ from shortuuid import ShortUUID
 from sqlalchemy import Column, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from uuid import uuid4
+import json
 
 
 Base = declarative_base()
@@ -16,6 +17,24 @@ def short_uuid():
     """
     id = ShortUUID().random(length=12)
     return '-'.join(id[i:i+4] for i in range(0, 12, 4))
+
+def is_jsonnable(obj):
+    """ Check if an object is jsonnable
+    """
+    try:
+        json.dumps(obj)
+        return True
+    except:
+        return False
+
+def is_iterable(obj):
+    """ Check if an object is iterable
+    """
+    try:
+        iter(obj)
+        return True
+    except:
+        return False
 
 
 class BaseModel():

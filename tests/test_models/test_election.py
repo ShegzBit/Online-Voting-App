@@ -259,6 +259,8 @@ class TestElection(unittest.TestCase):
         """Test updating the voters_id of the election."""
         self.election.save()
         new_voters_id = {'voter2', 'voter3'}
+        if len(self.election.voters_id) == 0:
+            self.election.add_voters_id({'voter1'})
         self.election.update_state(voters_id=new_voters_id)
         self.assertEqual(self.election.voters_id, {'voter1', 'voter2', 'voter3'})
     

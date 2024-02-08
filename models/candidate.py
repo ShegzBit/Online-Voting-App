@@ -40,3 +40,14 @@ class Candidate(BaseModel, Base):
         """
         self.votes += 1
         self.save()
+    
+    def to_dict(self):
+        """
+        Returns the dictionary state of the election
+        """
+        super_dict = super().to_dict()
+        try:
+            del super_dict['election']
+            return super_dict
+        except AttributeError:
+            return super_dict

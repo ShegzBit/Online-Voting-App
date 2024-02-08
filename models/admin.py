@@ -4,12 +4,13 @@ Module containing admin model
 """
 from datetime import datetime as dt
 from uuid import uuid4
-from models.base import BaseModel, short_uuid, Base
+from models.base import BaseModel, short_uuid, Base, is_jsonnable, is_iterable
 from sqlalchemy import Column, String, Date, PickleType, Integer
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.mutable import MutableDict
 from models.election import Election
+import models
 
 
 class Admin(BaseModel, Base):
@@ -17,13 +18,14 @@ class Admin(BaseModel, Base):
     Class for modelling admin in OVS
     """
     __tablename__ = 'admins'
-    firstname = Column(String(120), nullable=False)
-    lastname = Column(String(120), nullable=False)
+    first_name = Column(String(120), nullable=False)
+    last_name = Column(String(120), nullable=False)
     username = Column(String(120), nullable=False, unique=True)
     __password = Column(String(120), nullable=False)
     email = Column(String(120), nullable=False, unique=True)
     elections = Column(MutableDict.as_mutable(PickleType), nullable=False,
                        default=dict())
+    phone_number = Column(String(120), nullable=True)
 
     def __init__(self, *args, **kwargs):
         """
@@ -37,10 +39,9 @@ class Admin(BaseModel, Base):
             ValueError: if any of the above arguments are not passed
         """
         # ensure necessary argurments are passed
-        keywords = ['firstname', 'lastname', 'password', 'email']
+        keywords = ['first_name', 'last_name', 'password', 'email']
         if any(x in keywords and x not in kwargs for x in keywords):
-            raise ValueError('firstname, lastname, email and password'
-                            'are required')
+            raise ValueError('first_name, last_name, email and password are required')
         for key, value in kwargs.items():
             # remove arguments that can't be set by users
             if (key in ('created_at', 'start_date', 'end_date')
@@ -51,6 +52,7 @@ class Admin(BaseModel, Base):
         self.id = uuid4()
         self.__password = kwargs.get('password')
         self.created_at = dt.utcnow()
+        self.username = kwargs.get('username', kwargs.get('email').split('@')[0])
         self.elections = {}
 
     def new_election(self, *args, **kwargs):
@@ -74,10 +76,21 @@ class Admin(BaseModel, Base):
         """
         Returns the state of the object in a dictionary format
         """
-        super_dict = super().to_dict()
-        if '_Admin__password' in super_dict:
-            del super_dict['_Admin__password']
-        return super_dict
+        main_dict = super().to_dict()
+        if '_Admin__password' in main_dict:
+            del main_dict['_Admin__password']
+        dict_state = {}
+        for prop, value in main_dict.items():
+            try:
+                dict_state[prop] = value.to_dict()
+            except AttributeError:
+                if is_jsonnable(value):
+                    dict_state[prop] = value
+                elif type(value) is set:
+                    dict_state[prop] = list(value)
+                elif is_iterable(value):
+                    dict_state[prop] = [v.to_dict() for v in value]
+        return dict_state
 
     def get_result(self, election_id):
         """
@@ -88,11 +101,42 @@ class Admin(BaseModel, Base):
         election = self.elections.get(key, None)
         return election.get_results()
 
-    def update_election(self, election_id, *args, **kwargs):
+    def update_election(self, election_id, **kwargs):
         """
         Takes the id of an election and 
         """
         key = 'Election.' + election_id
         election = self.elections.get(key, None)
-        election.update_state(kwargs)
+        election.update_state(**kwargs)
         return election
+    
+    def update_state(self, **kwargs):
+        """
+        Update the state of the admin
+        """
+        for key, value in kwargs.items():
+            if key == 'new_password':
+                if self.__password == kwargs.get('old_password', None):
+                    self.__password = kwargs.get('new_password')
+                else:
+                    raise ValueError('Old password is incorrect')
+            elif key not in ('id', 'created_at', 'elections', 'username'):
+                setattr(self, key, value)
+        self.save()
+        return self
+    
+    def is_valid_password(self, password):
+        """
+        Checks if the password is valid
+        """
+        return self.__password == password
+    
+    @staticmethod
+    def get_by_attr(attr, value):
+        """
+        Get admin by attribute
+        """
+        admins = models.storage.all(Admin)
+        for admin in admins.values():
+            if getattr(admin, attr) == value:
+                return admin

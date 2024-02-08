@@ -7,8 +7,9 @@ from sqlalchemy import (Column, String, DateTime, PickleType, Integer,
                         ForeignKey)
 from sqlalchemy.ext.mutable import MutableList, MutableDict, MutableSet
 from sqlalchemy.orm import relationship
+import json
 
-from models.base import BaseModel, Base, short_uuid
+from models.base import BaseModel, Base, short_uuid, is_jsonnable, is_iterable
 from models.candidate import Candidate
 
 
@@ -25,12 +26,13 @@ class Election(BaseModel, Base):
 
     candidates = relationship('Candidate', backref='election',
                               cascade='all, delete')
-    voters_id = Column(MutableSet.as_mutable(PickleType), default={})
+    voters_id = Column(MutableSet.as_mutable(PickleType), default=set())
     voters = Column(MutableList.as_mutable(PickleType), default=[])
     results = Column(MutableDict.as_mutable(PickleType), default={},
                      nullable=False)
     total_votes = Column(Integer, default=0, nullable=False)
     expected_voters = Column(Integer, default=0, nullable=False)
+    description = Column(String(2048), default="", nullable=False)
 
     def __init__(self, *args, **kwargs):
         """ Initialize the Election object
@@ -44,7 +46,8 @@ class Election(BaseModel, Base):
         if not all(key in kwargs for key in ['title', 'start_date', 'end_date']):
             raise ValueError("Invalid arguments")
         super().__init__(*args, **kwargs)
-        self.activate_election()
+        self.voters_id = set()
+        self.candidates = []
 
 
     @property
@@ -84,6 +87,11 @@ class Election(BaseModel, Base):
             self.save()
         return results
 
+    def voted(self, voter_id):
+        """ Check if a voter has voted
+        """
+        return voter_id in [voter['voter_id'] for voter in self.voters]
+
     def add_voter(self, **kwargs):
         """ Add a voter to the election
 
@@ -109,6 +117,8 @@ class Election(BaseModel, Base):
                          if candidate.id == kwargs.get('candidate_id')][0]
         except IndexError:
             raise ValueError("Invalid candidate id")
+        if self.voted(kwargs.get('voter_id')):
+            raise ValueError("Voter has already voted")
         if self.get_election_status() == "Ongoing":
             candidate.count_vote()
             self.voters.append({"first_name": kwargs.get('first_name'), "last_name": kwargs.get('last_name'),
@@ -131,13 +141,17 @@ class Election(BaseModel, Base):
             None
         """
         keywords = ['first_name', 'last_name', 'position']
-        if not all(keyword in kwargs for keyword in keywords):
+        if not all(keyword in kwargs for keyword in keywords) and not 'obj' in kwargs:
             raise ValueError("Invalid arguments")
-        new_candidate = Candidate(election_id=self.id, **kwargs)
-        #self.candidates.append(new_candidate)
-        new_candidate.save()
+        if 'obj' in kwargs:
+            cand = kwargs['obj']
+            self.candidates.append(cand)
+        else:
+            new_candidate = Candidate(election_id=self.id, **kwargs)
+            self.candidates.append(new_candidate)
+            new_candidate.save()
 
-    def add_voters_id(self, ids={}):
+    def add_voters_id(self, ids=set()):
         """ Add voters id to the election
         """
         self.voters_id.update(ids)
@@ -169,9 +183,9 @@ class Election(BaseModel, Base):
         if self.get_election_status() == 'Upcoming':
             return {"status": "Upcoming", "result": {"value": "not available"}}
         elif self.get_election_status() == 'Ongoing':
-            return {'status': 'Ongoing', 'results': self.compute_results(close=False)}
+            return {'status': 'Ongoing', 'result': self.compute_results(close=False)}
         else:
-            return {'status': 'Completed', 'results': self.compute_results()}
+            return {'status': 'Completed', 'result': self.compute_results()}
 
     def get_election_status(self):
         """ Determine election status
@@ -191,13 +205,13 @@ class Election(BaseModel, Base):
     def activate_election(self):
         """ Activate the election
         """
-        # if self.start_date > datetime.now():
-        if self.get_election_status() == "Ongoing":
+        if self.start_date > datetime.now():
+        # if self.get_election_status() == "Ongoing":
             self.start_election()
-        # start_delay = self.start_date - datetime.now()
-        # Timer(start_delay.total_seconds(), self.start_election).start()
-        # end_delay = self.end_date - datetime.now()
-        # Timer(end_delay.total_seconds(), self.end_election).start()
+        start_delay = self.start_date - datetime.now()
+        Timer(start_delay.total_seconds(), self.start_election).start()
+        end_delay = self.end_date - datetime.now()
+        Timer(end_delay.total_seconds(), self.end_election).start()
         return True
     
     def update_state(self, **kwargs):
@@ -219,6 +233,24 @@ class Election(BaseModel, Base):
                     value = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
                 setattr(self, key, value)
 
-        self.activate_election()
+        # self.activate_election()
         self.save()
         return self
+    
+    def to_dict(self):
+        """
+        Converts the election to a dictionary of key-value pairs
+        """
+        dict_state = {}
+        main_dict = super().to_dict()
+        for prop, value in main_dict.items():
+            try:
+                dict_state[prop] = value.to_dict()
+            except AttributeError:
+                if is_jsonnable(value):
+                    dict_state[prop] = value
+                elif type(value) is set:
+                    dict_state[prop] = list(value)
+                elif is_iterable(value):
+                    dict_state[prop] = [v.to_dict() for v in value]
+        return dict_state

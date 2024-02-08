@@ -88,3 +88,9 @@ class DBStorage:
         Delets obj from current session
         """
         self.__session.delete(obj)
+
+    def close(self):
+        """
+        Closes the current session
+        """
+        self.__session.remove()
