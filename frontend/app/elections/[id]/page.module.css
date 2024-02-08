@@ -1,0 +1,16 @@
+.activeBtn {
+    background-color:white;
+    border:.5px #E7E9EE solid;
+    border-bottom: 4px solid #1b1b1b !important;
+    color: black !important;
+}
+
+/*.activeBtn:hover {
+    background-color:white;
+    border:2px #E7E9EE solid;
+    border-bottom: 4px solid #1b1b1b;
+}*/
+
+.btnBorder {
+    border:2px #E7E9EE solid;
+}
