@@ -53,6 +53,7 @@ def create_election():
         print(data)
         return(400, jsonify({'error': str(e)}))
     finally:
-        storage.save()
+        # storage.save()
+        new_election.save()
     resp_dict = {'status': 'successful', 'election': new_election.to_dict()}
     return jsonify(resp_dict), 201

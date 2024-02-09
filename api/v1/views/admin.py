@@ -7,7 +7,7 @@ from models.admin import Admin
 
 from flask import jsonify, request, abort
 
-@ovs_elect.route('/sign-up', methods=['POST'], strict_slashes=False)
+@ovs_elect.route('/sign_up', methods=['POST'], strict_slashes=False)
 def create_admin():
     """ Create a new admin
     """
@@ -16,6 +16,9 @@ def create_admin():
         abort(400, 'Not a JSON')
     if not 'email' in data:
         abort(400, jsonify({'status': 'failed', 'error': 'Missing email'}))
+    # Query the database to check if the email already exists
+    if Admin.get_by_attr('email', data['email']):
+        abort(400, jsonify({'status': 'failed', 'error': 'Email already exists'}))
     if not 'password' in data:
         abort(400, jsonify({'status': 'failed', 'error': 'Missing password'}))
     try:
@@ -26,7 +29,7 @@ def create_admin():
     resp_dict = {'status': 'successful', 'user': admin.to_dict()}
     return jsonify(resp_dict), 201
 
-@ovs_elect.route('/sign-in', methods=['POST'], strict_slashes=False)
+@ovs_elect.route('/sign_in', methods=['POST'], strict_slashes=False)
 def user_sign_in():
     """" Sign in an admin
     """
