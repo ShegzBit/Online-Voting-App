@@ -3,6 +3,7 @@
 import { useState } from "react"
 import styles from './page.module.css'
 import Overview from '@/app/components/Overview'
+import Ballot from '@/app/components/Ballot'
 
 export default function SingleElection({ params }) {
     const [isActive, setActive] = useState('overview')
@@ -19,6 +20,7 @@ export default function SingleElection({ params }) {
                 <button type="button" onClick={() => handleActive('voters')} href="#" className={`btn rounded-0 fw-semibold text-muted border border-2 ${isActive === 'voters' ? styles.activeBtn : ''}`}>Eligible voters</button>
             </div>
             {isActive === 'overview' && <Overview electionId={params.id} />}
+            {isActive === 'ballot' && <Ballot electionId={params.id} />}
         </div>
     )
 }

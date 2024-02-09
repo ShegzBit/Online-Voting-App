@@ -6,12 +6,12 @@ export default function SignInPage() {
                 <h1 className="card-title mb-4">Sign in</h1>
                 <p className="card-subtitle">Please enter your details to sign in</p>
                 <div className="form-floating mb-3">
-                    <input type="email" className="form-control" id="floatingInput" placeholder="name@example.com" />
+                    <input type="email" className="form-control rounded-4" id="floatingInput" placeholder="" />
                     <label htmlFor="floatingInput">Email address</label>
                 </div>
 
                 <div className="form-floating">
-                    <input type="password" className="form-control" id="floatingPassword" placeholder="Password" />
+                    <input type="password" className="form-control rounded-4" id="floatingPassword" placeholder="" />
                     <label htmlFor="floatingPassword">Password</label>
                 </div>
                 <div className="d-grid gap-2">
