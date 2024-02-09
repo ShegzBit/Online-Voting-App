@@ -1,0 +1,10 @@
+SQLAlchemy
+pyparsing
+appdirs
+cryptography
+bcrypt
+pyNaCl
+flask
+Jinja2
+python-dotenv
+shortuuid
