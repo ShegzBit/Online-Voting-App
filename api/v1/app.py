@@ -2,10 +2,11 @@
 """
 This module contains the Flask app
 """
-from flask import Flask, request, jsonify, Blueprint
-from models import storage
-from api.v1.views import ovs_elect
 import os
+from flask import Flask, request, jsonify, Blueprint
+
+from api.v1.views import ovs_elect
+from models import storage
 
 
 # OVS_API_HOST=0.0.0.0 OVS_MYSQL_HOST=localhost OVS_MYSQL_USER=ovs_test OVS_MYSQL_PWD=ovs_test_pwd OVS_MYSQL_DB=ovs_test_db OVS_ENV=test python3 -m api.v1.app

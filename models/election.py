@@ -9,9 +9,9 @@ from sqlalchemy.ext.mutable import MutableList, MutableDict, MutableSet
 from sqlalchemy.orm import relationship
 import json
 
+import models
 from models.base import BaseModel, Base, short_uuid, is_jsonnable, is_iterable
 from models.candidate import Candidate
-import models
 
 
 class Election(BaseModel, Base):
@@ -85,7 +85,7 @@ class Election(BaseModel, Base):
         self.total_votes = sum([candidate.votes for candidate in self.candidates])
         if close is True:
             self.end_election()
-            self.save()
+            models.storage.save()
         return results
 
     def voted(self, voter_id):
@@ -124,7 +124,7 @@ class Election(BaseModel, Base):
             candidate.count_vote()
             self.voters.append({"first_name": kwargs.get('first_name'), "last_name": kwargs.get('last_name'),
                             "email": kwargs.get('email')})
-            self.save()
+            models.storage.save()
 
     def add_candidate(self, **kwargs):
         """ Add a candidate to the election
@@ -159,7 +159,7 @@ class Election(BaseModel, Base):
         """
         self.voters_id.update(ids)
         self.expected_voters = len(self.voters_id)
-        self.save()
+        models.storage.save()
 
     def get_voters(self):
         """ Get the list of voters
@@ -237,7 +237,7 @@ class Election(BaseModel, Base):
                 setattr(self, key, value)
 
         # self.activate_election()
-        self.save()
+        models.storage.save()
         return self
     
     def to_dict(self):

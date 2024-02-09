@@ -4,13 +4,16 @@ Module containing admin model
 """
 from datetime import datetime as dt
 from uuid import uuid4
-from models.base import BaseModel, short_uuid, Base, is_jsonnable, is_iterable
+
 from sqlalchemy import Column, String, Date, PickleType, Integer
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.mutable import MutableDict
-from models.election import Election
+
 import models
+from models.base import BaseModel, short_uuid, Base, is_jsonnable, is_iterable
+from models.election import Election
+
 
 
 class Admin(BaseModel, Base):
@@ -123,7 +126,7 @@ class Admin(BaseModel, Base):
                     raise ValueError('Old password is incorrect')
             elif key not in ('id', 'created_at', 'elections', 'username'):
                 setattr(self, key, value)
-        self.save()
+        models.storage.save()
         return self
     
     def is_valid_password(self, password):

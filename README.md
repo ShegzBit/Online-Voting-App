@@ -83,34 +83,33 @@ This is an online voting system built with Python, using Flask and SQLAlchemy.
     ```
 
     ```bash
-    curl -X POST -H 'Content-Type: application/json' -d '{
-        "admin_id": "03939f31-1511-4c62-8af4-75cbd3389ad9",
-        "election": {
-            "title": "Election API Test",
-            "start_date": "2024-02-07 13:48:48",
-            "end_date": "2024-02-07 13:48:48",
-            "description": "This is a test election"
+     curl -X POST -H 'Content-Type: application/json' -d '{
+    "admin_id": "03939f31-1511-4c62-8af4-75cbd3389ad9",
+    "election": {
+        "title": "Election API Test",
+        "start_date": "2024-02-07 13:48:48",
+        "end_date": "2024-02-07 13:48:48",
+        "description": "This is a test election"
+    },
+    "candidates": [
+        {
+            "first_name": "John",
+            "last_name": "Doe",
+            "position": "President"
         },
-        "candidates": [
-            {
-                "first_name": "John",
-                "Last_name": "Doe",
-                "position": "President"
-            },
-            {
-                "first_name": "Jane",
-                "last_name": "Doe",
-                "position": "President"
-            },
-            {
-                "first_name": "Fawaz",
-                "last_name": "Abdganiyu",
-                "position": "Prime Minister"
-            }
-        ],
-                
-        "voters_id": ["voter1", "voter2", "voter3"]
-    }' http://0.0.0.0:5000/api/v1/create_election
+        {
+            "first_name": "Jane",
+            "last_name": "Doe",
+            "position": "President"
+        },
+        {
+            "first_name": "Fawaz",
+            "last_name": "Abdganiyu",
+            "position": "Prime Minister"
+        }
+    ],
+    "voters_id": ["voter1", "voter2", "voter2", "some other voters"]
+}' http://localhost:5000/api/v1/create_election
     ```
     Response
     ```json

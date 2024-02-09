@@ -3,6 +3,7 @@
 """
 from sqlalchemy import Column, String, Integer, ForeignKey
 
+import models
 from models.base import BaseModel, Base
 
 
@@ -33,13 +34,13 @@ class Candidate(BaseModel, Base):
         for key, value in kwargs.items():
             if key not in ('id', 'election_id', 'votes', 'created_at'):
                 setattr(self, key, value)
-        self.save()
+        storage.save()
 
     def count_vote(self):
         """ Count a vote for the candidate
         """
         self.votes += 1
-        self.save()
+        models.storage.save()
     
     def to_dict(self):
         """

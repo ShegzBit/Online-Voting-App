@@ -49,10 +49,6 @@ def create_election():
         new_election = admin.new_election(**election, voters_id=voters_id)
         new_election.update_state(candidates=candidates)
     except ValueError as e:
-        print(e)
-        print(data)
         return(400, str(e))
-    finally:
-        storage.save()
     resp_dict = {'status': 'successful', 'election': new_election.to_dict()}
     return jsonify(resp_dict), 201
