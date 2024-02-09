@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Accordion } from "react-bootstrap"
-import { FaRegEdit, FaCopy } from "react-icons/fa"
+import { FaRegEdit } from "react-icons/fa"
 import { IoMdArrowDropdown } from "react-icons/io";
 import { IoCopyOutline } from "react-icons/io5";
 
