@@ -146,7 +146,9 @@ class Election(BaseModel, Base):
             raise ValueError("Invalid arguments")
         if 'obj' in kwargs:
             cand = kwargs['obj']
+            cand.election_id = self.id
             self.candidates.append(cand)
+            cand.save()
         else:
             new_candidate = Candidate(election_id=self.id, **kwargs)
             self.candidates.append(new_candidate)
