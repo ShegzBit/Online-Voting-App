@@ -57,7 +57,15 @@ label{
   margin-top: 24px;
   line-height: 22px;
   font-size: 16px;
-  
+}
+
+.btn-sm{
+  border-radius: 12px;
+  height: 32px;
+  text-align: center;
+  margin-top: 24px;
+  line-height: 22px;
+  font-size: 14px;
 }
 
 .btn-gradient{
@@ -68,6 +76,20 @@ label{
   background-color: #1B4341;
 }
 
+.base-color:hover {
+  background-color: #1B4341 !important;
+}
+
 input[type="radio"]:checked {
   background-color: #1B4341;
+}
+
+.offcanvas-bottom {
+  position: absolute !important;
+  bottom: 0;
+  background-color: red;
+}
+
+::placeholder, label{
+  color: #024647 !important;
 }
