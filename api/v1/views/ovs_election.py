@@ -10,7 +10,7 @@ from models.candidate import Candidate
 from api.v1.views import ovs_elect
 
 
-@ovs_elect.route('/home', methods=['GET'], strict_slashes=False)
+@ovs_elect.route('/', methods=['GET'], strict_slashes=False)
 def home():
     """ Redirects to the landing page
     """

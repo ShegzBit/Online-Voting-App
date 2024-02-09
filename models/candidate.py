@@ -50,5 +50,5 @@ class Candidate(BaseModel, Base):
         try:
             del super_dict['election']
             return super_dict
-        except AttributeError:
+        except KeyError:
             return super_dict

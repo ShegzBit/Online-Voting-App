@@ -48,7 +48,7 @@ def user_sign_in():
     resp_dict = {'status': 'successful', 'user': admin.to_dict()}
     return jsonify(resp_dict), 201
 
-@ovs_elect.route('/user/update', methods=['PUT'], strict_slashes=False)
+@ovs_elect.route('/admin/update', methods=['PUT'], strict_slashes=False)
 def update_user():
     """ Update user details
     """
@@ -68,5 +68,5 @@ def update_user():
         admin.update_state(**data)
     except ValueError as e:
         abort(400, str(e))
-    resp_dict = {'status': 'successful', 'user': admin.to_dict()}
+    resp_dict = {'status': 'successful', 'admin': admin.to_dict()}
     return jsonify(resp_dict), 201
