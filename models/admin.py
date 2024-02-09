@@ -49,9 +49,7 @@ class Admin(BaseModel, Base):
                     value = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
             if not key in ['__class__', 'password']:
                 setattr(self, key, value)
-        self.id = uuid4()
         self.__password = kwargs.get('password')
-        self.created_at = dt.utcnow()
         self.username = kwargs.get('username', kwargs.get('email').split('@')[0])
         self.elections = {}
 

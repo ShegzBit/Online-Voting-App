@@ -37,6 +37,9 @@ class DBStorage:
         url = f'mysql+mysqldb://{USER}:{PWD}@{HOST}/{DB}'
         self.__engine = create_engine(url, pool_pre_ping=True)
 
+        if os.getenv('OVS_ENV') == 'test':
+            Base.metadata.drop_all(self.__engine)
+
     def all(self, cls=None):
         """
         Returns all the object in the session
