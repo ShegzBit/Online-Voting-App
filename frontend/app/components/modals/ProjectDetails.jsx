@@ -1,5 +1,5 @@
 import Button from "../Button"
-import ProjectCreated from "./NewProjectCreated"
+import ProjectCreated from "./ProjectCreatedSucess"
 import { useState } from "react"
 import { Modal } from "react-bootstrap"
 
