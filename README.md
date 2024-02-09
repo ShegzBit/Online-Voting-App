@@ -179,6 +179,10 @@ To run the tests, use the following command:
 python3 -m unittest discover tests
 ```
 
+## Accessing the Application
+
+The application is hosted at [https://pollmaster.webflow.io/](https://pollmaster.webflow.io/). You can use it by navigating to this URL in your web browser.
+
 ## Contributing
 
 ## License
