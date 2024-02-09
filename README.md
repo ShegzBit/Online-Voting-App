@@ -38,7 +38,7 @@ This is an online voting system built with Python, using Flask and SQLAlchemy.
     curl -X POST -H 'Content-Type: application/json' -d '{
         "first_name": "Feranmi",
         "last_name": "Awotubo",
-        "email": "ibukun12345678910@gmail.com"
+        "email": "ibukun12345678910@gmail.com",
         "password": "my_password"
     }' http://0.0.0.0:5000/api/v1/sign_up
     ```
@@ -88,22 +88,22 @@ This is an online voting system built with Python, using Flask and SQLAlchemy.
         "election": {
             "title": "Election API Test",
             "start_date": "2024-02-07 13:48:48",
-            "end_date": "2024-02-07 13:48:48"
+            "end_date": "2024-02-07 13:48:48",
             "description": "This is a test election"
-        }
+        },
         "candidates": [
             {
                 "first_name": "John",
-                "Last_name": "Doe"
+                "Last_name": "Doe",
                 "position": "President"
             },
             {
                 "first_name": "Jane",
-                "last_name": "Doe"
+                "last_name": "Doe",
                 "position": "President"
             },
             {
-                "first_name": "Fawaz"
+                "first_name": "Fawaz",
                 "last_name": "Abdganiyu",
                 "position": "Prime Minister"
             }

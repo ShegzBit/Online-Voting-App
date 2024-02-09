@@ -15,17 +15,17 @@ def create_admin():
     if not data:
         abort(400, 'Not a JSON')
     if not 'email' in data:
-        abort(400, jsonify({'status': 'failed', 'error': 'Missing email'}))
+        abort(400, 'Missing email')
     # Query the database to check if the email already exists
     if Admin.get_by_attr('email', data['email']):
-        abort(400, jsonify({'status': 'failed', 'error': 'Email already exists'}))
+        abort(400, 'Email already exists')
     if not 'password' in data:
-        abort(400, jsonify({'status': 'failed', 'error': 'Missing password'}))
+        abort(400, 'Missing password')
     try:
         admin = Admin(**data)
         admin.save()
     except ValueError as e:
-        abort(400, jsonify({'error': str(e)}))
+        abort(400, str(e))
     resp_dict = {'status': 'successful', 'user': admin.to_dict()}
     return jsonify(resp_dict), 201
 
@@ -37,14 +37,14 @@ def user_sign_in():
     if not data:
         abort(400, 'Not a JSON')
     if not 'email' in data:
-        abort(400, jsonify({'status': 'failed','error': 'Missing email'}))
+        abort(400, 'Missing email')
     if not 'password' in data:
-        abort(400, jsonify({'status': 'failed', 'error': 'Missing password'}))
+        abort(400, 'Missing password')
     admin = Admin.get_by_attr('email', data['email'])
     if not admin:
-        abort(401, jsonify({'status': 'failed', 'error': 'Invalid email'}))
+        abort(401, 'Invalid email')
     if not admin.is_valid_password(data['password']):
-        abort(401, jsonify({'error': 'Invalid password'}))
+        abort(401, 'Invalid password')
     resp_dict = {'status': 'successful', 'user': admin.to_dict()}
     return jsonify(resp_dict), 201
 
@@ -56,17 +56,17 @@ def update_user():
     if not data:
         abort(400, 'Not a JSON')
     if not 'email' in data:
-        abort(400, jsonify({'status': 'failed', 'error': 'Missing email'}))
+        abort(400, 'Missing email')
     if not 'password' in data:
-        abort(400, jsonify({'status': 'failed', 'error': 'Missing password'}))
+        abort(400, 'Missing password')
     admin = Admin.get_by_attr('email', data['email'])
     if not admin:
-        abort(401, jsonify({'status': 'failed', 'error': 'Invalid email'}))
+        abort(401, 'Invalid email')
     if not admin.is_valid_password(data['password']):
-        abort(401, jsonify({'error': 'Invalid password'}))
+        abort(401, 'Invalid password')
     try:
         admin.update_state(**data)
     except ValueError as e:
-        abort(400, jsonify({'status': 'failed', 'error': str(e)}))
+        abort(400, str(e))
     resp_dict = {'status': 'successful', 'user': admin.to_dict()}
     return jsonify(resp_dict), 201

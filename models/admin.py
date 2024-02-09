@@ -46,7 +46,7 @@ class Admin(BaseModel, Base):
             # remove arguments that can't be set by users
             if (key in ('created_at', 'start_date', 'end_date')
                     and type(value) is str):
-                    value = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+                    value = dt.strptime(value, '%Y-%m-%d %H:%M:%S')
             if not key in ['__class__', 'password']:
                 setattr(self, key, value)
         self.id = uuid4()
