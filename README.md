@@ -40,7 +40,7 @@ This is an online voting system built with Python, using Flask and SQLAlchemy.
         "last_name": "Awotubo",
         "email": "ibukun12345678910@gmail.com"
         "password": "my_password"
-    } https://locahost:5000/api/v1/sign_up
+    }' http://0.0.0.0:5000/api/v1/sign_up
     ```
     Sign up response
     ```json
@@ -63,7 +63,7 @@ This is an online voting system built with Python, using Flask and SQLAlchemy.
     curl -X POST -H 'Content-Type: application/json' -d '{
         "email": "ibukun12345678910@gmail.com",
         "password": "my_password"
-    } http://locahost:5000/api/v1/sign_in
+    }' http://0.0.0.0:5000/api/v1/sign_in
     ```
     Response
     ```json
@@ -110,7 +110,7 @@ This is an online voting system built with Python, using Flask and SQLAlchemy.
         ],
                 
         "voters_id": ["voter1", "voter2", "voter3"]
-    } http://locahost:5000/api/v1/create_election
+    }' http://0.0.0.0:5000/api/v1/create_election
     ```
     Response
     ```json
