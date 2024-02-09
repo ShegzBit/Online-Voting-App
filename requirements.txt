@@ -1,0 +1,4 @@
+Flask==3.0.2
+python-dotenv==1.0.1
+shortuuid==1.0.11
+SQLAlchemy==2.0.23
