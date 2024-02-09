@@ -3,7 +3,7 @@ import ProjectDetails from "./ProjectDetails"
 import { useState } from 'react';
 import { Modal } from 'react-bootstrap';
 
-export default function NewProjectModal({isOpen, setIsOpen}) {
+export default function NewProject({isOpen, setIsOpen}) {
     const [showDetails, setShowDetails] = useState(false)
 
     const handleShowProjDetails = () => {
@@ -47,8 +47,8 @@ export default function NewProjectModal({isOpen, setIsOpen}) {
                             </ul>
                         </div>
                         <div className="modal-footer">
-                            <button onClick={setIsOpen} type="button" className="btn btn-outline-secondary px-5">Close</button>
-                            <button onClick={handleShowProjDetails} type="button" className="btn btn-gradient btn-primary" aria-label="Create project">Create Project</button>
+                            <button onClick={setIsOpen} type="button" className="btn btn-outline-secondary btn-sm px-5">Close</button>
+                            <button onClick={handleShowProjDetails} type="button" className="btn btn-sm btn-gradient btn-primary" aria-label="Create project">Create Project</button>
                         </div>
                     {/* </div> */}
                 {/* </div> */}
