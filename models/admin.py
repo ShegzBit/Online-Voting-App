@@ -44,7 +44,8 @@ class Admin(BaseModel, Base):
         # ensure necessary argurments are passed
         keywords = ['first_name', 'last_name', 'password', 'email']
         if any(x in keywords and x not in kwargs for x in keywords):
-            raise ValueError('first_name, last_name, email and password are required')
+            raise ValueError('first_name, last_name,'
+                             'email and password are required')
         for key, value in kwargs.items():
             # remove arguments that can't be set by users
             if (key in ('created_at', 'start_date', 'end_date')
@@ -55,7 +56,8 @@ class Admin(BaseModel, Base):
         self.id = uuid4()
         self.__password = kwargs.get('password')
         self.created_at = dt.utcnow()
-        self.username = kwargs.get('username', kwargs.get('email').split('@')[0])
+        self.username = kwargs.get('username',
+                                   kwargs.get('email').split('@')[0])
         self.elections = {}
 
     def new_election(self, *args, **kwargs):
@@ -107,13 +109,13 @@ class Admin(BaseModel, Base):
 
     def update_election(self, election_id, **kwargs):
         """
-        Takes the id of an election and 
+        Takes the id of an election and updates its state
         """
         key = 'Election.' + election_id
         election = self.elections.get(key, None)
         election.update_state(**kwargs)
         return election
-    
+
     def update_state(self, **kwargs):
         """
         Update the state of the admin
@@ -128,13 +130,13 @@ class Admin(BaseModel, Base):
                 setattr(self, key, value)
         models.storage.save()
         return self
-    
+
     def is_valid_password(self, password):
         """
         Checks if the password is valid
         """
         return self.__password == password
-    
+
     @staticmethod
     def get_by_attr(attr, value):
         """

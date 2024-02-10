@@ -44,7 +44,8 @@ class Election(BaseModel, Base):
 
             ValueError: if any of the above arguments are not passed
         """
-        if not all(key in kwargs for key in ['title', 'start_date', 'end_date']):
+        if not all(key in kwargs for key in ['title', 'start_date',
+                                             'end_date']):
             raise ValueError("Invalid arguments")
         super().__init__(*args, **kwargs)
         self.voters_id = set()
@@ -83,7 +84,8 @@ class Election(BaseModel, Base):
                                 for candidate in candidates}
 
         self.results = results
-        self.total_votes = sum([candidate.votes for candidate in self.candidates])
+        self.total_votes = sum([candidate.votes
+                                for candidate in self.candidates])
         if close is True:
             self.end_election()
             models.storage.save()
@@ -104,27 +106,30 @@ class Election(BaseModel, Base):
             candidate_id (str): The voter's candidate id
             voter_id (str): The voter's id
 
-            ValueError indicates invalid voter's id or candidate's id or invalid arguments
+            ValueError indicates invalid voter's id or candidate's id or
+            invalid arguments
 
         Returns:
             None
         """
-        keywords = ['first_name', 'last_name', 'email', 'candidate_id', 'voter_id']
+        keywords = ['first_name', 'last_name', 'email', 'candidate_id',
+                    'voter_id']
         if not all(keyword in kwargs for keyword in keywords):
             raise ValueError("Invalid arguments")
         if not kwargs.get('voter_id') in self.voters_id:
             raise ValueError("Invalid voter id")
-       
+
         candidate = models.storage.get('Candidate', kwargs.get('candidate_id'))
         if not candidate:
             raise ValueError("Invalid candidate id")
-        
+
         if self.voted(kwargs.get('voter_id')):
             raise ValueError("Voter has already voted")
         if self.get_election_status() == "Ongoing":
             candidate.count_vote()
-            self.voters.append({"first_name": kwargs.get('first_name'), "last_name": kwargs.get('last_name'),
-                            "email": kwargs.get('email')})
+            self.voters.append({"first_name": kwargs.get('first_name'),
+                                "last_name": kwargs.get('last_name'),
+                                "email": kwargs.get('email')})
             models.storage.save()
 
     def add_candidate(self, **kwargs):
@@ -143,7 +148,8 @@ class Election(BaseModel, Base):
             None
         """
         keywords = ['first_name', 'last_name', 'position']
-        if not all(keyword in kwargs for keyword in keywords) and not 'obj' in kwargs:
+        if (not all(keyword in kwargs for keyword in keywords)
+            and not 'obj' in kwargs):
             raise ValueError("Invalid arguments")
         if 'obj' in kwargs:
             cand = kwargs['obj']
@@ -187,7 +193,8 @@ class Election(BaseModel, Base):
         if self.get_election_status() == 'Upcoming':
             return {"status": "Upcoming", "result": {"value": "not available"}}
         elif self.get_election_status() == 'Ongoing':
-            return {'status': 'Ongoing', 'result': self.compute_results(close=False)}
+            return {'status': 'Ongoing',
+                    'result': self.compute_results(close=False)}
         else:
             return {'status': 'Completed', 'result': self.compute_results()}
 
@@ -205,7 +212,6 @@ class Election(BaseModel, Base):
 
         return self.status
 
-    
     def activate_election(self):
         """ Activate the election
         """
@@ -217,7 +223,7 @@ class Election(BaseModel, Base):
         end_delay = self.end_date - datetime.now()
         Timer(end_delay.total_seconds(), self.end_election).start()
         return True
-    
+
     def update_state(self, **kwargs):
         """ Update the election's state """
         def add_candidates(candidates):
@@ -225,14 +231,15 @@ class Election(BaseModel, Base):
             for candidate in candidates:
                 self.add_candidate(**candidate)
 
-        # over here should the update voters_id be added or should replace the voters_id entirely
-        methods = {'voters_id': self.add_voters_id, 'candidates': add_candidates}
+        methods = {'voters_id': self.add_voters_id,
+                   'candidates': add_candidates}
 
         for key, value in kwargs.items():
             if key in methods:
                 methods[key](value)
-            elif key not in ('id', 'public_id', 'status', 'created_at', 'results',
-                             'total_votes', 'expected_voters', 'voters'):
+            elif key not in ('id', 'public_id', 'status', 'created_at',
+                             'results', 'total_votes', 'expected_voters',
+                             'voters'):
                 if key in ('start_date', 'end_date') and type(value) is str:
                     value = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
                 setattr(self, key, value)
@@ -240,7 +247,7 @@ class Election(BaseModel, Base):
         # self.activate_election()
         models.storage.save()
         return self
-    
+
     def to_dict(self):
         """
         Converts the election to a dictionary of key-value pairs

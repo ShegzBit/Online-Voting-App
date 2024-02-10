@@ -25,8 +25,6 @@ def create_election():
     # handle for errors
     if not data:
         abort(400, 'Not a JSON')
-    if 'candidates' not in data:
-        abort(400, 'Missing candidate')
     if 'election' not in data:
         abort(400, 'Missing election')
     if 'title' not in data['election']:
@@ -40,9 +38,14 @@ def create_election():
 
     # create the election
     admin_id = data['admin_id']
-    candidates = data['candidates']
     election = data['election']
-    voters_id = set(data.get('voters_id', []))
+    try:
+        candidates = data['candidates']
+        voters_id = set(data.get('voters_id', []))
+    except KeyError:
+        candidates = []
+        voters_id = set()
+
     admin = storage.get('Admin', admin_id)
     if not admin:
         abort(400, 'Admin not found')

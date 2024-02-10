@@ -170,7 +170,41 @@ This is an online voting system built with Python, using Flask and SQLAlchemy.
         "status": "successful"
     }
     ```
-
+	An election can also be created with only election title, starting date,
+	and ending date. Then candidates and voters_id can be added later.
+	```bash
+	curl -X POST -H 'Content-Type: application/json' -d '{
+        "admin_id": "02580f5e-a710-4886-bb4d-93907e7c1667",
+        "election": {
+            "title": "Election API Test",
+            "start_date": "2024-02-07 13:48:48",
+            "end_date": "2024-02-07 13:48:48",
+            "description": "This is a test election"
+        }
+    }' http://0.0.0.0:5000/api/v1/create_election
+	```
+	Response
+	```json
+	{
+        "election": {
+            "__class__": "Election",
+            "candidates": [],
+            "created_at": "2024-02-10 15:16:49",
+            "description": "This is a test election",
+            "end_date": "2024-02-07 13:48:48",
+            "expected_voters": 0,
+            "id": "c5bbf373-f574-47b6-9ab8-315ee97f330b",
+            "public_id": "6HAW-RGAA-eBUT",
+            "results": {},
+            "start_date": "2024-02-07 13:48:48",
+            "status": "Completed",
+            "title": "Election API Test",
+            "total_votes": 0,
+            "voters": []
+        },
+        "status": "successful"
+    }
+	```
 ## Testing
 
 To run the tests, use the following command:
