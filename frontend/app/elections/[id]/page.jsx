@@ -4,6 +4,7 @@ import { useState } from "react"
 import styles from './page.module.css'
 import Overview from '@/app/components/Overview'
 import Ballot from '@/app/components/Ballot'
+import EligibleVoters from '@/app/components/EligibleVoters'
 
 export default function SingleElection({ params }) {
     const [isActive, setActive] = useState('overview')
@@ -21,6 +22,7 @@ export default function SingleElection({ params }) {
             </div>
             {isActive === 'overview' && <Overview electionId={params.id} />}
             {isActive === 'ballot' && <Ballot electionId={params.id} />}
+            {isActive === 'voters' && <EligibleVoters electionId={params.id} />}
         </div>
     )
 }
