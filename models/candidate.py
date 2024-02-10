@@ -34,7 +34,7 @@ class Candidate(BaseModel, Base):
         for key, value in kwargs.items():
             if key not in ('id', 'election_id', 'votes', 'created_at'):
                 setattr(self, key, value)
-        storage.save()
+        models.storage.save()
 
     def count_vote(self):
         """ Count a vote for the candidate

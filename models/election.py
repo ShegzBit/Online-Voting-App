@@ -49,6 +49,7 @@ class Election(BaseModel, Base):
         super().__init__(*args, **kwargs)
         self.voters_id = set()
         self.candidates = []
+        self.status = self.get_election_status()
 
 
     @property
@@ -113,11 +114,11 @@ class Election(BaseModel, Base):
             raise ValueError("Invalid arguments")
         if not kwargs.get('voter_id') in self.voters_id:
             raise ValueError("Invalid voter id")
-        try:
-            candidate = [candidate for candidate in self.candidates
-                         if candidate.id == kwargs.get('candidate_id')][0]
-        except IndexError:
+       
+        candidate = models.storage.get('Candidate', kwargs.get('candidate_id'))
+        if not candidate:
             raise ValueError("Invalid candidate id")
+        
         if self.voted(kwargs.get('voter_id')):
             raise ValueError("Voter has already voted")
         if self.get_election_status() == "Ongoing":
@@ -208,8 +209,8 @@ class Election(BaseModel, Base):
     def activate_election(self):
         """ Activate the election
         """
-        if self.start_date > datetime.now():
-        # if self.get_election_status() == "Ongoing":
+        # if self.start_date > datetime.now():
+        if self.get_election_status() == "Ongoing":
             self.start_election()
         start_delay = self.start_date - datetime.now()
         Timer(start_delay.total_seconds(), self.start_election).start()

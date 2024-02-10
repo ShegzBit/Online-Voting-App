@@ -44,3 +44,69 @@ def include_candidate():
     resp_dict = {'status': 'successful',
                  'candidates': [c.to_dict() for c in candidates_list]}
     return jsonify(resp_dict), 201
+
+
+@ovs_elect.route('/candidate/<candidate_id>', methods=['GET'], strict_slashes=False)
+def get_candidate(candidate_id):
+    """ Get a candidate
+    """
+    candidate = storage.get('Candidate', candidate_id)
+    if not candidate:
+        abort(404, 'Candidate not found')
+    return jsonify(candidate.to_dict()), 200
+
+@ovs_elect.route('/candidate/<candidate_id>', methods=['DELETE'], strict_slashes=False)
+def delete_candidate(candidate_id):
+    """ Delete a candidate
+    """
+    candidate = storage.get('Candidate', candidate_id)
+    if not candidate:
+        abort(404, 'Candidate not found')
+    storage.delete(candidate)
+    storage.save()
+    return jsonify({}), 200
+
+@ovs_elect.route('/candidate/<candidate_id>', methods=['PUT'], strict_slashes=False)
+def update_candidate(candidate_id):
+    """ Update a candidate
+    """
+    candidate = storage.get('Candidate', candidate_id)
+    if not candidate:
+        abort(404, 'Candidate not found')
+    data = request.get_json()
+    if not data:
+        abort(400, 'Not a JSON')
+    try:
+        candidate.update(**data)
+    except ValueError as e:
+        abort(400, str(e))
+    return jsonify(candidate.to_dict()), 200
+
+@ovs_elect.route('/candidate', methods=['GET'], strict_slashes=False)
+def get_candidates():
+    """ Get all candidates
+    """
+    candidates = storage.all('Candidate')
+    return jsonify([c.to_dict() for c in candidates.values()]), 200
+
+@ovs_elect.route('/candidate/election/<election_id>', methods=['GET'], strict_slashes=False)
+def get_candidates_by_election(election_id):
+    """ Get all candidates by election
+    """
+    election = storage.get('Election', election_id)
+    if not election:
+        abort(404, 'Election not found')
+    candidates = [c.to_dict() for c in election.candidates]
+    return jsonify(candidates), 200
+
+@ovs_elect.route('/candidate/election/<election_id>', methods=['DELETE'], strict_slashes=False)
+def delete_candidates_by_election(election_id):
+    """ Delete all candidates by election
+    """
+    election = storage.get('Election', election_id)
+    if not election:
+        abort(404, 'Election not found')
+    for candidate in election.candidates:
+        storage.delete(candidate)
+    storage.save()
+    return jsonify({}), 200
