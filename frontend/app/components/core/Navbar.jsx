@@ -5,9 +5,11 @@ import Image from 'next/image'
 export default function Navbar() {
     return (
         <nav className="navbar navbar-expand-lg border-bottom border-body bg-light pt-3 mb-2">
-            <a className="navbar-brand navbar-nav" href="#">
-                <Image id="logo" src={Logo} alt="PollMaster" />
-            </a>
+            <div className="container-fluid">
+                <a className="navbar-brand navbar-nav" href="#">
+                    <Image id="logo" src={Logo} alt="PollMaster" />
+                </a>
+            </div>
         </nav>
     )
 }
