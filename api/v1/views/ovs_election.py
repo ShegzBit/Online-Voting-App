@@ -16,6 +16,7 @@ def home():
     """
     return redirect('https://pollmaster.webflow.io/')
 
+
 @ovs_elect.route('/create_election', methods=['POST'], strict_slashes=False)
 def create_election():
     """ Create a new election
@@ -24,19 +25,19 @@ def create_election():
     # handle for errors
     if not data:
         abort(400, 'Not a JSON')
-    if not 'candidates' in data:
+    if 'candidates' not in data:
         abort(400, 'Missing candidate')
-    if not 'election' in data:
+    if 'election' not in data:
         abort(400, 'Missing election')
-    if not 'title' in data['election']:
+    if 'title' not in data['election']:
         abort(400, 'Missing title')
-    if not 'start_date' in data['election']:
+    if 'start_date' not in data['election']:
         abort(400, 'Missing start_date')
-    if not 'end_date' in data['election']:
+    if 'end_date' not in data['election']:
         abort(400, 'Missing end_date')
-    if not 'admin_id' in data:
+    if 'admin_id' not in data:
         abort(400, 'Missing admin_id')
-    
+
     # create the election
     admin_id = data['admin_id']
     candidates = data['candidates']
@@ -53,7 +54,9 @@ def create_election():
     resp_dict = {'status': 'successful', 'election': new_election.to_dict()}
     return jsonify(resp_dict), 201
 
-@ovs_elect.route('/election/<election_id>', methods=['GET'], strict_slashes=False)
+
+@ovs_elect.route('/election/<election_id>', methods=['GET'],
+                 strict_slashes=False)
 def get_election(election_id):
     """ Get an election
     """
@@ -62,7 +65,9 @@ def get_election(election_id):
         abort(404, 'Election not found')
     return jsonify(election.to_dict()), 200
 
-@ovs_elect.route('/election/<election_id>', methods=['DELETE'], strict_slashes=False)
+
+@ovs_elect.route('/election/<election_id>', methods=['DELETE'],
+                 strict_slashes=False)
 def delete_election(election_id):
     """ Delete an election
     """
@@ -73,7 +78,9 @@ def delete_election(election_id):
     storage.save()
     return jsonify({}), 200
 
-@ovs_elect.route('/election/<election_id>', methods=['PUT'], strict_slashes=False)
+
+@ovs_elect.route('/election/<election_id>', methods=['PUT'],
+                 strict_slashes=False)
 def update_election(election_id):
     """ Update an election
     """
@@ -89,6 +96,7 @@ def update_election(election_id):
         abort(400, str(e))
     return jsonify(election.to_dict()), 200
 
+
 @ovs_elect.route('/election', methods=['GET'], strict_slashes=False)
 def get_elections():
     """ Get all elections
@@ -96,7 +104,9 @@ def get_elections():
     elections = storage.all('Election')
     return jsonify([e.to_dict() for e in elections.values()]), 200
 
-@ovs_elect.route('/election/<election_id>/result', methods=['GET'], strict_slashes=False)
+
+@ovs_elect.route('/election/<election_id>/result', methods=['GET'],
+                 strict_slashes=False)
 def get_election_result(election_id):
     """ Get the result of an election
     """
@@ -105,7 +115,9 @@ def get_election_result(election_id):
         abort(404, 'Election not found')
     return jsonify(election.get_results()), 200
 
-@ovs_elect.route('/election/<election_id>/status', methods=['GET'], strict_slashes=False)
+
+@ovs_elect.route('/election/<election_id>/status', methods=['GET'],
+                 strict_slashes=False)
 def get_election_status(election_id):
     """ Get the status of an election
     """
@@ -114,16 +126,18 @@ def get_election_status(election_id):
         abort(404, 'Election not found')
     return jsonify(election.get_election_status()), 200
 
-@ovs_elect.route('/election/<election_id>/vote', methods=['POST'], strict_slashes=False)
+
+@ovs_elect.route('/election/<election_id>/vote', methods=['POST'],
+                 strict_slashes=False)
 def vote(election_id):
     """ Vote in an election
     """
     data = request.get_json()
     if not data:
         abort(400, 'Not a JSON')
-    if not 'voter_id' in data:
+    if 'voter_id' not in data:
         abort(400, 'Missing voter_id')
-    if not 'candidate_id' in data:
+    if 'candidate_id' not in data:
         abort(400, 'Missing candidate_id')
     election = storage.get('Election', election_id)
     if not election:
@@ -134,7 +148,9 @@ def vote(election_id):
     election.add_voter(**data)
     return jsonify({}), 201
 
-@ovs_elect.route('/election/<election_id>/voters', methods=['GET'], strict_slashes=False)
+
+@ovs_elect.route('/election/<election_id>/voters', methods=['GET'],
+                 strict_slashes=False)
 def get_voters(election_id):
     """ Get the voters of an election
     """
@@ -143,7 +159,9 @@ def get_voters(election_id):
         abort(404, 'Election not found')
     return jsonify(election.get_voters()), 200
 
-@ovs_elect.route('/election/<election_id>/start', methods=['PUT'], strict_slashes=False)
+
+@ovs_elect.route('/election/<election_id>/start', methods=['PUT'],
+                 strict_slashes=False)
 def start_election(election_id):
     """ Start an election
     """
