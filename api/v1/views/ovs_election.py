@@ -70,37 +70,6 @@ def get_election(election_id):
     return jsonify(election.to_dict()), 200
 
 
-@ovs_elect.route('/election/<election_id>', methods=['DELETE'],
-                 strict_slashes=False)
-def delete_election(election_id):
-    """ Delete an election
-    """
-    election = storage.get('Election', election_id)
-    if not election:
-        abort(404, 'Election not found')
-    storage.delete(election)
-    storage.save()
-    return jsonify({}), 200
-
-
-@ovs_elect.route('/election/<election_id>', methods=['PUT'],
-                 strict_slashes=False)
-def update_election(election_id):
-    """ Update an election
-    """
-    election = storage.get('Election', election_id)
-    if not election:
-        abort(404, 'Election not found')
-    data = request.get_json()
-    if not data:
-        abort(400, 'Not a JSON')
-    try:
-        election.update_state(**data)
-    except ValueError as e:
-        abort(400, str(e))
-    return jsonify(election.to_dict()), 200
-
-
 @ovs_elect.route('/election', methods=['GET'], strict_slashes=False)
 def get_elections():
     """ Get all elections
