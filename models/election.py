@@ -252,18 +252,19 @@ class Election(BaseModel, Base):
         """
         Converts the election to a dictionary of key-value pairs
         """
-        dict_state = {}
         main_dict = super().to_dict()
-        for prop, value in main_dict.items():
-            try:
-                dict_state[prop] = value.to_dict()
-            except AttributeError:
-                if is_jsonnable(value):
-                    dict_state[prop] = value
-                elif type(value) is set:
-                    dict_state[prop] = list(value)
-                elif is_iterable(value):
-                    if len(value) > 0:
-                        if all(hasattr(v, 'to_dict') for v in value):
-                            dict_state[prop] = [v.to_dict() for v in value]
-        return dict_state
+        main_dict['candidates'] = [c.to_dict() for c in self.candidates]
+        main_dict['voters_id'] = list(self.voters_id)
+        # for prop, value in main_dict.items():
+        #     try:
+        #         dict_state[prop] = value.to_dict()
+        #     except AttributeError:
+        #         if is_jsonnable(value):
+        #             dict_state[prop] = value
+        #         elif type(value) is set:
+        #             dict_state[prop] = list(value)
+        #         elif is_iterable(value):
+        #             if len(value) > 0:
+        #                 if all(hasattr(v, 'to_dict') for v in value):
+        #                     dict_state[prop] = [v.to_dict() for v in value]
+        return main_dict

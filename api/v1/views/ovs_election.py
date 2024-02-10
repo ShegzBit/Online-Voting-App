@@ -50,8 +50,9 @@ def create_election():
     if not admin:
         abort(400, 'Admin not found')
     try:
-        new_election = admin.new_election(**election, voters_id=voters_id)
+        new_election = admin.new_election(**election)
         new_election.update_state(candidates=candidates)
+        new_election.update_state(voters_id=voters_id)
     except ValueError as e:
         return(400, str(e))
     resp_dict = {'status': 'successful', 'election': new_election.to_dict()}

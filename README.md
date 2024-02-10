@@ -157,7 +157,7 @@ This is an online voting system built with Python, using Flask and SQLAlchemy.
             "created_at": "2024-02-08 21:32:06",
             "description": "This is a test election",
             "end_date": "2024-02-07 13:48:48",
-            "expected_voters": 0,
+            "expected_voters": 3,
             "id": "2255d484-3a34-46a2-b203-ea759306ba52",
             "public_id": "6JEn-kWPw-XXrm",
             "results": {},
@@ -165,7 +165,13 @@ This is an online voting system built with Python, using Flask and SQLAlchemy.
             "status": "Upcoming",
             "title": "Election API Test",
             "total_votes": 0,
-            "voters": []
+            "voters": [],
+            "voters_id": [
+                "voter1",
+                "voter2",
+                "voter3",
+                "some other voters"
+            ]
         },
         "status": "successful"
     }
@@ -200,7 +206,8 @@ This is an online voting system built with Python, using Flask and SQLAlchemy.
             "status": "Completed",
             "title": "Election API Test",
             "total_votes": 0,
-            "voters": []
+            "voters": [],
+            "voters_id": []
         },
         "status": "successful"
     }
