@@ -15,7 +15,6 @@ from models.base import BaseModel, short_uuid, Base, is_jsonnable, is_iterable
 from models.election import Election
 
 
-
 class Admin(BaseModel, Base):
     """
     Class for modelling admin in OVS
@@ -48,10 +47,10 @@ class Admin(BaseModel, Base):
                              'email and password are required')
         for key, value in kwargs.items():
             # remove arguments that can't be set by users
-            if (key in ('created_at', 'start_date', 'end_date')
-                    and type(value) is str):
-                    value = dt.strptime(value, '%Y-%m-%d %H:%M:%S')
-            if not key in ['__class__', 'password']:
+            if (key in ('created_at', 'start_date', 'end_date') and
+                    type(value) is str):
+                value = dt.strptime(value, '%Y-%m-%d %H:%M:%S')
+            if key not in ['__class__', 'password']:
                 setattr(self, key, value)
         self.id = uuid4()
         self.__password = kwargs.get('password')
