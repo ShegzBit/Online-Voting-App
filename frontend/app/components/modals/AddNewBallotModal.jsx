@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 
-function AddNewModal({ show, onHide }) {
+function AddNewBallot({ show, onHide }) {
 
   return (
     <>
@@ -39,14 +39,14 @@ function Contestants() {
   return (
     <div>
       <p className='text-bold'>Contestants</p>
-  <div className="mb-3 d-flex align-items-center gap-4">
-    <label htmlFor="contestandName" className="form-label fs-6">1.</label>
-    <input type="text" className="form-control rounded-4" style={{ height: "56px" }} id="contestandName" placeholder="Enter name of contestants" />
-  </div>
+      <div className="mb-3 d-flex align-items-center gap-4">
+        <label htmlFor="contestandName" className="form-label fs-6">1.</label>
+        <input type="text" className="form-control rounded-4" style={{ height: "56px" }} id="contestandName" placeholder="Enter name of contestants" />
+      </div>
       <p className='text-success text-center'>Add new contestant</p>
     </div>
   )
 }
 
 
-export default AddNewModal;
+export default AddNewBallot;
