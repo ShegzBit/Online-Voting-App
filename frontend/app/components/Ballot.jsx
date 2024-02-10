@@ -1,13 +1,18 @@
 import { FaPlus } from 'react-icons/fa'
-import AddNewModal from '@/app/components/modals/AddNewBallotModal'
+import AddNewBallot from '@/app/components/modals/AddNewBallotModal'
 import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import DropdownMenu from 'react-bootstrap/DropdownMenu'
 import { useState } from 'react'
 import { HiBars2 } from "react-icons/hi2";
 import { SlOptionsVertical } from "react-icons/sl";
+import ViewBallot from './modals/ViewBallot';
+import EditBallot from './modals/ViewBallot'
 
 export default function Ballot() {
-    const ballots = ['President', 'Organizer'].map((x) => (
-        <Contestant name={x} />
+    const ballotArr = ['President', 'Organizer']
+    const ballots = ballotArr.map((x) => (
+        <Contestant name={x} ballot={ballotArr} contestants={['Meeda', 'Mahama']} />
     ))
     return (
         <div>
@@ -32,54 +37,72 @@ function AddBallot() {
             <div className='container'>
                 <div className='row justify-content-center'>
                     <div className='col-lg-6 col-md-6 col-sm-12'>
-                        <div className="d-flex px-3 rounded-1 justify-content-between align-items-center" style={{ backgroundColor: "#E9F2F2" }}>
+                        <div className="d-flex px-1 rounded-1 justify-content-between align-items-center" style={{ backgroundColor: "#E9F2F2" }}>
                             <p className="m-0">Add new ballot</p>
                             <button onClick={() => setShow(true)} type="button" className="btn p-0 text-dark text-light m-0" aria-label="Add new project"><FaPlus /></button>
                         </div>
                     </div>
                 </div>
             </div>
-            <AddNewModal show={show} onHide={handleClick} />
+            <AddNewBallot show={show} onHide={handleClick} />
         </div>
     )
 }
 
-function Contestant({ name }) {
+function Contestant({ name, ballot, contestants }) {
     return (
-        <div className='row justify-content-center'>
+        <div className='row justify-content-center align-items-center px-1'>
             <div className='d-flex justify-content-between align-content-center col-lg-6 col-md-6 col-sm-12'>
                 <div className='d-flex'>
                     <HiBars2 />
                     <p className="ms-3">{name}</p>
                 </div>
-                <Dropdown>
-                    <Dropdown.Toggle className='m-0' variant="light" id="dropdown-basic">
-                        <SlOptionsVertical />
-                    </Dropdown.Toggle>
-
-                    <Dropdown.Menu>
-                        <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                        <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                        <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown>
+                <BallotOpts name={name} ballot={ballot} contestants={contestants}  />
             </div>
         </div>
     )
 }
 
-function BallotOpts() {
-    return (
-        <Dropdown>
-            <Dropdown.Toggle variant="" id="dropdown-basic">
-                Dropdown Button
-            </Dropdown.Toggle>
+function BallotOpts({ name, ballot, contestants }) {
+    const [showView, setShowView] = useState(false)
+    const [showEdit, setShowEdit] = useState(false)
+    const [showDelete, setShowDelete] = useState(false)
 
-            <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-            </Dropdown.Menu>
-        </Dropdown>
+
+
+    const handleClick = (key) => {
+        console.log(showEdit, showView)
+        if (key === 'view') {
+            return setShowView(!showView)
+        } else if (key === 'edit') {
+            return setShowEdit(!showEdit)
+        } else if (key === 'del') {
+            return setShowDelete(!showDelete)
+        }
+    }
+
+    return (
+        <div className="dropdown ms-auto">
+            <i className="fas fa-ellipsis-vertical" data-bs-toggle="dropdown" aria-expanded="false"><SlOptionsVertical /></i>
+            <ul className="dropdown-menu">
+                <li onClick={() => handleClick('edit')} className='border-bottom'>
+                    <span className="dropdown-item">
+                         Edit
+                    </span>
+                </li>
+                <li onClick={() => handleClick('view')} className='border-bottom'>
+                    <span className="dropdown-item">
+                        View Ballot
+                    </span>
+                </li>
+                <li>
+                    <span className="dropdown-item text-danger">
+                        Delete
+                    </span>
+                </li>
+            </ul>
+            <ViewBallot name={name} ballot={ballot} show={showView} onHide={handleClick} contestants={contestants} />
+            <EditBallot name={name} ballot={ballot} show={showEdit} onHide={handleClick} contestants={contestants} />
+        </div>
     );
 }
