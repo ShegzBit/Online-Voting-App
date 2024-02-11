@@ -95,14 +95,6 @@ def delete_admin(admin_id):
     return jsonify({}), 200
 
 
-@ovs_elect.route('/admin', methods=['GET'], strict_slashes=False)
-def get_admins():
-    """ Get all admins
-    """
-    admins = storage.all(Admin)
-    return jsonify([a.to_dict() for a in admins.values()]), 200
-
-
 @ovs_elect.route('/admin/<admin_id>/election/', methods=['GET'],
                  strict_slashes=False)
 def get_elections_by_admin(admin_id):
