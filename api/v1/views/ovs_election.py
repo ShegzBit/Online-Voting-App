@@ -74,7 +74,7 @@ def get_election(election_id):
 def get_elections():
     """ Get all elections
     """
-    elections = storage.all('Election')
+    elections = storage.all(Election)
     return jsonify([e.to_dict() for e in elections.values()]), 200
 
 
