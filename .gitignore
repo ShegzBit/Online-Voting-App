@@ -3,6 +3,5 @@
 *~
 *#*
 __pycache__
-.env
-.pyc
-.swp
+*.pyc
+*.swp
