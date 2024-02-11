@@ -254,17 +254,3 @@ def delete_elections_by_admin(admin_id):
         storage.delete(election)
     storage.save()
     return jsonify({}), 200
-
-
-@ovs_elect.route('/admin/<admin_id>/election/<election_id>',
-                 methods=['DELETE'], strict_slashes=False)
-def delete_election_by_admin(admin_id, election_id):
-    """ Delete an election by admin
-    """
-    admin = storage.get('Admin', admin_id)
-    election = storage.get('Election', election_id)
-    if election in admin.elections:
-        storage.delete(election)
-        storage.save()
-        return jsonify({}), 200
-    abort(404, 'Election not found')
