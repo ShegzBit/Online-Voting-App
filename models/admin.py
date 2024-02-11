@@ -81,8 +81,13 @@ class Admin(BaseModel, Base):
         Returns the state of the object in a dictionary format
         """
         main_dict = super().to_dict()
-        if '_Admin__password' in main_dict:
-            del main_dict['_Admin__password']
+        for key in list(main_dict.keys()):
+            if 'password' in key:
+                del main_dict[key]
+        # if '_Admin__password' in main_dict:
+        #     del main_dict['_Admin__password']
+        # if 'password' in main_dict:
+        #     del main_dict['password']
         dict_state = {}
         for prop, value in main_dict.items():
             try:
