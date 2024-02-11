@@ -4,7 +4,7 @@ This module contains the Flask app
 """
 import os
 from flask import Flask, jsonify
-
+from flask_cors import CORS
 from api.v1.views import ovs_elect
 from models import storage
 
@@ -18,7 +18,7 @@ app.register_blueprint(ovs_elect)
 
 # Set JSONIFY_PRETTYPRINT_REGULAR to True
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
-
+CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 
 @app.teardown_appcontext
 def close_storage(exception):
