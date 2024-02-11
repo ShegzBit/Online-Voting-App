@@ -145,3 +145,13 @@ class Admin(BaseModel, Base):
         for admin in admins.values():
             if getattr(admin, attr) == value:
                 return admin
+            
+    @staticmethod
+    def authenticate(email, password):
+        """
+        Authenticates an admin
+        """
+        admin = Admin.get_by_attr('email', email)
+        if admin and admin.is_valid_password(password):
+            return admin
+        return None
