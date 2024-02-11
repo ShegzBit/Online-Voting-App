@@ -86,7 +86,7 @@ def update_candidate(candidate_id):
 def get_candidates():
     """ Get all candidates
     """
-    candidates = storage.all('Candidate')
+    candidates = storage.all(Candidate)
     return jsonify([c.to_dict() for c in candidates.values()]), 200
 
 @ovs_elect.route('/candidate/election/<election_id>', methods=['GET'], strict_slashes=False)
