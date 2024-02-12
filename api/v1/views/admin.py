@@ -5,6 +5,7 @@ Handles election admin related calls
 from api.v1.views import ovs_elect
 from models import storage
 from models.admin import Admin
+from models.candidate import Candidate
 
 from flask import jsonify, request, abort
 

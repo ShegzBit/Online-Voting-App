@@ -76,7 +76,8 @@ def get_elections():
     """ Get all elections
     """
     elections = storage.all(Election)
-    sorted_elections = sorted(elections.values(), key=lambda e: e.created_at
+    sorted_elections = sorted(elections.values(),
+                              key=lambda e: e.created_at,
                               reverse=True)
     return jsonify([e.to_dict() for e in sorted_elections]), 200
 
