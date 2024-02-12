@@ -102,7 +102,8 @@ def get_elections_by_admin(admin_id):
     """ Get all elections by admin
     """
     admin = storage.get('Admin', admin_id)
-    elections = [e.to_dict() for e in admin.elections]
+    elections = sorted([e.to_dict() for e in admin.elections],
+                       key=lambda e: e['created_at'])
     return jsonify(elections), 200
 
 

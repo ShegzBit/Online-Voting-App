@@ -36,5 +36,6 @@ def get_candidates_by_election(election_id):
     election = storage.get('Election', election_id)
     if not election:
         abort(404, 'Election not found')
-    candidates = [c.to_dict() for c in election.candidates]
+    candidates = sorted([c.to_dict() for c in election.candidates],
+                        key=lambda c: c['full_name'])
     return jsonify(candidates), 200
