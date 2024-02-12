@@ -102,8 +102,9 @@ def get_elections_by_admin(admin_id):
     """ Get all elections by admin
     """
     admin = storage.get('Admin', admin_id)
-    elections = sorted([e.to_dict() for e in admin.elections],
-                       key=lambda e: e['created_at'])
+    elections = sorted([e.to_dict() for e in admin.elections.values()],
+                       key=lambda e: e['created_at'],
+                       reverse=True)
     return jsonify(elections), 200
 
 
@@ -256,3 +257,16 @@ def delete_elections_by_admin(admin_id):
         storage.delete(election)
     storage.save()
     return jsonify({}), 200
+
+
+@ovs_elect.route('/admin/<admin_id>/election/<election_id>/end',
+                 methods=['PUT'], strict_slashes=False)
+def end_election(admin_id, election_id):
+    """ End an election
+    """
+    admin = storage.get('Admin', admin_id)
+    election = storage.get('Election', election_id)
+    if election in admin.elections:
+        election.end_election()
+        return jsonify(election.to_dict()), 200
+    abort(404, 'Election not found')

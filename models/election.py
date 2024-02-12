@@ -87,14 +87,13 @@ class Election(BaseModel, Base):
         self.total_votes = sum([candidate.votes
                                 for candidate in self.candidates])
         if close is True:
-            self.end_election()
             models.storage.save()
         return results
 
     def voted(self, voter_id):
         """ Check if a voter has voted
         """
-        return voter_id in [voter['voter_id'] for voter in self.voters]
+        return voter_id in [voter.get('voter_id') for voter in self.voters]
 
     def add_voter(self, **kwargs):
         """ Add a voter to the election
@@ -129,7 +128,8 @@ class Election(BaseModel, Base):
             candidate.count_vote()
             self.voters.append({"first_name": kwargs.get('first_name'),
                                 "last_name": kwargs.get('last_name'),
-                                "email": kwargs.get('email')})
+                                "email": kwargs.get('email'),
+                                "voter_id": kwargs.get('voter_id')})
             models.storage.save()
 
     def add_candidate(self, **kwargs):
@@ -186,6 +186,8 @@ class Election(BaseModel, Base):
         """ End the election
         """
         self.status = "Completed"
+        self.end_date = datetime.now() - timedelta(seconds=5)
+        self.compute_results(close=True)
 
     def get_results(self):
         """ Get the election results
