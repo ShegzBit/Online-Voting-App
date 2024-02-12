@@ -5,6 +5,7 @@ import styles from './page.module.css'
 import Overview from '@/app/components/Overview'
 import Ballot from '@/app/components/Ballot'
 import EligibleVoters from '@/app/components/EligibleVoters'
+import { getElection } from '@/lib/electionHelper'
 
 export default function SingleElection({ params }) {
     const [isActive, setActive] = useState('overview')
@@ -12,6 +13,7 @@ export default function SingleElection({ params }) {
     const handleActive = (btn) => {
         setActive(btn)
     }
+    
 
     return (
         <div className="w-100 px-2">
