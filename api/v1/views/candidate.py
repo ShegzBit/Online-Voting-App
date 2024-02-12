@@ -24,7 +24,8 @@ def get_candidates():
     """ Get all candidates
     """
     candidates = storage.all(Candidate)
-    return jsonify([c.to_dict() for c in candidates.values()]), 200
+    sorted_candidates = sorted(candidates.values(), key=lambda c: c.full_name)
+    return jsonify([c.to_dict() for c in sorted_candidates]), 200
 
 
 @ovs_elect.route('/candidate/election/<election_id>', methods=['GET'],

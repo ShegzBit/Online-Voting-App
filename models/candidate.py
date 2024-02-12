@@ -14,6 +14,7 @@ class Candidate(BaseModel, Base):
 
     first_name = Column(String(128), nullable=False)
     last_name = Column(String(128), nullable=False)
+    full_name = Column(String(256), nullable=False)
     party = Column(String(128), default="", nullable=False)
     position = Column(String(128), nullable=False)
     manifesto = Column(String(1024), default="", nullable=False)
@@ -22,11 +23,11 @@ class Candidate(BaseModel, Base):
     election_id = Column(String(60), ForeignKey('elections.id'),
                          nullable=False)
 
-    @property
-    def full_name(self):
-        """ Generate a candidate's full name
+    def __init__(self, **kwargs):
+        """ Initialize the Candidate object
         """
-        return self.first_name + ' ' + self.last_name
+        super().__init__(**kwargs)
+        self.full_name = self.first_name + ' ' + self.last_name
 
     def update(self, **kwargs):
         """ Update the candidate's attributes

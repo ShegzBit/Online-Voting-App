@@ -75,7 +75,8 @@ def get_elections():
     """ Get all elections
     """
     elections = storage.all(Election)
-    return jsonify([e.to_dict() for e in elections.values()]), 200
+    sorted_elections = sorted(elections.values(), key=lambda e: e.created_at)
+    return jsonify([e.to_dict() for e in sorted_elections]), 200
 
 
 @ovs_elect.route('/election/<election_id>/result', methods=['GET'],
