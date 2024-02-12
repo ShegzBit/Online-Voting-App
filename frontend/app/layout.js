@@ -2,6 +2,7 @@
 import Navbar from "@/app/components/core/Navbar";
 import "./globals.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "react-datetime/css/react-datetime.css";
 
 // const inter = Inter({ subsets: ["latin"] });
 

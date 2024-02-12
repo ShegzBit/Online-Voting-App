@@ -3,12 +3,12 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Modal } from "react-bootstrap"
 
-export default function ProjectCreated({ show, onHide }) {
+export default function ProjectCreated({ show, onHide, electionId }) {
     const [isOpen, setIsOpen] = useState(show)
     const router = useRouter()
     const handleClick = () => {
         // onHide()
-        router.push("/elections/1")
+        return router.push(`/elections/${electionId}`)
     }
     return (
         <>

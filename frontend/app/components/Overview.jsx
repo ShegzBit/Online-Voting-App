@@ -1,17 +1,35 @@
-import React, { useState } from 'react'
+"use client"
+
+import React, { useState, useEffect } from 'react'
 import { Accordion } from "react-bootstrap"
 import { FaRegEdit } from "react-icons/fa"
 import { IoMdArrowDropdown } from "react-icons/io";
 import { IoCopyOutline } from "react-icons/io5";
+import { getElection } from '@/lib/electionHelper'
 
 
-export default function Overview() {
+
+export default function Overview({electionId}) {
+    const [election, setElection] = useState({})
+    
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const res = await getElection(electionId)
+                setElection(res)
+            } catch (e) {
+                console.log(e)
+            }
+        }
+        getData()
+    }, [])
+    console.log(election)
     return (
         <Accordion className="mt-2 d-flex flex-column gap-1" defaultActiveKey="0" flush>
             <Accordion.Item className="border border-2" eventKey="0">
                 <Accordion.Header>Project Details</Accordion.Header>
                 <Accordion.Body>
-                    <ProjectDetails />
+                    <ProjectDetails election={election} />
                 </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item className="border border-2" eventKey="1">
@@ -36,19 +54,20 @@ export default function Overview() {
     )
 }
 
+
 function ProjectDetails() {
     return (
         <div className="d-flex flex-column gap-0">
             <div className="mb-4">
                 <div className="d-flex justify-content-between align-items-center">
-                    <p className="m-0 text-muted " style={{ fontSize: ".8rem" }}>Election name</p>
+                    <p className="m-0 text-muted " style={{ fontSize: ".8rem" }}>Election name </p>
                     <button className="btn p-0 m-0"><FaRegEdit /></button>
                 </div>
-                <h6 className="fw-bold">SRC Election</h6>
+                <h6 className="fw-bold">{election.title}</h6>
             </div>
             <div className="mb-4">
                 <p className="text-muted" style={{ fontSize: ".8rem" }}>Project Id</p>
-                <p className="fw-bold">123456</p>
+                <p className="fw-bold">{election.public_i}</p>
             </div>
             <div className="mb-4">
                 <p className="text-muted" style={{ fontSize: ".8rem" }}>Project Owner</p>

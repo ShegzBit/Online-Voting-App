@@ -1,11 +1,10 @@
 import Button from "../Button"
-import ProjectDetails from "./ProjectDetails"
+import ElectionDetails from "./ElectionDetails"
 import { useState } from 'react';
 import { Modal } from 'react-bootstrap';
 
-export default function NewProject({isOpen, setIsOpen}) {
+export default function NewElection({isOpen, setIsOpen}) {
     const [showDetails, setShowDetails] = useState(false)
-
     const handleShowProjDetails = () => {
         // We close the modal and open the project details modal
         setIsOpen()
@@ -19,7 +18,7 @@ export default function NewProject({isOpen, setIsOpen}) {
                 {/* <div className="modal-dialog"> */}
                     {/* <div className="modal-content"> */}
                     <Modal.Header closeButton>
-                        <Modal.Title>New Project</Modal.Title>
+                        <Modal.Title>New Election</Modal.Title>
                     </Modal.Header>
                         <div className="modal-body">
                             <ul className="list-group">
@@ -53,7 +52,7 @@ export default function NewProject({isOpen, setIsOpen}) {
                     {/* </div> */}
                 {/* </div> */}
             </Modal>
-            <ProjectDetails show={showDetails} onHide={handleShowProjDetails} />
+            <ElectionDetails show={showDetails} onHide={handleShowProjDetails} />
         </>
     )
 }
