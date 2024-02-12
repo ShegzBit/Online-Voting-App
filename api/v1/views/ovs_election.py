@@ -7,6 +7,7 @@ from flask import jsonify, request, abort, redirect
 from models import storage
 from models.election import Election
 from models.candidate import Candidate
+from models.admin import Admin
 from api.v1.views import ovs_elect
 
 
@@ -54,7 +55,7 @@ def create_election():
         new_election.update_state(candidates=candidates)
         new_election.update_state(voters_id=voters_id)
     except ValueError as e:
-        return(400, str(e))
+        return jsonify({'status': 'error', 'message': str(e)}), 400
     resp_dict = {'status': 'successful', 'election': new_election.to_dict()}
     return jsonify(resp_dict), 201
 
@@ -74,8 +75,9 @@ def get_election(election_id):
 def get_elections():
     """ Get all elections
     """
-    elections = storage.all(Election)
-    return jsonify([e.to_dict() for e in elections.values()]), 200
+    elections = sorted([e.to_dict() for e in storage.all(Election).values()],
+    key=lambda x: x['created_at'], reverse=True)
+    return jsonify(elections), 200
 
 
 @ovs_elect.route('/election/<election_id>/result', methods=['GET'],
