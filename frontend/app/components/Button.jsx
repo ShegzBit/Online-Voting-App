@@ -1,7 +1,7 @@
-export default function Button({text, classNames, cb}) {
+export default function Button({text, classNames, cb, disabled}) {
 
     return (
-        <button onClick={cb} className={`btn btn-gradient btn-primary ${classNames}`}>
+        <button disabled={disabled} onClick={cb} className={`btn btn-gradient btn-primary ${classNames}`}>
             {text}
         </button>
     )
