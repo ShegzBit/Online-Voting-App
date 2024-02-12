@@ -19,6 +19,7 @@ export default function Ballot() {
             {true &&
                 <p className="text-center text-muted mt-3">You have no ballots yet. Create your first ballot now!</p>
             }
+            <hr />
             <AddBallot />
             <div className='mt-5'>
                 {ballots}
