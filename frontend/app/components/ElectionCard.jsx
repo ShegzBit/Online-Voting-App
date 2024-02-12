@@ -1,7 +1,7 @@
 import { FaRegEdit } from "react-icons/fa";
 import Fab from "./Fab";
 
-export default function ElectionCard({ election }) {
+export default async function ElectionCard({ election }) {
     const statusColor = (status) => {
         if (status === "In progress") {
             return "#F1A867"
@@ -11,6 +11,7 @@ export default function ElectionCard({ election }) {
             return "#ABB3BF"
         }
     }
+
     return (
         <>
         <div className="container p-3 rounded-2" style={{ backgroundColor: "#FAFBFC", border: "1px #E7EAEB solid" }}>
@@ -18,7 +19,7 @@ export default function ElectionCard({ election }) {
                 <p className="text-muted m-0" style={{ fontSize: ".8rem" }}>Online Voting</p>
                 <button className="btn p-0 m-0"><FaRegEdit /></button>
             </div>
-            <h3 className="mb-5">SRC Election</h3>
+            <h3 className="mb-5">{election.title}</h3>
             <div className="d-flex justify-content-between align-items-center">
                 <p className="m-0" style={{ fontSize: ".8rem" }}>Status</p>
                 <div className="d-flex align-items-center justify-content-center p-1" style={{ fontSize: ".8rem", backgroundColor: statusColor(election.status), textAlign: "center" }}>
@@ -30,3 +31,4 @@ export default function ElectionCard({ election }) {
         </>
     )
 }
+
