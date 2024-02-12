@@ -41,14 +41,14 @@ def user_sign_in():
     if not data:
         abort(400, 'Not a JSON')
     if 'email' not in data:
-        abort(400, 'Missing email')
+        if not 'username' in data:
+            abort(400, 'Couldn\'t find email or username')
     if 'password' not in data:
         abort(400, 'Missing password')
-    admin = Admin.get_by_attr('email', data['email'])
+    admin = Admin.authenticate(data['password'], email=data.get('email', None),
+                       username=data.get('username', None))
     if not admin:
-        abort(401, 'Invalid email')
-    if not admin.is_valid_password(data['password']):
-        abort(401, 'Invalid password')
+        abort(401, 'Invalid email, username or password')
     resp_dict = {'status': 'successful', 'user': admin.to_dict()}
     return jsonify(resp_dict), 201
 
@@ -61,14 +61,16 @@ def update_user():
     if not data:
         abort(400, 'Not a JSON')
     if 'email' not in data:
-        abort(400, 'Missing email')
+        if not 'username' in data:
+            abort(400, 'Couldn\'t find email or username')
     if 'password' not in data:
         abort(400, 'Missing password')
-    admin = Admin.get_by_attr('email', data['email'])
+    if 'password' not in data:
+        abort(400, 'Missing password')
+    admin = Admin.authenticate(data['password'], email=data.get('email', None),
+                       username=data.get('username', None))
     if not admin:
-        abort(401, 'Invalid email')
-    if not admin.is_valid_password(data['password']):
-        abort(401, 'Invalid password')
+        abort(401, 'Invalid email, username or password')
     try:
         admin.update_state(**data)
     except ValueError as e:

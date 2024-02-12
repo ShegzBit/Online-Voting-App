@@ -18,7 +18,7 @@ load_dotenv()
 
 
 class DBStorage:
-    models = [Admin, Election, Candidate]
+    models = [Admin]
     """
     Model for storage engine class for handling data persistence
     """
@@ -61,13 +61,9 @@ class DBStorage:
         """
         gets an object of a given id
         """
-        for model in DBStorage.models:
-            if model.__name__ == model_name:
-                all_objs = self.all(model)
-                for obj in all_objs.values():
-                    if obj.id == id:
-                        return obj
-
+        obj_dict = self.all()
+        key = model_name + '.' + id
+        return obj_dict.get(key, None)
 
     def new(self, obj):
         """

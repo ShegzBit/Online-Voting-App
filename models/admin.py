@@ -146,17 +146,29 @@ class Admin(BaseModel, Base):
         """
         Get admin by attribute
         """
+        if not attr:
+            return None
         admins = models.storage.all(Admin)
         for admin in admins.values():
             if getattr(admin, attr) == value:
                 return admin
+        return None
             
     @staticmethod
-    def authenticate(email, password):
+    def authenticate(password, **kwargs):
         """
         Authenticates an admin
         """
-        admin = Admin.get_by_attr('email', email)
+        email = username = search_key = None
+        if 'email' in kwargs and not kwargs['email'] is None:
+            search_key = 'email'
+            email = kwargs.get('email', None)
+        elif 'username' in kwargs and not kwargs['username'] is None:
+            search_key = 'username'
+            username = kwargs.get('username', None)
+        else:
+            return None
+        admin = Admin.get_by_attr(search_key, email or username)
         if admin and admin.is_valid_password(password):
             return admin
         return None
