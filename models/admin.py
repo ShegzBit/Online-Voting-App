@@ -25,8 +25,8 @@ class Admin(BaseModel, Base):
     username = Column(String(120), nullable=False, unique=True)
     __password = Column(String(120), nullable=False)
     email = Column(String(120), nullable=False, unique=True)
-    elections = Column(MutableDict.as_mutable(PickleType), nullable=False,
-                       default=dict())
+    elections = relationship('Election', backref='admin',
+                             cascade='all, delete-orphan')
     phone_number = Column(String(120), nullable=True)
 
     def __init__(self, *args, **kwargs):
@@ -57,7 +57,6 @@ class Admin(BaseModel, Base):
         self.created_at = dt.utcnow()
         self.username = kwargs.get('username',
                                    kwargs.get('email').split('@')[0])
-        self.elections = {}
 
     def new_election(self, *args, **kwargs):
         """
@@ -70,11 +69,11 @@ class Admin(BaseModel, Base):
 
             ValueError: if any of the above arguments are not passed
         """
-        new_election = Election(**kwargs)
+        new_election = Election(admin_id=self.id, **kwargs)
         new_election.save()
-        key = 'Election.' + new_election.id
-        self.elections.update({key: new_election})
-        models.storage.save()
+        # key = 'Election.' + new_election.id
+        # self.elections.update({key: new_election})
+        # models.storage.save()
         return new_election
 
     def to_dict(self):

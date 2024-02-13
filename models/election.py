@@ -27,6 +27,7 @@ class Election(BaseModel, Base):
 
     candidates = relationship('Candidate', backref='election',
                               cascade='all, delete')
+    admin_id = Column(String(60), ForeignKey('admins.id'), nullable=False)
     voters_id = Column(MutableSet.as_mutable(PickleType), default=set())
     voters = Column(MutableList.as_mutable(PickleType), default=[])
     results = Column(MutableDict.as_mutable(PickleType), default={},
@@ -49,7 +50,7 @@ class Election(BaseModel, Base):
             raise ValueError("Invalid arguments")
         super().__init__(*args, **kwargs)
         self.voters_id = set()
-        self.candidates = []
+        # self.candidates = []
         self.status = self.get_election_status()
 
 
@@ -257,6 +258,11 @@ class Election(BaseModel, Base):
         main_dict = super().to_dict()
         main_dict['candidates'] = [c.to_dict() for c in self.candidates]
         main_dict['voters_id'] = list(self.voters_id)
+        del main_dict['admin_id']
+        try:
+            del main_dict['admin']
+        except KeyError:
+            pass
         # for prop, value in main_dict.items():
         #     try:
         #         dict_state[prop] = value.to_dict()

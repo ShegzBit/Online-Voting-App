@@ -104,7 +104,7 @@ def get_elections_by_admin(admin_id):
     """ Get all elections by admin
     """
     admin = storage.get('Admin', admin_id)
-    elections = sorted([e.to_dict() for e in admin.elections.values()],
+    elections = sorted([e.to_dict() for e in admin.elections],
                        key=lambda e: e['created_at'],
                        reverse=True)
     return jsonify(elections), 200
@@ -117,7 +117,7 @@ def get_election_by_admin(admin_id, election_id):
     """
     admin = storage.get('Admin', admin_id)
     election = storage.get('Election', election_id)
-    if election in admin.elections.values():
+    if election in admin.elections:
         return jsonify(election.to_dict()), 200
     abort(404, 'Election not found')
 
@@ -129,7 +129,7 @@ def delete_election_by_admin(admin_id, election_id):
     """
     admin = storage.get('Admin', admin_id)
     election = storage.get('Election', election_id)
-    if election in admin.elections.values():
+    if election in admin.elections:
         storage.delete(election)
         storage.save()
         return jsonify({}), 200
@@ -143,7 +143,7 @@ def update_election_by_admin(admin_id, election_id):
     """
     admin = storage.get('Admin', admin_id)
     election = storage.get('Election', election_id)
-    if election in admin.elections.values():
+    if election in admin.elections:
         data = request.get_json()
         if not data:
             abort(400, 'Not a JSON')
@@ -162,7 +162,7 @@ def update_election_by_admin(admin_id, election_id):
 #     """
 #     admin = storage.get('Admin', admin_id)
 #     election = storage.get('Election', election_id)
-#     if election in admin.elections.values():
+#     if election in admin.elections:
 #         data = request.get_json()
 #         if not data:
 #             abort(400, 'Not a JSON')

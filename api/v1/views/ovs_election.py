@@ -40,12 +40,9 @@ def create_election():
     # create the election
     admin_id = data['admin_id']
     election = data['election']
-    try:
-        candidates = data['candidates']
-        voters_id = set(data.get('voters_id', []))
-    except KeyError:
-        candidates = []
-        voters_id = set()
+    
+    candidates = data.get('candidates', [])
+    voters_id = set(data.get('voters_id', []))
 
     admin = storage.get('Admin', admin_id)
     if not admin:
