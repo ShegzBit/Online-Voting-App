@@ -222,9 +222,10 @@ def delete_candidate_by_admin(admin_id, election_id, candidate_id):
     election = storage.get('Election', election_id)
     if election in admin.elections:
         candidate = storage.get('Candidate', candidate_id)
-        storage.delete(candidate)
-        storage.save()
-        return jsonify({}), 200
+        if candidate in election.candidates:
+            storage.delete(candidate)
+            storage.save()
+            return jsonify({}), 200
     abort(404, 'Candidate not found')
 
 
@@ -239,14 +240,15 @@ def update_candidate_by_admin(admin_id, election_id, candidate_id):
     election = storage.get('Election', election_id)
     if election in admin.elections:
         candidate = storage.get('Candidate', candidate_id)
-        data = request.get_json()
-        if not data:
-            abort(400, 'Not a JSON')
-        try:
-            candidate.update(**data)
-        except ValueError as e:
-            abort(400, str(e))
-        return jsonify(candidate.to_dict()), 200
+        if candidate in election.candidates:
+            data = request.get_json()
+            if not data:
+                abort(400, 'Not a JSON')
+            try:
+                candidate.update(**data)
+            except ValueError as e:
+                abort(400, str(e))
+            return jsonify(candidate.to_dict()), 200
     abort(404, 'Candidate not found')
 
 
