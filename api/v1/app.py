@@ -31,14 +31,15 @@ def close_storage(exception):
 def not_found(error):
     """ Handle 404 errors
     """
-    return jsonify({"error": "Not found"}), 404
+    return jsonify({"error": str(error.description)}), 404
 
 
 @app.errorhandler(400)
 def bad_request(error):
     """ Handle 400 errors
     """
-    return jsonify({"error": "Bad request", "message": str(error)}), 400
+    return jsonify({"error": "Bad request",
+                    "message": str(error.description)}), 400
 
 
 if __name__ == "__main__":

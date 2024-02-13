@@ -115,10 +115,8 @@ class Admin(BaseModel, Base):
         """
         Takes the id of an election and updates its state
         """
-        key = 'Election.' + election_id
-        election = self.elections.get(key, None)
-        election.update_state(**kwargs)
-        return election
+        election = models.storage.get('Election', election_id)
+        return election.update_state(**kwargs) 
 
     def update_state(self, **kwargs):
         """

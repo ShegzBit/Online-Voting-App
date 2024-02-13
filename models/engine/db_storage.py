@@ -18,7 +18,7 @@ load_dotenv()
 
 
 class DBStorage:
-    models = [Admin]
+    models = [Admin, Election, Candidate]
     """
     Model for storage engine class for handling data persistence
     """

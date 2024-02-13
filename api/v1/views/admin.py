@@ -84,6 +84,8 @@ def get_admin(admin_id):
     """ Get an admin
     """
     admin = storage.get('Admin', admin_id)
+    if not admin:
+        abort(404, 'Admin not found')
     return jsonify(admin.to_dict()), 200
 
 
@@ -93,6 +95,8 @@ def delete_admin(admin_id):
     """ Delete an admin
     """
     admin = storage.get('Admin', admin_id)
+    if not admin:
+        abort(404, 'Admin not found')
     storage.delete(admin)
     storage.save()
     return jsonify({}), 200
@@ -104,6 +108,8 @@ def get_elections_by_admin(admin_id):
     """ Get all elections by admin
     """
     admin = storage.get('Admin', admin_id)
+    if not admin:
+        abort(404, 'Admin not found')
     elections = sorted([e.to_dict() for e in admin.elections],
                        key=lambda e: e['created_at'],
                        reverse=True)
@@ -116,6 +122,8 @@ def get_election_by_admin(admin_id, election_id):
     """ Get an election by admin
     """
     admin = storage.get('Admin', admin_id)
+    if not admin:
+        abort(404, 'Admin not found')
     election = storage.get('Election', election_id)
     if election in admin.elections:
         return jsonify(election.to_dict()), 200
@@ -128,6 +136,8 @@ def delete_election_by_admin(admin_id, election_id):
     """ Delete an election by admin
     """
     admin = storage.get('Admin', admin_id)
+    if not admin:
+        abort(404, 'Admin not found')
     election = storage.get('Election', election_id)
     if election in admin.elections:
         storage.delete(election)
@@ -142,16 +152,18 @@ def update_election_by_admin(admin_id, election_id):
     """ Update an election by admin
     """
     admin = storage.get('Admin', admin_id)
+    if not admin:
+        abort(404, 'Admin not found')
     election = storage.get('Election', election_id)
     if election in admin.elections:
         data = request.get_json()
         if not data:
             abort(400, 'Not a JSON')
         try:
-            election.update_election(election_id, **data)
+            update = admin.update_election(election_id, **data)
         except ValueError as e:
             abort(400, str(e))
-        return jsonify(election.to_dict()), 200
+        return jsonify(update.to_dict()), 200
     abort(404, 'Election not found')
 
 
@@ -205,6 +217,8 @@ def delete_candidate_by_admin(admin_id, election_id, candidate_id):
     """ Delete a candidate by admin
     """
     admin = storage.get('Admin', admin_id)
+    if not admin:
+        abort(404, 'Admin not found')
     election = storage.get('Election', election_id)
     if election in admin.elections:
         candidate = storage.get('Candidate', candidate_id)
@@ -220,6 +234,8 @@ def update_candidate_by_admin(admin_id, election_id, candidate_id):
     """ Update a candidate by admin
     """
     admin = storage.get('Admin', admin_id)
+    if not admin:
+        abort(404, 'Admin not found')
     election = storage.get('Election', election_id)
     if election in admin.elections:
         candidate = storage.get('Candidate', candidate_id)
@@ -240,6 +256,8 @@ def delete_candidates_by_election(admin_id, election_id):
     """ Delete all candidates by election
     """
     admin = storage.get('Admin', admin_id)
+    if not admin:
+        abort(404, 'Admin not found')
     election = storage.get('Election', election_id)
     if election in admin.elections:
         for candidate in election.candidates:
@@ -255,6 +273,8 @@ def delete_elections_by_admin(admin_id):
     """ Delete all elections by admin
     """
     admin = storage.get('Admin', admin_id)
+    if not admin:
+        abort(404, 'Admin not found')
     for election in admin.elections:
         storage.delete(election)
     storage.save()
@@ -267,6 +287,8 @@ def end_election(admin_id, election_id):
     """ End an election
     """
     admin = storage.get('Admin', admin_id)
+    if not admin:
+        abort(404, 'Admin not found')
     election = storage.get('Election', election_id)
     if election in admin.elections:
         election.end_election()
