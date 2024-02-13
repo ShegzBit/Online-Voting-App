@@ -158,7 +158,7 @@ class Election(BaseModel, Base):
             cand.save()
         else:
             new_candidate = Candidate(election_id=self.id, **kwargs)
-            self.candidates.append(new_candidate)
+            # self.candidates.append(new_candidate)
             new_candidate.save()
 
     def add_voters_id(self, ids=set()):

@@ -150,3 +150,14 @@ def start_election(election_id):
     except ValueError as e:
         abort(400, str(e))
     return jsonify({}), 200
+
+
+@ovs_elect.route('/election/<election_id>/ballot', methods=['GET'],
+                 strict_slashes=False)
+def get_ballot(election_id):
+    """ Get the ballot for an election
+    """
+    election = storage.get('Election', election_id)
+    if not election:
+        abort(404, 'Election not found')
+    return jsonify(election.ballots()), 200

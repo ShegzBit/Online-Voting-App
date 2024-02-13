@@ -31,7 +31,7 @@ class Admin(BaseModel, Base):
 
     def __init__(self, *args, **kwargs):
         """
-        Admin Class construtor
+        Admin Class constructor
         arg:
             firstname: str - firstname of admin
             lastname: str - lastname of admin
@@ -74,6 +74,7 @@ class Admin(BaseModel, Base):
         new_election.save()
         key = 'Election.' + new_election.id
         self.elections.update({key: new_election})
+        models.storage.save()
         return new_election
 
     def to_dict(self):
