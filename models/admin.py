@@ -52,7 +52,7 @@ class Admin(BaseModel, Base):
                 value = dt.strptime(value, '%Y-%m-%d %H:%M:%S')
             if key not in ['__class__', 'password']:
                 setattr(self, key, value)
-        self.id = uuid4()
+        self.id = str(uuid4())
         self.__password = kwargs.get('password')
         self.created_at = dt.utcnow()
         self.username = kwargs.get('username',
