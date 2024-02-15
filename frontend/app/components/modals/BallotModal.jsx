@@ -1,3 +1,6 @@
+import { Modal } from 'react-bootstrap'
+import Button from '../Button'
+
 export default function BallotPaperModal() {
     return (
         <>
@@ -14,7 +17,7 @@ export default function BallotPaperModal() {
               <label htmlFor="ballotLimit" className="form-label">Set a vote limit</label>
               <input type="text" className="form-control rounded-4" style={{ height: "56px" }} id="ballotLimit" placeholder="Enter number of votes" />
             </div>
-            <Contestants />
+            {/* <Contestants /> */}
           </Modal.Body>
           <Modal.Footer>
             <Button variant="outline-success" className="btn-sm px-5 py-1 h-75 base-color text-bold" onClick={onHide}>

@@ -46,7 +46,7 @@ function Contestants({ contestants })  {
     {}
   </div>
         {contestants.map((contestant, index) => (
-            <div className='d-flex justify-content-between'>
+            <div key={index} className='d-flex justify-content-between'>
                 <p><span className='me-4'>{index + 1}.</span>{contestant}</p>
                 <button className="rounded-circle m-0 p-0 border-0 text-danger" style={{backgroundColor: "#FFE6E6", width: '28px', height: '28px'}}>
                     <GoTrash />

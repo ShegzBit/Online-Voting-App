@@ -1,7 +1,10 @@
 import { FaRegEdit } from "react-icons/fa";
 import Fab from "./Fab";
+import { useRouter} from "next/navigation"
+import Link from 'next/link'
 
-export default async function ElectionCard({ election }) {
+export default function ElectionCard({ election }) {
+    // const router  = useRouter()
     const statusColor = (status) => {
         if (status === "In progress") {
             return "#F1A867"
@@ -12,12 +15,16 @@ export default async function ElectionCard({ election }) {
         }
     }
 
+
+    // const handleClick = () => {
+    //     return router.push(`/elections/${election.public_id}`)
+
     return (
         <>
         <div className="container p-3 rounded-2" style={{ backgroundColor: "#FAFBFC", border: "1px #E7EAEB solid" }}>
             <div className="m-0 d-flex justify-content-between align-items-center align-items-sm-center">
                 <p className="text-muted m-0" style={{ fontSize: ".8rem" }}>Online Voting</p>
-                <button className="btn p-0 m-0"><FaRegEdit /></button>
+                <button className="btn p-0 m-0"><Link href={`/elections/${election.id}`}><FaRegEdit /></Link></button>
             </div>
             <h3 className="mb-5">{election.title}</h3>
             <div className="d-flex justify-content-between align-items-center">
@@ -27,7 +34,7 @@ export default async function ElectionCard({ election }) {
                 </div>
             </div>
         </div>
-        <Fab />
+        {/* <Fab /> */}
         </>
     )
 }

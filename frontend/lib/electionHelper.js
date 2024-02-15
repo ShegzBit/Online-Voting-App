@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const getElections = async () => {
+const getElections = async (id) => {
     try {
-        const res = await axios.get('http://localhost:5000/api/v1/election')
+        const res = await axios.get(`http://localhost:5000/api/v1/admin/${id}/election`)
         return res.data
     } catch (e) {
         console.log(e)
@@ -29,6 +29,16 @@ const getElection = async (id) => {
     try {
         const res = await axios.get(`http://localhost:5000/api/v1/election/${id}`)
         return res.data;
+    } catch (e) {
+        console.log(e)
+        throw Error(e)
+    }
+}
+
+const updateElection = async (admin_id, election_id, data) => {
+    try {
+        const res = await axios.put(`http://localhost:5000/admin/${admin_id}/election/${election_id}`, data)
+        return res.data
     } catch (e) {
         console.log(e)
         throw Error(e)

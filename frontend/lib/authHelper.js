@@ -37,7 +37,8 @@ const isAuthenticated = () => {
 }
 
 const getUser = () => {
-    return JSON.parse(localStorage.getItem('user')) ?? null
+    
+    return typeof window !== 'undefined' && JSON.parse(localStorage.getItem('user'))
 }
 
 export {createUser, signIn, isAuthenticated, logOut, getUser};

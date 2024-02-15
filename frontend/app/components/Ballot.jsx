@@ -11,8 +11,8 @@ import EditBallot from './modals/ViewBallot'
 
 export default function Ballot() {
     const ballotArr = ['President', 'Organizer']
-    const ballots = ballotArr.map((x) => (
-        <Contestant name={x} ballot={ballotArr} contestants={['Meeda', 'Mahama']} />
+    const ballots = ballotArr.map((x, i) => (
+        <Contestant key={i} name={x} ballot={ballotArr} contestants={['Meeda', 'Mahama']} />
     ))
     return (
         <div>

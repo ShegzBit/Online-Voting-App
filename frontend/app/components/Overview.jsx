@@ -6,6 +6,8 @@ import { FaRegEdit } from "react-icons/fa"
 import { IoMdArrowDropdown } from "react-icons/io";
 import { IoCopyOutline } from "react-icons/io5";
 import { getElection } from '@/lib/electionHelper'
+import { getUser } from '@/lib/authHelper'
+import { FaArrowRightLong } from "react-icons/fa6";
 
 
 
@@ -16,7 +18,9 @@ export default function Overview({electionId}) {
         const getData = async () => {
             try {
                 const res = await getElection(electionId)
-                setElection(res)
+                if (res) {
+                    setElection(res)
+                }
             } catch (e) {
                 console.log(e)
             }
@@ -35,7 +39,7 @@ export default function Overview({electionId}) {
             <Accordion.Item className="border border-2" eventKey="1">
                 <Accordion.Header>Project Customization</Accordion.Header>
                 <Accordion.Body>
-                    <ProjectCustomization />
+                    <ProjectCustomization election={setElection} />
                 </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item className="border border-2" eventKey="2">
@@ -55,7 +59,9 @@ export default function Overview({electionId}) {
 }
 
 
-function ProjectDetails() {
+function ProjectDetails({election}) {
+    const { email } = getUser()
+
     return (
         <div className="d-flex flex-column gap-0">
             <div className="mb-4">
@@ -67,20 +73,20 @@ function ProjectDetails() {
             </div>
             <div className="mb-4">
                 <p className="text-muted" style={{ fontSize: ".8rem" }}>Project Id</p>
-                <p className="fw-bold">{election.public_i}</p>
+                <p className="fw-bold">{election.public_id}</p>
             </div>
             <div className="mb-4">
                 <p className="text-muted" style={{ fontSize: ".8rem" }}>Project Owner</p>
-                <p className="fw-bold">jon@email.com</p>
+                <p className="fw-bold">{email}</p>
             </div>
             <div className="mb-4">
                 <p className="text-muted" style={{ fontSize: ".8rem" }}>Project Duration</p>
-                <p className="fw-bold">July 23, 2023  12:00 PM</p>
+                <p className="fw-bold">{election.start_date} <FaArrowRightLong /> {election.end_date}</p>
             </div>
             <div className="mb-4">
                 <p className="text-muted" style={{ fontSize: ".8rem" }}>Project Description</p>
                 <p className="fw-bold">
-                    This is a test project description. the quick brown fox jumps over the lazy dog.
+                    {election.description}
                 </p>
             </div>
         </div>
@@ -90,13 +96,13 @@ function ProjectDetails() {
 function ProjectCustomization() {
     return (
         <div>
-            <p>Add your organization's logo</p>
+            <p>Add your organization&apos;s logo</p>
             <input type="file" />
         </div>
     )
 }
 
-function VotingConfiguration() {
+function VotingConfiguration({election}) {
     return (
         <div className="mb-4">
             <div className="d-flex justify-content-end">
@@ -105,11 +111,11 @@ function VotingConfiguration() {
             </div>
             <div className="mb-4">
                 <p className="text-muted" style={{ fontSize: ".8rem" }}>Ballot papers</p>
-                <p className="fw-bold">0</p>
+                <p className="fw-bold">{election.candidates.length}</p>
             </div>
             <div>
                 <p className="text-muted" style={{ fontSize: ".8rem" }}>Eligible voters</p>
-                <p className="fw-bold">0</p>
+                <p className="fw-bold">{election.expected_voters}</p>
             </div>
         </div>
     )
