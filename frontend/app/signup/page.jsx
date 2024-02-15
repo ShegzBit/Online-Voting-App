@@ -66,8 +66,8 @@ export default function SignUp() {
                 error: e,
                 isSuccess: false
             })
+            setLoading(false)
         }
-
     }
 
 
