@@ -6,8 +6,8 @@ import { FaRegEdit } from "react-icons/fa"
 import { IoMdArrowDropdown } from "react-icons/io";
 import { IoCopyOutline } from "react-icons/io5";
 import { getElection } from '@/lib/electionHelper'
-import { getUser } from '@/lib/authHelper'
 import { FaArrowRightLong } from "react-icons/fa6";
+import { useUser } from '@/app/contexts/userContext'
 
 
 
@@ -45,7 +45,7 @@ export default function Overview({electionId}) {
             <Accordion.Item className="border border-2" eventKey="2">
                 <Accordion.Header>Voting Configuration</Accordion.Header>
                 <Accordion.Body>
-                    <VotingConfiguration />
+                    <VotingConfiguration election={election} />
                 </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item className="border border-2" eventKey="3">
@@ -60,7 +60,7 @@ export default function Overview({electionId}) {
 
 
 function ProjectDetails({election}) {
-    const { email } = getUser()
+    const { user } = useUser()
 
     return (
         <div className="d-flex flex-column gap-0">
@@ -77,7 +77,7 @@ function ProjectDetails({election}) {
             </div>
             <div className="mb-4">
                 <p className="text-muted" style={{ fontSize: ".8rem" }}>Project Owner</p>
-                <p className="fw-bold">{email}</p>
+                <p className="fw-bold">{user.email}</p>
             </div>
             <div className="mb-4">
                 <p className="text-muted" style={{ fontSize: ".8rem" }}>Project Duration</p>
@@ -111,7 +111,7 @@ function VotingConfiguration({election}) {
             </div>
             <div className="mb-4">
                 <p className="text-muted" style={{ fontSize: ".8rem" }}>Ballot papers</p>
-                <p className="fw-bold">{election.candidates.length}</p>
+                <p className="fw-bold">{election.candidates?.length}</p>
             </div>
             <div>
                 <p className="text-muted" style={{ fontSize: ".8rem" }}>Eligible voters</p>
