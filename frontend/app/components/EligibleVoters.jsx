@@ -1,3 +1,5 @@
+"use client"
+
 import { FaPlus } from 'react-icons/fa'
 import AddNewVoter from '@/app/components/modals/AddNewVoter'
 import { useState, useEffect } from 'react'
