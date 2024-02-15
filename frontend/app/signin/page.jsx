@@ -1,10 +1,11 @@
 "use client"
 import { signIn } from "@/lib/authHelper"
 import Button from "../components/Button"
-import {useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import Loader from '../components/core/Loader'
 import { useRouter } from "next/navigation"
 import Form from 'react-bootstrap/Form'
+import { useUser } from '@/app/contexts/userContext'
 
 
 export default function SignInPage() {
@@ -18,6 +19,7 @@ export default function SignInPage() {
 
     const [loading, setLoading] = useState(false)
     const router = useRouter()
+    const { updateUser } = useUser()
 
     useEffect(() => {
         if (userData.isSuccess) {
@@ -33,69 +35,33 @@ export default function SignInPage() {
         })
     }
 
-    // const handleSubmit = async () => {
-    //     const { email, password } = userData;
-    //     const valueError = (email && password) === ''
-
-    //     if (valueError) {
-    //         setUserData({
-    //             ...userData,
-    //             error: 'No input',
-    //             isSuccess: false
-    //         })
-    //         return
-    //     }
-
-    //     try {
-    //         setLoading(true)
-    //         await signIn(userData).then((data) => {
-    //             console.log(userData)
-    //             if (data.user) {
-    //                 setLoading(false)
-    //                 setUserData({
-    //                     ...userData,
-    //                     isSuccess: true
-    //                 })
-    //             }
-    //         })
-
-    //     } catch (e) {
-    //         setUserData({
-    //             ...userData,
-    //             error: e,
-    //             isSuccess: false
-    //         })
-    //     }
-
-    const handleSubmit = async(event) => {
+    const handleSubmit = async (event) => {
         const form = event.currentTarget
         if (form.checkValidity() === false) {
-          event.preventDefault()
-          event.stopPropagation()
+            event.preventDefault()
+            event.stopPropagation()
         }
-    
         setValidated(true)
 
         try {
-                    setLoading(true)
-                    await signIn(userData).then((data) => {
-                        console.log(userData)
-                        if (data.user) {
-                            setLoading(false)
-                            setUserData({
-                                ...userData,
-                                isSuccess: true
-                            })
-                        }
-                    })
-        
-                } catch (e) {
+            setLoading(true)
+            await signIn(userData).then((data) => {
+                if (data.user) {
+                    setLoading(false)
                     setUserData({
                         ...userData,
-                        error: e,
-                        isSuccess: false
+                        isSuccess: true
                     })
+                    updateUser(data.user)
                 }
+            })
+        } catch (e) {
+            setUserData({
+                ...userData,
+                error: e,
+                isSuccess: false
+            })
+        }
 
     }
 
@@ -107,9 +73,9 @@ export default function SignInPage() {
                     <div className='col-lg-6 col-md-6 col-sm-12'>
                         <h1 className="card-title mb-0">Sign in</h1>
                         <p className="card-subtitle">Please enter your details to sign in</p>
-                        <Form  validated={validated} noValidate onSubmit={handleSubmit}>
+                        <Form validated={validated} noValidate onSubmit={handleSubmit}>
                             <div className="form-floating mb-2">
-                                <input type="email" className="form-control rounded-4" id="floatingInputValid" placeholder="" onChange={handleChange('email')} required/>
+                                <input type="email" className="form-control rounded-4" id="floatingInputValid" placeholder="" onChange={handleChange('email')} required />
                                 <label htmlFor="floatingInputValidation">Email address</label>
                                 <div className="valid-feedback">
                                     Looks good!
@@ -125,7 +91,7 @@ export default function SignInPage() {
                         </div>
                         <div className="d-grid gap-2">
                             {/* <button href="#" className="btn btn-primary">Submit</button> */}
-                            <Button text={loading ? <Loader /> : "Sign In"} cb={handleSubmit} disabled={loading}/>
+                            <Button text={loading ? <Loader /> : "Sign In"} cb={handleSubmit} disabled={loading} />
                             <p className="mt-3 text-center">Don’t have an account? <a href="#" className=" fw-semibold link-success link-offset-2 link-underline link-underline-opacity-0">Sign Up</a></p>
                         </div>
                     </div>
@@ -134,6 +100,6 @@ export default function SignInPage() {
 
         </div>
 
-        
+
     )
 }
