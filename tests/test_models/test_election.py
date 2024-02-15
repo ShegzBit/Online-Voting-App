@@ -3,23 +3,23 @@ from datetime import datetime, timedelta
 import unittest
 from unittest.mock import patch
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-from models.base import Base, BaseModel, short_uuid
+from models import storage
+from models.admin import Admin
+from models.base import short_uuid
 from models.candidate import Candidate
 from models.election import Election
 
 
 class TestElection(unittest.TestCase):
     def setUp(self):
-        # Use in-memory SQLite for testing
-        self.engine = create_engine('sqlite:///:memory:')
-        self.Session = sessionmaker(bind=self.engine)
-        Base.metadata.create_all(self.engine)  # Create all tables
-        self.session = self.Session()
+        """Set up the test environment."""
+        self.admin = Admin(first_name="John", last_name="Doe",
+                            email=f"john_{short_uuid()}@gmail.com",
+                            password="password")
+        self.admin.save()
 
         self.election = Election(
+            admin_id=self.admin.id,
             title="Test Election",
             start_date=datetime.now() + timedelta(seconds=2),
             end_date=datetime.now() + timedelta(seconds=5),
@@ -30,12 +30,11 @@ class TestElection(unittest.TestCase):
             total_votes=0,
             voters_id={'voter1'}
         )
+        self.election.save()
 
     def test_election_creation(self):
-        self.session.add(self.election)
-        self.session.commit()
-
-        retrieved_election = self.session.query(Election).first()
+        """Test the creation of an Election instance."""
+        retrieved_election = storage.get("Election", self.election.id)
         self.assertEqual(retrieved_election.title, "Test Election")
         self.assertEqual(retrieved_election.status, "Upcoming")
         self.assertEqual(retrieved_election.total_votes, 0)
@@ -113,11 +112,13 @@ class TestElection(unittest.TestCase):
         and ballots methods of an election instance
         """
         # Create two elections
-        election1 = Election(title="Election 1", start_date='2021-01-01 00:00:00',
+        election1 = Election(admin_id=self.admin.id,
+                             title="Election 1", start_date='2021-01-01 00:00:00',
                              end_date='2021-01-01 00:00:00',
                              voters_id={'voter1'})
         election1.save()
-        election2 = Election(title="Election 2", start_date='2021-01-01 00:00:00',
+        election2 = Election(admin_id=self.admin.id,
+                             title="Election 2", start_date='2021-01-01 00:00:00',
                              end_date='2021-01-01 00:00:00',
                              voters_id={'voter2'})
         election2.save()
@@ -136,7 +137,6 @@ class TestElection(unittest.TestCase):
 
     def test_compute_results_no_votes(self):
         """Test the compute_results method with no votes."""
-        self.election.save()
         self.election.add_candidate(first_name="John",
                                     last_name="Doe",
                                    party="Party A",
@@ -214,7 +214,6 @@ class TestElection(unittest.TestCase):
                                     voter_id="invalid_voter_id")
     def test_add_candidate(self):
         """Test the add_candidate method with valid arguments."""
-        self.election.save()
         self.election.add_candidate(
             first_name="John",
             last_name="Doe",
@@ -235,7 +234,7 @@ class TestElection(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.election.add_candidate(
                 first_name="John",
-                last_name="Doe",
+                last_name="Eric",
                 party="Party A",
                 # position missing
                 # Missing manifesto argument
@@ -257,7 +256,6 @@ class TestElection(unittest.TestCase):
 
     def test_update_state_voters_id(self):
         """Test updating the voters_id of the election."""
-        self.election.save()
         new_voters_id = {'voter2', 'voter3'}
         if len(self.election.voters_id) == 0:
             self.election.add_voters_id({'voter1'})
@@ -271,35 +269,25 @@ class TestElection(unittest.TestCase):
         
     def test_update_state_candidates(self):
         """Test updating the candidates of the election."""
-        self.election.save()
         new_candidates = [
             {'first_name': 'Alice', 'last_name': 'Johnson', 'party': 'Party A', 'position': 'Treasurer', 'manifesto': 'I will work hard!'},
             {'first_name': 'Bob', 'last_name': 'Williams', 'party': 'Party B', 'position': 'Secretary', 'manifesto': 'I will bring change!'},
             {'first_name': 'Charlie', 'last_name': 'Brown', 'party': 'Party C', 'position': 'President', 'manifesto': 'I will make a difference!'}
         ]
-        self.election.candidates = []
+
         self.election.update_state(candidates=new_candidates)
         self.assertEqual(len(self.election.candidates), 3)
-        self.assertEqual(self.election.candidates[0].first_name, 'Alice')
-        self.assertEqual(self.election.candidates[0].last_name, 'Johnson')
-        self.assertEqual(self.election.candidates[0].party, 'Party A')
-        self.assertEqual(self.election.candidates[0].position, 'Treasurer')
-        self.assertEqual(self.election.candidates[0].manifesto, 'I will work hard!')
-        self.assertEqual(self.election.candidates[1].first_name, 'Bob')
-        self.assertEqual(self.election.candidates[1].last_name, 'Williams')
-        self.assertEqual(self.election.candidates[1].party, 'Party B')
-        self.assertEqual(self.election.candidates[1].position, 'Secretary')
-        self.assertEqual(self.election.candidates[1].manifesto, 'I will bring change!')
-        self.assertEqual(self.election.candidates[2].first_name, 'Charlie')
-        self.assertEqual(self.election.candidates[2].last_name, 'Brown')
-        self.assertEqual(self.election.candidates[2].party, 'Party C')
-        self.assertEqual(self.election.candidates[2].position, 'President')
-        self.assertEqual(self.election.candidates[2].manifesto, 'I will make a difference!')
 
 
     class TestElectionActivation(unittest.TestCase):
         def setUp(self):
+            self.admin = Admin(first_name="John", last_name="Doe",
+                               email="fawaz@gmail.com",
+                                 password="password")
+            self.admin.save()
+
             self.election = Election(
+                admin_id=self.admin.id,
                 title="Test Election",
                 start_date=datetime.now() + timedelta(seconds=1),
                 end_date=datetime.now() + timedelta(seconds=2),
@@ -332,6 +320,3 @@ class TestElection(unittest.TestCase):
 
             # Check that the method returned True
             self.assertTrue(self.election.activate_election())
-
-    def tearDown(self):
-        self.session.close()

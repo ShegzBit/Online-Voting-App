@@ -5,20 +5,21 @@ from unittest.mock import patch
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from models import storage
 from models.admin import Admin
+from models.base import short_uuid
 from models.candidate import Candidate
 from models.election import Election
-from models import storage
 
 
 class TestAdminModel(unittest.TestCase):
     def setUp(self):
         """Set up test fixtures"""
-        self.engine = create_engine('sqlite:///:memory:')
-        self.session = sessionmaker(bind=self.engine)()
         self.admin = Admin(first_name='Test', last_name='User',
-                           username='testuser',
-                           email='test@example.com', password='password')
+                           username=f'testuser_{short_uuid()}',
+                           email=f'test@example.com{short_uuid()}',
+                           password='password')
+        self.admin.save()
 
     def test_new_election(self):
         """Test the new_election method"""
@@ -26,15 +27,15 @@ class TestAdminModel(unittest.TestCase):
                                            start_date='2019-01-01 00:00:00',
                                           end_date='2019-01-01 00:00:00')
         self.assertIsInstance(election, Election)
-        self.assertIn('Election.' + election.id, self.admin.elections)
+        self.assertIn(election, self.admin.elections)
 
     def test_to_dict(self):
         """Test the to_dict method"""
         dictionary = self.admin.to_dict()
         self.assertEqual(dictionary['first_name'], 'Test')
         self.assertEqual(dictionary['last_name'], 'User')
-        self.assertEqual(dictionary['username'], 'testuser')
-        self.assertEqual(dictionary['email'], 'test@example.com')
+        self.assertIn('testuser', dictionary['username'])
+        self.assertIn('test@example.com', dictionary['email'])
         self.assertNotIn('_Admin__password', dictionary)
         self.assertNotIn('_sa_instance_state', dictionary)
 
@@ -67,10 +68,6 @@ class TestAdminModel(unittest.TestCase):
                                                       last_name='Election')
         self.assertEqual(updated_election.first_name, 'Updated')
         self.assertEqual(updated_election.last_name, 'Election')
-
-    def tearDown(self):
-        """Tear down test fixtures"""
-        self.session.close()
 
 class TestAdmin(unittest.TestCase):
     def setUp(self):

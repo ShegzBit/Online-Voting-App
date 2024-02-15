@@ -107,8 +107,13 @@ class Admin(BaseModel, Base):
         Gets the result of the current election
         election_id: id of election to get result from
         """
-        key = 'Election.' + election_id
-        election = self.elections.get(key, None)
+        election = models.storage.get('Election', election_id)
+        if not election:
+            raise ValueError('Election not found')
+        if election.admin_id != self.id:
+            raise ValueError('Election not found')
+        # key = 'Election.' + election_id
+        # election = self.elections.get(key, None)
         return election.get_results()
 
     def update_election(self, election_id, **kwargs):
