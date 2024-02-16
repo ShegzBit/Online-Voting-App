@@ -227,7 +227,8 @@ The application is hosted at [http://pollmaster.me](http://pollmaster.me).
 You can use them by navigating these URLs in your web browser.
 
 ### API
-An api request can be made to the application with [https:/api/pollmaster.me](https:/api/pollmaster.me)
+An api request can be made to the application with [https://api/pollmaster.me](https:/api/pollmaster.me) appended with
+the appropriate route.
 ## Contributing
 
 ## License
