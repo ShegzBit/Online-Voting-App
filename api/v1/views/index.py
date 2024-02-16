@@ -4,6 +4,5 @@ from flask import jsonify
 
 @ovs_elect.route('/status', methods=['GET'], strict_slashes=False)
 def status():
-    """ Returns the status of the API
-    """
+    """Returns the status of the API"""
     return jsonify({"status": "OK"}), 200

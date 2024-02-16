@@ -12,8 +12,7 @@ from flask import jsonify, request, abort
 
 @ovs_elect.route('/sign_up', methods=['POST'], strict_slashes=False)
 def create_admin():
-    """ Create a new admin
-    """
+    """Create a new admin"""
     data = request.get_json()
     if not data:
         abort(400, 'Not a JSON')
@@ -35,8 +34,7 @@ def create_admin():
 
 @ovs_elect.route('/sign_in', methods=['POST'], strict_slashes=False)
 def user_sign_in():
-    """" Sign in an admin
-    """
+    """"Sign in an admin"""
     data = request.get_json()
     if not data:
         abort(400, 'Not a JSON')
@@ -55,8 +53,7 @@ def user_sign_in():
 
 @ovs_elect.route('/admin/update', methods=['PUT'], strict_slashes=False)
 def update_user():
-    """ Update user details
-    """
+    """Update an admin details"""
     data = request.get_json()
     if not data:
         abort(400, 'Not a JSON')
@@ -81,8 +78,7 @@ def update_user():
 
 @ovs_elect.route('/admin/<admin_id>', methods=['GET'], strict_slashes=False)
 def get_admin(admin_id):
-    """ Get an admin
-    """
+    """Get an admin"""
     admin = storage.get('Admin', admin_id)
     if not admin:
         abort(404, 'Admin not found')
@@ -92,8 +88,7 @@ def get_admin(admin_id):
 @ovs_elect.route('/admin/<admin_id>', methods=['DELETE'],
                  strict_slashes=False)
 def delete_admin(admin_id):
-    """ Delete an admin
-    """
+    """Delete an admin"""
     admin = storage.get('Admin', admin_id)
     if not admin:
         abort(404, 'Admin not found')
@@ -105,8 +100,7 @@ def delete_admin(admin_id):
 @ovs_elect.route('/admin/<admin_id>/election/', methods=['GET'],
                  strict_slashes=False)
 def get_elections_by_admin(admin_id):
-    """ Get all elections by admin
-    """
+    """Get all elections by admin"""
     admin = storage.get('Admin', admin_id)
     if not admin:
         abort(404, 'Admin not found')
@@ -119,8 +113,7 @@ def get_elections_by_admin(admin_id):
 @ovs_elect.route('/admin/<admin_id>/election/<election_id>',
                  methods=['GET'], strict_slashes=False)
 def get_election_by_admin(admin_id, election_id):
-    """ Get an election by admin
-    """
+    """Get an election by admin"""
     admin = storage.get('Admin', admin_id)
     if not admin:
         abort(404, 'Admin not found')
@@ -133,8 +126,7 @@ def get_election_by_admin(admin_id, election_id):
 @ovs_elect.route('/admin/<admin_id>/election/<election_id>',
                  methods=['DELETE'], strict_slashes=False)
 def delete_election_by_admin(admin_id, election_id):
-    """ Delete an election by admin
-    """
+    """Delete an election by admin"""
     admin = storage.get('Admin', admin_id)
     if not admin:
         abort(404, 'Admin not found')
@@ -149,8 +141,7 @@ def delete_election_by_admin(admin_id, election_id):
 @ovs_elect.route('/admin/<admin_id>/election/<election_id>',
                  methods=['PUT'], strict_slashes=False)
 def update_election_by_admin(admin_id, election_id):
-    """ Update an election by admin
-    """
+    """Update an election by admin"""
     admin = storage.get('Admin', admin_id)
     if not admin:
         abort(404, 'Admin not found')
@@ -214,8 +205,7 @@ def update_election_by_admin(admin_id, election_id):
 @ovs_elect.route('/admin/<admin_id>/election/<election_id>/candidate/<candidate_id>',
                  methods=['DELETE'], strict_slashes=False)
 def delete_candidate_by_admin(admin_id, election_id, candidate_id):
-    """ Delete a candidate by admin
-    """
+    """Delete a candidate by admin"""
     admin = storage.get('Admin', admin_id)
     if not admin:
         abort(404, 'Admin not found')
@@ -232,8 +222,7 @@ def delete_candidate_by_admin(admin_id, election_id, candidate_id):
 @ovs_elect.route('/admin/<admin_id>/election/<election_id>/candidate/<candidate_id>',
                  methods=['PUT'], strict_slashes=False)
 def update_candidate_by_admin(admin_id, election_id, candidate_id):
-    """ Update a candidate by admin
-    """
+    """Update a candidate by admin"""
     admin = storage.get('Admin', admin_id)
     if not admin:
         abort(404, 'Admin not found')
@@ -255,8 +244,7 @@ def update_candidate_by_admin(admin_id, election_id, candidate_id):
 @ovs_elect.route('/admin/<admin_id>/election/<election_id>/candidate',
                  methods=['DELETE'], strict_slashes=False)
 def delete_candidates_by_election(admin_id, election_id):
-    """ Delete all candidates by election
-    """
+    """Delete all candidates by election"""
     admin = storage.get('Admin', admin_id)
     if not admin:
         abort(404, 'Admin not found')
@@ -272,8 +260,7 @@ def delete_candidates_by_election(admin_id, election_id):
 @ovs_elect.route('/admin/<admin_id>/election', methods=['DELETE'],
                  strict_slashes=False)
 def delete_elections_by_admin(admin_id):
-    """ Delete all elections by admin
-    """
+    """Delete all elections by admin"""
     admin = storage.get('Admin', admin_id)
     if not admin:
         abort(404, 'Admin not found')
@@ -286,8 +273,7 @@ def delete_elections_by_admin(admin_id):
 @ovs_elect.route('/admin/<admin_id>/election/<election_id>/end',
                  methods=['PUT'], strict_slashes=False)
 def end_election(admin_id, election_id):
-    """ End an election
-    """
+    """End an election by admin"""
     admin = storage.get('Admin', admin_id)
     if not admin:
         abort(404, 'Admin not found')

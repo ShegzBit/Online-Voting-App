@@ -41,6 +41,16 @@ def bad_request(error):
     return jsonify({"error": "Bad request",
                     "message": str(error.description)}), 400
 
+@app.route('/api/v1/routes', methods=['GET'], strict_slashes=False)
+def routes():
+    """Returns all the available routes in the API with their respective docstrings"""
+    routes = {}
+    for route in app.url_map.iter_rules():
+        view_func = app.view_functions[route.endpoint]
+        docstring = view_func.__doc__
+        routes[route.rule] = docstring
+    return jsonify(routes), 200
+
 
 if __name__ == "__main__":
     host = os.getenv('OVS_API_HOST', '0.0.0.0')

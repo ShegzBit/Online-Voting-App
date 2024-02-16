@@ -13,15 +13,13 @@ from api.v1.views import ovs_elect
 
 @ovs_elect.route('/', methods=['GET'], strict_slashes=False)
 def home():
-    """ Redirects to the landing page
-    """
+    """Redirects to the landing page"""
     return redirect('https://pollmaster.webflow.io/')
 
 
 @ovs_elect.route('/create_election', methods=['POST'], strict_slashes=False)
 def create_election():
-    """ Create a new election
-    """
+    """Create a new election"""
     data = request.get_json()
     # handle for errors
     if not data:
@@ -60,8 +58,7 @@ def create_election():
 @ovs_elect.route('/election/<election_id>', methods=['GET'],
                  strict_slashes=False)
 def get_election(election_id):
-    """ Get an election
-    """
+    """Get an election"""
     election = storage.get('Election', election_id)
     if not election:
         abort(404, 'Election not found')
@@ -70,8 +67,7 @@ def get_election(election_id):
 
 @ovs_elect.route('/election', methods=['GET'], strict_slashes=False)
 def get_elections():
-    """ Get all elections
-    """
+    """Get all elections"""
     elections = storage.all(Election)
     sorted_elections = sorted(elections.values(),
                               key=lambda e: e.created_at,
@@ -82,8 +78,7 @@ def get_elections():
 @ovs_elect.route('/election/<election_id>/result', methods=['GET'],
                  strict_slashes=False)
 def get_election_result(election_id):
-    """ Get the result of an election
-    """
+    """Get the result of an election"""
     election = storage.get('Election', election_id)
     if not election:
         abort(404, 'Election not found')
@@ -93,8 +88,7 @@ def get_election_result(election_id):
 @ovs_elect.route('/election/<election_id>/status', methods=['GET'],
                  strict_slashes=False)
 def get_election_status(election_id):
-    """ Get the status of an election
-    """
+    """Get the status of an election"""
     election = storage.get('Election', election_id)
     if not election:
         abort(404, 'Election not found')
@@ -104,8 +98,7 @@ def get_election_status(election_id):
 @ovs_elect.route('/election/<election_id>/vote', methods=['POST'],
                  strict_slashes=False)
 def vote(election_id):
-    """ Vote in an election
-    """
+    """Vote in an election"""
     data = request.get_json()
     if not data:
         abort(400, 'Not a JSON')
@@ -126,8 +119,7 @@ def vote(election_id):
 @ovs_elect.route('/election/<election_id>/voters', methods=['GET'],
                  strict_slashes=False)
 def get_voters(election_id):
-    """ Get the voters of an election
-    """
+    """Get the voters of an election"""
     election = storage.get('Election', election_id)
     if not election:
         abort(404, 'Election not found')
@@ -137,8 +129,7 @@ def get_voters(election_id):
 @ovs_elect.route('/election/<election_id>/start', methods=['PUT'],
                  strict_slashes=False)
 def start_election(election_id):
-    """ Start an election
-    """
+    """Start an election"""
     election = storage.get('Election', election_id)
     if not election:
         abort(404, 'Election not found')
@@ -152,8 +143,7 @@ def start_election(election_id):
 @ovs_elect.route('/election/<election_id>/ballot', methods=['GET'],
                  strict_slashes=False)
 def get_ballot(election_id):
-    """ Get the ballot for an election
-    """
+    """Get the ballot for an election"""
     election = storage.get('Election', election_id)
     if not election:
         abort(404, 'Election not found')
