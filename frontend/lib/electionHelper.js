@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const getElections = async (id) => {
     try {
-        const res = await axios.get(`http://localhost:5000/api/v1/admin/${id}/election`)
+        const res = await axios.get(`http://api.pollmaster.me/api/v1/admin/${id}/election`)
         return res.data
     } catch (e) {
         console.log(e)
@@ -17,7 +17,7 @@ const getElections = async (id) => {
  */
 const createElection = async (data) => {
     try {
-        const res = await axios.post('http://localhost:5000/api/v1/create_election', data)
+        const res = await axios.post('http://api.pollmaster.me/api/v1/create_election', data)
         return res.data
     } catch (e) {
         console.log(e)
@@ -27,7 +27,7 @@ const createElection = async (data) => {
 
 const getElection = async (id) => {
     try {
-        const res = await axios.get(`http://localhost:5000/api/v1/election/${id}`)
+        const res = await axios.get(`http://api.pollmaster.me/api/v1/election/${id}`)
         return res.data;
     } catch (e) {
         console.log(e)
@@ -37,7 +37,7 @@ const getElection = async (id) => {
 
 const updateElection = async (admin_id, election_id, data) => {
     try {
-        const res = await axios.put(`http://localhost:5000/admin/${admin_id}/election/${election_id}`, data)
+        const res = await axios.put(`http://api.pollmaster.me/admin/${admin_id}/election/${election_id}`, data)
         return res.data
     } catch (e) {
         console.log(e)
