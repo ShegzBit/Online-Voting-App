@@ -1,4 +1,4 @@
-export default async function EmptyElections () {
+export default function EmptyElections () {
     return (
         <>
             <h1 className="card-title mb-4">My Projects</h1>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { IoMdArrowDropdown } from 'react-icons/io';
+import { updateElection, getElection } from '@/lib/electionHelper'
 
 
 function AddNewVoter({ show, onHide }) {
@@ -10,6 +11,12 @@ function AddNewVoter({ show, onHide }) {
     const handleAttribute = (name) => {
         setAttribute(name)
     }
+
+    // const fetchElection = async () => {
+    //     try {
+    //       const election = await getElection()
+    //     }
+    // }
   return (
     <>
       <Modal show={show} onHide={onHide}>

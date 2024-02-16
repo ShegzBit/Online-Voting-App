@@ -25,7 +25,7 @@ export default function SignUp() {
             setLoading(false)
             router.push('/signin')
         }
-    }, [userData.isSuccess])
+    }, [userData.isSuccess, router])
 
 
     const handleChange = (name) => (event) => {
@@ -66,8 +66,8 @@ export default function SignUp() {
                 error: e,
                 isSuccess: false
             })
+            setLoading(false)
         }
-
     }
 
 

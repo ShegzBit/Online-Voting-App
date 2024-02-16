@@ -9,7 +9,6 @@ import { getElection } from '@/lib/electionHelper'
 
 export default function SingleElection({ params }) {
     const [isActive, setActive] = useState('overview')
-    console.log(styles)
     const handleActive = (btn) => {
         setActive(btn)
     }

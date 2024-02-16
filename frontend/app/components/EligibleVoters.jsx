@@ -1,11 +1,32 @@
+"use client"
+
 import { FaPlus } from 'react-icons/fa'
 import AddNewVoter from '@/app/components/modals/AddNewVoter'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { updateElection, getElection } from '@/lib/electionHelper'
 
-export default function EligibleVoters() {
+
+export default function EligibleVoters({electionId}) {
+    const [election, setElection] = useState({})
+
+    const fetchElection = async () => {
+        try {
+          const election = await getElection(electionId)
+          setElection(election)
+          console.log(election)
+        } catch(e) {
+            console.log(e)
+        }
+    }
+    useEffect(() => {
+        fetchElection()
+    }, [])
+
+
+    
     return (
         <div>
-            {true &&
+            {election?.voters_id.length === 0 &&
                 <p className="text-center text-muted mt-3">You have no eligible voters yet.</p>
             }
             <hr />

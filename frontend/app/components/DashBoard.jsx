@@ -1,22 +1,36 @@
+'use client'
+
 import Fab from './Fab';
 import NewElection from './modals/NewElection';
 import { getElections } from "@/lib/electionHelper"
 import EmptyElections from './EmptyElections';
 import ElectionCard from './ElectionCard'
+import { useEffect, useState } from 'react'
 
-export default async function DashBoard({ toggle, isNew }) {
+export default function DashBoard({ toggle, isEmpty, id, data }) {
+    // const [data, setData] = useState([])
 
-    const data = await getElections()
-    console.log(data)
+    // useEffect(() => {
+    //     const fecthData = async () => {
+    //         console.log(id)
+    //         try {
+    //             const res = await getElections(id)
+    //             setData(res)
+    //         } catch(e) {
+    //             console.log(e)
+    //         }
+    //     }
+    //     fecthData()
+    // }, [id])
 
     return (
         <>
-            {data.length === 0 ? 
+            {isEmpty ? 
             <div className='container'>
                 <EmptyElections />
-                <Fab />
                 <NewElection />
             </div> : <Elections elections={data} />}
+            <Fab />
         </>
     )
 }
