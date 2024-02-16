@@ -180,8 +180,8 @@ python3 -m unittest discover tests
 
 ## Accessing the Application
 
-The landing page can be found at [https://pollmaster.webflow.io/](https://pollmaster.webflow.io/)
-The application is hosted at [http://pollmaster.me](http://pollmaster.me)
+The landing page can be found at [https://pollmaster.webflow.io/](https://pollmaster.webflow.io/).
+The application is hosted at [http://pollmaster.me](http://pollmaster.me).
 You can use them by navigating these URLs in your web browser.
 
 ## Contributing
