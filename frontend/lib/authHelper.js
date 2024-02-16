@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const createUser = async (data) => {
     try {
-        const res = await axios.post('http://api.pollmaster/api/v1/sign_up', data)
+        const res = await axios.post('https://api.pollmaster/api/v1/sign_up', data)
         return res.data
     } catch (e) {
         console.log(e)
@@ -12,7 +12,7 @@ const createUser = async (data) => {
 
 const signIn = async (data) => {
     try {
-        const res = await axios.post('http://api.pollmaster/api/v1/sign_in', data)
+        const res = await axios.post('https://api.pollmaster/api/v1/sign_in', data)
         if (res.data) {
             localStorage.setItem('user', JSON.stringify(res.data.user))
         }
