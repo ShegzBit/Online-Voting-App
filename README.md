@@ -220,10 +220,12 @@ python3 -m unittest discover tests
 ```
 
 ## Accessing the Application
+### Web interface
 
 The application is hosted at [https://pollmaster.webflow.io/](https://pollmaster.webflow.io/). You can use it by navigating to this URL in your web browser.
 
+### API
+An api request can be made to the application with "https:/api/pollmaster.me/<intended_route>"
 ## Contributing
 
 ## License
-
