@@ -1,44 +1,18 @@
-"use client"
-import { createContext, useContext, useState, useEffect } from 'react'
-import { useUser } from './userContext'
-import { getElections } from '@/lib/electionHelper'
+"use client";
+
+import { createContext, useState, useContext } from "react";
 
 
-const ElectionContext = createContext()
+const ElectionContext = createContext();
 
-export const ElectionsProvider = ({ children }) => {
-    const [elections, setElections] = useState()
-    const { user } = useUser()
-
-    useEffect(() => {
-        const getAllElections = async () => {
-            try {
-                if (user?.id) {
-                    const res = await getElections(user?.id)
-                    if (res) {
-                        setElections(res)
-                    }
-                }
-
-            } catch (e) {
-                console.log(e)
-            }
-
-        }
-
-        getAllElections()
-    }, [])
-
-    const updateElections = (elections) => {
-        setElections(elections)
-    }
+export const ElectionProvider = ({ children }) => {
+    const [election, setElection] = useState({})
 
     return (
-        <ElectionContext.Provider value={{elections, updateElections}}>
+        <ElectionContext.Provider value={{election, setElection}}>
             {children}
         </ElectionContext.Provider>
     )
-
 }
 
 export const useElection = () => useContext(ElectionContext);

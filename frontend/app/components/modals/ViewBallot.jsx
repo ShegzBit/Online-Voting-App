@@ -2,38 +2,49 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { GoTrash } from "react-icons/go";
+import { useElection } from '@/app/contexts/electionContext';
+import EditBallot from './EditBallot';
 
 
-function ViewBallot({ show, onHide, name, contestants }) {
+function ViewBallot({ show, onHide, contestant }) {
+  const [showEdit, setShowEdit] = useState(false);
+  const handleClick = () => {
+    setShowEdit(!showEdit)
+    onHide('view')
+  }
 
   return (
     <>
       <Modal show={show} onHide={() => onHide('view')}>
         <Modal.Header closeButton>
-          <Modal.Title>Ballot paper</Modal.Title>
+          <Modal.Title className='fw-bold'>Candidate details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="mb-3">
-            <label htmlFor="ballotName" className="form-label">Ballot name</label>
+            <p className="fw-bold">Position</p>
             {/* <input type="text" className="form-control rounded-4" style={{ height: "56px" }} id="ballotName" placeholder="Enter name of ballot paper" /> */}
-            <p>{name}</p>
+            <p>{contestant.position}</p>
           </div>
           <div className="mb-3">
-            <label htmlFor="ballotLimit" className="form-label">Set a vote limit</label>
-            {/* TODO: fetch data and use */}
-            <p>1</p>
+            <p className='fw-bold'>Candidate’s first name</p>
+            <p>{contestant.first_name}</p>
           </div>
-          <Contestants contestants={contestants} />
+          <div className="mb-3">
+            <p className='fw-bold'>Candidate’s last name</p>
+            <p>{contestant.last_name}</p>
+          </div>
+          {/* <Contestants contestants={contestants} /> */}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="outline-success" className="btn-sm px-5 py-1 h-75 base-color text-bold" onClick={() => onHide('view')}>
             Go back
           </Button>
-          <Button className="btn-sm btn-gradient btn-primary text-light px-5 py-1 h-75" variant="light" onClick={() => onHide('view')}>
+          <Button className="btn-sm btn-gradient btn-primary text-light px-5 py-1 h-75" variant="light" onClick={handleClick}>
             Edit
           </Button>
         </Modal.Footer>
       </Modal>
+      <EditBallot show={showEdit} onHide={setShowEdit} contestant={contestant} />
     </>
   );
 }

@@ -1,6 +1,4 @@
 import { FaRegEdit } from "react-icons/fa";
-import Fab from "./Fab";
-import { useRouter} from "next/navigation"
 import Link from 'next/link'
 
 export default function ElectionCard({ election }) {
@@ -14,10 +12,6 @@ export default function ElectionCard({ election }) {
             return "#ABB3BF"
         }
     }
-
-
-    // const handleClick = () => {
-    //     return router.push(`/elections/${election.public_id}`)
 
     return (
         <>
@@ -34,7 +28,6 @@ export default function ElectionCard({ election }) {
                 </div>
             </div>
         </div>
-        {/* <Fab /> */}
         </>
     )
 }
