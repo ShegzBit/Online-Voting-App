@@ -8,26 +8,15 @@ import { IoCopyOutline } from "react-icons/io5";
 import { getElection } from '@/lib/electionHelper'
 import { FaArrowRightLong } from "react-icons/fa6";
 import { useUser } from '@/app/contexts/userContext'
+import { useElection } from '../contexts/electionContext';
 
 
 
-export default function Overview({electionId}) {
-    const [election, setElection] = useState({})
-    
-    useEffect(() => {
-        const getData = async () => {
-            try {
-                const res = await getElection(electionId)
-                if (res) {
-                    setElection(res)
-                }
-            } catch (e) {
-                console.log(e)
-            }
-        }
-        getData()
-    }, [])
+export default function Overview() {
+    const { election } = useElection()
+
     console.log(election)
+
     return (
         <Accordion className="mt-2 d-flex flex-column gap-1" defaultActiveKey="0" flush>
             <Accordion.Item className="border border-2" eventKey="0">
@@ -39,7 +28,7 @@ export default function Overview({electionId}) {
             <Accordion.Item className="border border-2" eventKey="1">
                 <Accordion.Header>Project Customization</Accordion.Header>
                 <Accordion.Body>
-                    <ProjectCustomization election={setElection} />
+                    <ProjectCustomization election={election} />
                 </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item className="border border-2" eventKey="2">
@@ -59,7 +48,8 @@ export default function Overview({electionId}) {
 }
 
 
-function ProjectDetails({election}) {
+function ProjectDetails({}) {
+    const { election } = useElection()
     const { user } = useUser()
 
     return (
