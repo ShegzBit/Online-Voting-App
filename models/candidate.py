@@ -19,7 +19,7 @@ class Candidate(BaseModel, Base):
     position = Column(String(128), nullable=False)
     manifesto = Column(String(1024), default="", nullable=False)
     votes = Column(Integer, default=0, nullable=False)
-    # profile_picture = Column(String(128), default="api/v1/image/default.png", nullable=False)
+    # profile_image = Column(String(128), default="api/v1/image/default.png", nullable=False)
     election_id = Column(String(60), ForeignKey('elections.id'),
                          nullable=False)
 
@@ -50,6 +50,7 @@ class Candidate(BaseModel, Base):
         Returns the dictionary state of the election
         """
         super_dict = super().to_dict()
+        super_dict.update({'image_address': 'api/v1/images/' + self.id})
         try:
             del super_dict['election']
             return super_dict
