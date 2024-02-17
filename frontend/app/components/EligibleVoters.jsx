@@ -7,18 +7,19 @@ import { updateElection, getElection } from '@/lib/electionHelper'
 
 
 export default function EligibleVoters({electionId}) {
-    const [election, setElection] = useState({})
+    const [election, setElection] = useState()
 
-    const fetchElection = async () => {
-        try {
-          const election = await getElection(electionId)
-          setElection(election)
-          console.log(election)
-        } catch(e) {
-            console.log(e)
-        }
-    }
+    
     useEffect(() => {
+        const fetchElection = async () => {
+            try {
+              const election = await getElection(electionId)
+              setElection(election)
+              console.log(election)
+            } catch(e) {
+                console.log(e)
+            }
+        }
         fetchElection()
     }, [])
 
