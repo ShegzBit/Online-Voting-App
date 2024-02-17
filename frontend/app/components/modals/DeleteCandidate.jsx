@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { getElection } from "@/lib/electionHelper";
+import { deleteCandidate, getElection } from "@/lib/electionHelper";
 import { useUser } from "@/app/contexts/userContext";
 import { useElection } from "@/app/contexts/electionContext";
 
@@ -11,13 +11,13 @@ export default function DeleteCandidate({ show, onHide, contestant}) {
 
   const handleSubmit = async () => {
     try {
-      const res = await updateCandidate(user?.id, election.id)
-      consol
+      const res = await deleteCandidate(user?.id, contestant.election_id, contestant.id)
+      console.log(res)
       const updatedElection = await getElection(contestant.election_id)
       setElection(updatedElection)
       onHide(false)
     } catch (e) {
-      
+      console.log(e)
     }
   }
 
