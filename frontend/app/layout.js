@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "react-datetime/css/react-datetime.css";
 import { UserProvider } from "./contexts/userContext";
 import { ElectionsProvider } from "./contexts/electionsContext";
-import { ElectionProvider } from "./contexts/electionsContext";
+import { ElectionProvider } from "./contexts/electionContext";
 
 
 // const inter = Inter({ subsets: ["latin"] });
