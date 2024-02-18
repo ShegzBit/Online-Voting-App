@@ -8,7 +8,7 @@ import os
 IMAGE_FOLDER = 'candidate_images/'
 
 @ovs_candidate_image.route('/<candidate_id>', methods=['GET'], strict_slashes=False)
-def get_candidate_image(candidate_image):
+def get_candidate_image(candidate_id):
     """
     This function retrieves the image of a candidate
     """
@@ -21,7 +21,7 @@ def get_candidate_image(candidate_image):
         abort(404)
 
 @ovs_candidate_image.route('/<candidate_id>', methods=['DELETE'], strict_slashes=False)
-def delete_candidate_image(candidate_image):
+def delete_candidate_image(candidate_id):
     """
     This function deletes the image of a candidate
     """
@@ -35,7 +35,7 @@ def delete_candidate_image(candidate_image):
         abort(404)
 
 @ovs_candidate_image.route('/<candidate_id>', methods=['POST'], strict_slashes=False)
-def post_image(candidate_image):
+def post_image(candidate_id):
     """
     This function uploads the image of a candidate
     """
