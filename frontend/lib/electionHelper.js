@@ -77,6 +77,18 @@ const deleteCandidate = async (admin_id, election_id, candidate_id) => {
     throw Error(e);
   }
 };
+
+const deleteElection = async (admin_id, election_id) => {
+  try {
+    const res = await axios.delete(
+      `http://localhost:5000/api/v1/admin/${admin_id}/election/${election_id}`
+    );
+    return res.data;
+  } catch (e) {
+    console.log(e);
+    throw Error(e);
+  }
+};
 export {
   getElections,
   createElection,
@@ -84,4 +96,5 @@ export {
   updateElection,
   updateCandidate,
   deleteCandidate,
+  deleteElection,
 };
