@@ -5,11 +5,12 @@ import DashBoard from "@/app/components/DashBoard"
 import { getElections } from "@/lib/electionHelper";
 import { useUser } from "../contexts/userContext";
 import { getUser } from "@/lib/authHelper";
+import { useElections } from "../contexts/electionsContext";
 
 
 export default function ElectionsPage() {
     const [isEmpty, setIsEmpty] = useState(false)
-    const [elections, setElections] = useState([])
+    const {elections, updateElections} = useElections()
     const { user, updateUser } = useUser()
 
 
@@ -22,7 +23,7 @@ export default function ElectionsPage() {
             try {
                 if (user?.id) {
                     const res = await getElections(user?.id)
-                    setElections(res)
+                    updateElections(res)
                     if (res.length === 0) {
                         setIsEmpty(true)
                     }
@@ -31,7 +32,6 @@ export default function ElectionsPage() {
                 console.log(e)
             }
         }
-        
         fetchElections()
     }, [user])
 
@@ -41,5 +41,3 @@ export default function ElectionsPage() {
         </>
     )
 }
-
-
