@@ -3,7 +3,7 @@
 import { FaPlus } from 'react-icons/fa'
 import AddNewVoter from '@/app/components/modals/AddNewVoter'
 import { useState, useEffect } from 'react'
-import EditVoter from './modals/EditVoter'
+import EditVoter from './modals/EditVoter.jsx'
 import { SlOptionsVertical } from "react-icons/sl";
 import { useElection } from '@/app/contexts/electionContext'
 import DeleteVoter from './modals/DeleteVoter'
