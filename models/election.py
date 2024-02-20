@@ -203,6 +203,7 @@ class Election(BaseModel, Base):
         if len(self.voters_id) == 0:
             raise ValueError("No voters added")
         self.status = "Ongoing"
+        models.storage.save()
 
     def end_election(self):
         """ End the election
@@ -233,6 +234,7 @@ class Election(BaseModel, Base):
             self.status = "Ongoing"
         else:
             self.status = "Completed"
+        models.storage.save()
 
         return self.status
 
