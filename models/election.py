@@ -277,6 +277,8 @@ class Election(BaseModel, Base):
         Converts the election to a dictionary of key-value pairs
         """
         self.status = self.get_election_status()
+        models.storage.save()
+
         main_dict = super().to_dict()
         main_dict['candidates'] = [c.to_dict() for c in self.candidates]
         main_dict['voters_id'] = list(self.voters_id)
