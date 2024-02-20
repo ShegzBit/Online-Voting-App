@@ -165,7 +165,28 @@ class Election(BaseModel, Base):
     def add_voters_id(self, ids=set()):
         """ Add voters id to the election
         """
-        self.voters_id.update(ids)
+        for id in ids:
+            if id:
+                self.voters_id.add(id)
+        self.expected_voters = len(self.voters_id)
+        models.storage.save()
+
+    def update_voters_id(self, old_id, new_id):
+        """ Update voters id
+        """
+        if old_id in self.voters_id:
+            self.voters_id.remove(old_id)
+        if new_id:
+            self.voters_id.add(new_id)
+        self.expected_voters = len(self.voters_id)
+        models.storage.save()
+        return self.voters_id
+    
+    def remove_voters_id(self, id):
+        """ Remove voters id
+        """
+        if id in self.voters_id:
+            self.voters_id.remove(id)
         self.expected_voters = len(self.voters_id)
         models.storage.save()
 
