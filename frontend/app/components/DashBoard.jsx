@@ -2,18 +2,11 @@
 
 import Fab from './Fab';
 import NewElection from './modals/NewElection';
-import { getElections } from "@/lib/electionHelper"
 import EmptyElections from './EmptyElections';
 import ElectionCard from './ElectionCard'
-import { useEffect, useState } from 'react'
 import { useElections } from '../contexts/electionsContext';
 
-export default function DashBoard({ toggle, isEmpty, id, data }) {
-    const {updateElections } = useElections()
-
-    useEffect(() => {
-        updateElections(data)
-    }, [data])
+export default function DashBoard({isEmpty }) {
 
     return (
         <>

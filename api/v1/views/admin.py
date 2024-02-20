@@ -158,6 +158,56 @@ def update_election_by_admin(admin_id, election_id):
     abort(404, 'Election not found')
 
 
+@ovs_elect.route('/admin/<admin_id>/election/<election_id>/voters_id',
+                 methods=['PUT'], strict_slashes=False)
+def update_election_voters_id_by_admin(admin_id, election_id):
+    """ Update voters_id of an election by admin
+    """
+    admin = storage.get('Admin', admin_id)
+    if not admin:
+        abort(404, 'Admin not found')
+    election = storage.get('Election', election_id)
+    if election in admin.elections:
+        data = request.get_json()
+        if not data:
+            abort(400, 'Not a JSON')
+        if 'new_id' not in data:
+            abort(400, 'Missing new voters id')
+        if 'old_id' not in data:
+            abort(400, 'Missing old voters id')
+        try:
+            voters_id = election.update_voters_id(old_id=data['old_id'],
+                                                  new_id=data['new_id'])
+        except ValueError as e:
+            abort(400, str(e))
+        new = {'voters_id': voters_id}
+        return jsonify(new), 200
+    abort(404, 'Election not found')
+
+
+@ovs_elect.route('/admin/<admin_id>/election/<election_id>/voters_id',
+                 methods=['DELETE'], strict_slashes=False)
+def delete_election_voters_id_by_admin(admin_id, election_id):
+    """ Delete voters_id of an election by admin
+    """
+    admin = storage.get('Admin', admin_id)
+    if not admin:
+        abort(404, 'Admin not found')
+    election = storage.get('Election', election_id)
+    if election in admin.elections:
+        data = request.get_json()
+        if not data:
+            abort(400, 'Not a JSON')
+        if 'voters_id' not in data:
+            abort(400, 'Missing voters id')
+        try:
+            election.remove_voters_id(data['voters_id'])
+        except ValueError as e:
+            abort(400, str(e))
+        return jsonify({}), 200
+    abort(404, 'Election not found')
+
+
 # @ovs_elect.route('/admin/<admin_id>/election/<election_id>/candidate',
 #                  methods=['POST'], strict_slashes=False)
 # def add_candidates_by_election(admin_id, election_id):
