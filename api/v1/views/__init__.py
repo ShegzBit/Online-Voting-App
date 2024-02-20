@@ -11,4 +11,4 @@ from api.v1.views.admin import *
 from api.v1.views.candidate import *
 from api.v1.views.index import *
 from api.v1.views.ovs_election import *
-from api.v1.candidate_image import *
+from api.v1.views.candidate_image import *
