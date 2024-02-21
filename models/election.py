@@ -165,7 +165,28 @@ class Election(BaseModel, Base):
     def add_voters_id(self, ids=set()):
         """ Add voters id to the election
         """
-        self.voters_id.update(ids)
+        for id in ids:
+            if id:
+                self.voters_id.add(id)
+        self.expected_voters = len(self.voters_id)
+        models.storage.save()
+
+    def update_voters_id(self, old_id, new_id):
+        """ Update voters id
+        """
+        if old_id in self.voters_id:
+            self.voters_id.remove(old_id)
+        if new_id:
+            self.voters_id.add(new_id)
+        self.expected_voters = len(self.voters_id)
+        models.storage.save()
+        return self.voters_id
+    
+    def remove_voters_id(self, id):
+        """ Remove voters id
+        """
+        if id in self.voters_id:
+            self.voters_id.remove(id)
         self.expected_voters = len(self.voters_id)
         models.storage.save()
 
@@ -182,6 +203,7 @@ class Election(BaseModel, Base):
         if len(self.voters_id) == 0:
             raise ValueError("No voters added")
         self.status = "Ongoing"
+        models.storage.save()
 
     def end_election(self):
         """ End the election
@@ -212,6 +234,7 @@ class Election(BaseModel, Base):
             self.status = "Ongoing"
         else:
             self.status = "Completed"
+        models.storage.save()
 
         return self.status
 
@@ -255,6 +278,9 @@ class Election(BaseModel, Base):
         """
         Converts the election to a dictionary of key-value pairs
         """
+        self.status = self.get_election_status()
+        models.storage.save()
+
         main_dict = super().to_dict()
         main_dict['candidates'] = [c.to_dict() for c in self.candidates]
         main_dict['voters_id'] = list(self.voters_id)

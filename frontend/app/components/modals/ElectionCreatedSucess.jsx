@@ -1,15 +1,10 @@
 import Button from "../Button"
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { Modal } from "react-bootstrap"
+import Link from 'next/link'
 
-export default function ProjectCreated({ show, onHide, electionId }) {
-    const [isOpen, setIsOpen] = useState(show)
-    const router = useRouter()
-    const handleClick = () => {
-        // onHide()
-        return router.push(`/elections/${electionId}`)
-    }
+export default function ProjectCreated({ show, electionId }) {
+
     return (
         <>
             <Modal show={show}>
@@ -24,7 +19,9 @@ export default function ProjectCreated({ show, onHide, electionId }) {
                         </div>
                         <div className="modal-footer">
                             {/* <button onClick={handleClick} type="button" className="btn btn-outline-secondary px-5">Finish setting up</button> */}
-                            <Button cb={handleClick} text="Finish setting up" classNames="px-5 w-100" />
+                            {/* <Button text="Finish setting up" classNames="px-5 w-100"> */}
+                                <Link className="px-5 w-100 btn btn-gradient btn-primary" href={`/elections/${electionId}`}>Finish setting up</Link>
+                            {/* </Button> */}
                         </div>
                     {/* </div>
                 </div> */}
