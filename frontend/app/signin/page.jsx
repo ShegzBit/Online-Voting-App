@@ -92,7 +92,7 @@ export default function SignInPage() {
                         <div className="d-grid gap-2">
                             {/* <button href="#" className="btn btn-primary">Submit</button> */}
                             <Button text={loading ? <Loader /> : "Sign In"} cb={handleSubmit} disabled={loading} />
-                            <p className="mt-3 text-center">Don’t have an account? <a href="#" className=" fw-semibold link-success link-offset-2 link-underline link-underline-opacity-0">Sign Up</a></p>
+                            <p className="mt-3 text-center">Don’t have an account? <a href="https://pollmaster.me/signup" className=" fw-semibold link-success link-offset-2 link-underline link-underline-opacity-0">Sign Up</a></p>
                         </div>
                     </div>
                 </div>
