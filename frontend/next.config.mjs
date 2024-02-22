@@ -8,7 +8,11 @@ const nextConfig = {
                 permanent: false
             }
         ]
-    }
+    },
+    images: {
+        domains: ['res.cloudinary.com', 'placehold.co'],
+        dangerouslyAllowSVG: true
+      },
 };
 
 
