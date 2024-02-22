@@ -1,3 +1,4 @@
+/* Sign in page */
 "use client"
 import { signIn } from "@/lib/authHelper"
 import Button from "../components/Button"
@@ -87,12 +88,12 @@ export default function SignInPage() {
                             </div>
                         </Form>
                         <div className="mb-5">
-                            <a href="#" className="link-success link-offset-2 link-underline link-underline-opacity-0 " style={{ fontSize: ".8rem" }}>Forgot password?</a>
+                            <a href="/forgotpassword" className="link-success link-offset-2 link-underline link-underline-opacity-0 " style={{ fontSize: ".8rem" }}>Forgot password?</a>
                         </div>
                         <div className="d-grid gap-2">
                             {/* <button href="#" className="btn btn-primary">Submit</button> */}
                             <Button text={loading ? <Loader /> : "Sign In"} cb={handleSubmit} disabled={loading} />
-                            <p className="mt-3 text-center">Don’t have an account? <a href="#" className=" fw-semibold link-success link-offset-2 link-underline link-underline-opacity-0">Sign Up</a></p>
+                            <p className="mt-3 text-center">Don’t have an account? <a href="/signup" className=" fw-semibold link-success link-offset-2 link-underline link-underline-opacity-0">Sign Up</a></p>
                         </div>
                     </div>
                 </div>
