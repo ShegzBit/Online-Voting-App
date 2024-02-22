@@ -15,7 +15,7 @@ import DeleteCandidate from "./modals/DeleteCandidate";
 export default function Ballot({ electionId }) {
   const [empty, setEmpty] = useState(false);
   const { election } = useElection();
-
+  console.log(process.env.API_KEY, "hello")
   useEffect(() => {
     if (election?.candidates.length === 0) {
       setEmpty(true);
