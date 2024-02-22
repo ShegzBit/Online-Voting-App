@@ -4,7 +4,7 @@ import Image from "next/image";
 
 function LiveResults() {
     const { election } = useElection();
-  
+
     const groupedByPosition = election?.candidates.reduce((acc, obj) => {
       const key = obj.position;
       if (!acc[key]) {
@@ -13,7 +13,6 @@ function LiveResults() {
       acc[key].push(obj);
       return acc;
     }, {});
-  
     
     const positions = Object.keys(groupedByPosition);
     return (
@@ -32,7 +31,7 @@ function LiveResults() {
                   {groupedByPosition[element].map((obj, j) => (
                     <div className="d-flex justify-content-between align-content-center col-lg-6 col-md-6 col-sm-12" key={j}>
                       <div className="d-flex gap-3">
-                        <Image src={obj.image} alt={obj.full_name} width={50} height={50} />
+                        <Image src={obj.profile_image} alt={obj.full_name} width={50} height={50} />
                         <div>
                         <p className="">{obj.full_name}</p>
                         <p className="">Votes: {obj.votes}</p>
