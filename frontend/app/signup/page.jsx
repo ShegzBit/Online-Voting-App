@@ -118,7 +118,7 @@ export default function SignUp() {
                         <div className="d-grid gap-2">
                             {/* <button href="#" className="btn btn-primary">Submit</button> */}
                             <Button cb={handleSubmit} text={loading ? <Loader /> : "Sign Up"} disabled={loading}/>
-                            <p className="mt-3 text-center">Already have an account? <a href="#" className=" fw-semibold link-success link-offset-2 link-underline link-underline-opacity-0">Log in here </a></p>
+                            <p className="mt-3 text-center">Already have an account? <a href="/signin" className=" fw-semibold link-success link-offset-2 link-underline link-underline-opacity-0">Log in here </a></p>
                         </div>
                     </div>
                 </div>
