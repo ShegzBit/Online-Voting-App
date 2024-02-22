@@ -92,14 +92,13 @@ const deleteElection = async (admin_id, election_id) => {
 
 const addCandidateImage = async (data) => {
   try {
-    console.log(process.env.API_KEY)
     const res = await axios.post(
       `https://api.shuttersync.live/api/photo`,
       data,
       {
-        // headers: {
-        //   "x-api-key": 'M0HKGyjYFoMamr7b0hPd_',
-        // }
+        headers: {
+          "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
+        }
       }
     );
     return res.data;
