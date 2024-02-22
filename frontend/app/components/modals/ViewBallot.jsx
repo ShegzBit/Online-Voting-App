@@ -23,7 +23,7 @@ function ViewBallot({ show, onHide, contestant }) {
         <Modal.Body>
           <div className='d-flex justify-content-center'>
             <Image src={contestant.profile_image} alt={contestant.full_name} width={120} height={120}
-            className='rounded-circle mb-4'
+            className='rounded-circle mb-4 object-fit-cover'
             />
           </div>
           <div className="mb-3">
