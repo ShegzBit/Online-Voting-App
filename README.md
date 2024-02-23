@@ -2,6 +2,14 @@
 
 This is an online voting system built with Python, using Flask and SQLAlchemy.
 
+This application aims to simplify and enhance the voting experience, allowing
+eligible voters to cast their ballots conveniently from any location with internet
+access. We ensure our application has a very good user interface and experience,
+as well as very reliable and sophisticated API. Pollmaster web interface and its
+API with designed routes can be accessed at [https://pollmaster.me](https://pollmaster.me) and [https://api.pollmaster.me](https://api.pollmaster.me) respectively.
+
+![Application web interface](./frontend/public/OVS_Screenshot.png)
+
 ## Features
 
 - Create and manage elections
@@ -9,7 +17,7 @@ This is an online voting system built with Python, using Flask and SQLAlchemy.
 - Voters can vote for candidates in an election
 - View election results
 
-## Installation
+## Installation and Usage
 
 1. Clone the repository:
     ```
@@ -212,25 +220,58 @@ This is an online voting system built with Python, using Flask and SQLAlchemy.
         "status": "successful"
     }
 	```
+## Usage
+
+When the application is accessed at [pollmaster.me](https://pollmaster.webflow.io/),
+a new administrator would firstly need to sign-up, before he could sign-in. On the
+administrator dashboard, an election instance can be created with a title,
+starting date and ending date using the button at the right-bottom corner of the
+screen. Then, the election ballots and the eligible voters ID can be added on
+the displayed page. The voting link can then be shared to the eligible voters
+after the setup and they can cast their ballot without any sign-up requirement.
+
+Election can be activated by an administrator and started instantly if it is
+already the starting time or started automatically at the appropriate stated
+time. Real-time monitoring feature is also available as well as other features.
+
 ## Testing
 
 To run the tests, use the following command:
 ```
 python3 -m unittest discover tests
 ```
+## Authors
 
-## Accessing the Application
-### Web interface
+### Fawaz Abdganiyu <fawazabdganiyu@gmail.com> [GitHub](https://github.com/Fawazabdganiyu/) / [LinkedIn](https://www.linkedin.com/in/fawaz-abdganiyu/)
 
-The landing page can be found at [https://pollmaster.webflow.io/](https://pollmaster.webflow.io/).
+#### Role
 
-The application is hosted at [https://pollmaster.me](https://pollmaster.me).
+Backend Engineer and DevOps Engineer
 
-You can use them by navigating these URLs in your web browser.
+Fawaz aims to be a full-stack engineer, but found himself doing well and more
+interested in Backend development and DevOps engineering. He embraced this
+challenge to enhance his expertise in these domain and be more relevant in the field.
 
-### API
-An api request can be made to the application with [https://api.pollmaster.me](https://api.pollmaster.me) appended with
-the appropriate route.
+### Gabriel Awotubo <feranmiawotubo16@gmail.com> [GitHub](https://github.com/ShegzBit) / [LinkedIn](https://www.linkedin.com/in/feranmi-awotubo-a2ba2b263/)
+
+#### Role
+
+Backend Engineer
+
+Gabriel intends to pursue a full-stack role and work as a freelancer after
+acquiring the neccesary skills, which ultimately leads him to taking on this
+challenge as early as this to gain hands on experience and prepare himself
+for actual jobs.
+
+### Hamida Mahama <mahamahamida@gmail.com> [GitHub](https://github.com/AngryDuchess) / [LinkedIn]()
+
+#### Role
+
+UI/UX designer and Frontend Engineer
+
 ## Contributing
 
-## License
+This project is an open source project, your contribution would highly be appreciated.
+Please read the [contributing guidelines](CONTRIBUTING.md) first.
+
+# License
