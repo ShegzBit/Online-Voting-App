@@ -102,7 +102,7 @@ export default function SignUp() {
                             <div className="">
                                 {/* <label htmlFor="floatingPassword" style={{ fontSize: ".7rem"}}>Country</label> */}
                                 <select className="form-select py-3 rounded-4" aria-label="Default select example" disabled>
-                                    <option defaultValue={'+233'}>+233</option>
+                                    <option defaultValue={'+234'}>+234</option>
                                     <option value="1">One</option>
                                 </select>
                             </div>

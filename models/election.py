@@ -203,6 +203,7 @@ class Election(BaseModel, Base):
         if len(self.voters_id) == 0:
             raise ValueError("No voters added")
         self.status = "Ongoing"
+        models.storage.save()
 
     def end_election(self):
         """ End the election
@@ -233,6 +234,7 @@ class Election(BaseModel, Base):
             self.status = "Ongoing"
         else:
             self.status = "Completed"
+        models.storage.save()
 
         return self.status
 
@@ -276,6 +278,9 @@ class Election(BaseModel, Base):
         """
         Converts the election to a dictionary of key-value pairs
         """
+        self.status = self.get_election_status()
+        models.storage.save()
+
         main_dict = super().to_dict()
         main_dict['candidates'] = [c.to_dict() for c in self.candidates]
         main_dict['voters_id'] = list(self.voters_id)
@@ -297,3 +302,6 @@ class Election(BaseModel, Base):
         #                 if all(hasattr(v, 'to_dict') for v in value):
         #                     dict_state[prop] = [v.to_dict() for v in value]
         return main_dict
+    
+    def __str__(self):
+        return f'Election: {self.title} - {self.public_id}'
