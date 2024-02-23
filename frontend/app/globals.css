@@ -93,3 +93,7 @@ input[type="radio"]:checked {
 ::placeholder, label{
   color: #024647 !important;
 }
+
+.link-success:hover{
+  text-decoration: underline;
+}

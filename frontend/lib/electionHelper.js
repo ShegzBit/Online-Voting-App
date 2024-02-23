@@ -89,6 +89,24 @@ const deleteElection = async (admin_id, election_id) => {
     throw Error(e);
   }
 };
+
+const addCandidateImage = async (data) => {
+  try {
+    const res = await axios.post(
+      `https://api.shuttersync.live/api/photo`,
+      data,
+      {
+        headers: {
+          "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
+        }
+      }
+    );
+    return res.data;
+  } catch (e) {
+    console.log(e);
+    throw Error(e);
+  }
+}
 export {
   getElections,
   createElection,
@@ -97,4 +115,5 @@ export {
   updateCandidate,
   deleteCandidate,
   deleteElection,
+  addCandidateImage
 };

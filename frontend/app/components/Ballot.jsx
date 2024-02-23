@@ -1,21 +1,16 @@
-import { FaPlus } from "react-icons/fa";
 import AddNewBallot from "@/app/components/modals/AddNewBallotModal";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
-import DropdownMenu from "react-bootstrap/DropdownMenu";
 import { useEffect, useState } from "react";
-import { HiBars2 } from "react-icons/hi2";
-import { SlOptionsVertical } from "react-icons/sl";
-import ViewBallot from "./modals/ViewBallot";
-import EditBallot from "./modals/EditBallot";
-import { useElection } from "../contexts/electionContext";
 import { Accordion } from "react-bootstrap";
+import { FaPlus } from "react-icons/fa";
+import { SlOptionsVertical } from "react-icons/sl";
+import { useElection } from "../contexts/electionContext";
 import DeleteCandidate from "./modals/DeleteCandidate";
+import EditBallot from "./modals/EditBallot";
+import ViewBallot from "./modals/ViewBallot";
 
 export default function Ballot({ electionId }) {
   const [empty, setEmpty] = useState(false);
   const { election } = useElection();
-
   useEffect(() => {
     if (election?.candidates.length === 0) {
       setEmpty(true);

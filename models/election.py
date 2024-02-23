@@ -302,3 +302,6 @@ class Election(BaseModel, Base):
         #                 if all(hasattr(v, 'to_dict') for v in value):
         #                     dict_state[prop] = [v.to_dict() for v in value]
         return main_dict
+    
+    def __str__(self):
+        return f'Election: {self.title} - {self.public_id}'

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { updateElection} from '@/lib/electionHelper'
+import { updateElection, addCandidateImage } from "@/lib/electionHelper";
 import { useUser } from "@/app/contexts/userContext";
 import { useElection } from "@/app/contexts/electionContext";
 import { getElection } from "@/lib/electionHelper";
@@ -12,36 +12,65 @@ function AddNewBallot({ show, onHide, electionId }) {
     last_name: "",
     position: "",
     isError: false,
+    profile_image: "",
   });
-  const { user } = useUser()
-  const { setElection } = useElection()
-
+  const [image, setImage] = useState("");
+  const { user } = useUser();
+  const { setElection } = useElection();
 
   const handleChange = (key) => (e) => {
-      setData({
-        ...data,
-        [key]: e.target.value,
-      });
+    setData({
+      ...data,
+      [key]: e.target.value,
+    });
   };
+
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  }
 
   const handleSubmit = async () => {
     try {
-      const {isError, ...rest} = data
-      const res = await updateElection(user?.id, electionId, {
-        candidates: [
-          {...rest}
-        ],
-      })
-      if (res) {
-        setElection(res)
-      }
-      const updatedElection = await getElection(electionId)
-      setElection(updatedElection)
-      onHide()
-    } catch (e) {
+      const formData = new FormData();
+      formData.append('photo', image);
+
+      console.log(image);
+      if (image) {
+        const imgRes = await addCandidateImage(formData);
+        setData({
+          ...data,
+          profile_image: imgRes?.imageUrl,
+        });
+
+      const { isError, ...rest } = data;
       
+      const res = await updateElection(user?.id, electionId, {
+        candidates: [{ ...rest, profile_image: imgRes?.imageUrl }],
+      });
+      if (res) {
+        setElection(res);
+      }
+      const updatedElection = await getElection(electionId);
+      setElection(updatedElection);
+      onHide();
+      }
+
+      if (!image) {
+        const { isError, ...rest } = data;
+        const res = await updateElection(user?.id, electionId, {
+          candidates: [{ ...rest, profile_image: 'https://placehold.co/600x400?text=No image' }],
+        });
+        if (res) {
+          setElection(res);
+        }
+        const updatedElection = await getElection(electionId);
+        setElection(updatedElection);
+        onHide();
+      }
+    } catch (e) {
+      console.log(e);
     }
-  }
+  };
 
   return (
     <>
@@ -52,7 +81,7 @@ function AddNewBallot({ show, onHide, electionId }) {
         <Modal.Body>
           <div className="mb-3">
             <label htmlFor="ballotName" className="form-label">
-            Candidate’s first name
+              Candidate’s first name
             </label>
             <input
               onChange={handleChange("first_name")}
@@ -66,7 +95,7 @@ function AddNewBallot({ show, onHide, electionId }) {
           </div>
           <div className="mb-3">
             <label htmlFor="ballotName" className="form-label">
-            Candidate’s last name
+              Candidate’s last name
             </label>
             <input
               onChange={handleChange("last_name")}
@@ -90,7 +119,14 @@ function AddNewBallot({ show, onHide, electionId }) {
               id="ballotLimit"
               placeholder="Enter name of position"
               onChange={handleChange("position")}
-
+            />
+            <input
+              type="file"
+              name="photo"
+              className="form-control rounded-4"
+              style={{ height: "56px" }}
+              id="photo"
+              onChange={handleImageChange}
             />
           </div>
           {/* <Contestants setContestants={setContestants} contestants={contestants}  /> */}

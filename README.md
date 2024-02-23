@@ -242,7 +242,7 @@ python3 -m unittest discover tests
 ```
 ## Authors
 
-### Fawaz Abdganiyu <fawazabdganiyu@gmail.com> [GitHub](https://github.com/Fawazabdganiyu/) / [LinkedIn](https://www.linkedin.com/in/fawaz-abdganiyu/)
+### Fawaz Abdganiyu - <fawazabdganiyu@gmail.com> / [GitHub](https://github.com/Fawazabdganiyu/) / [LinkedIn](https://www.linkedin.com/in/fawaz-abdganiyu/)
 
 #### Role
 
@@ -252,7 +252,7 @@ Fawaz aims to be a full-stack engineer, but found himself doing well and more
 interested in Backend development and DevOps engineering. He embraced this
 challenge to enhance his expertise in these domain and be more relevant in the field.
 
-### Gabriel Awotubo <feranmiawotubo16@gmail.com> [GitHub](https://github.com/ShegzBit) / [LinkedIn](https://www.linkedin.com/in/feranmi-awotubo-a2ba2b263/)
+### Gabriel Awotubo - <feranmiawotubo16@gmail.com> / [GitHub](https://github.com/ShegzBit) / [LinkedIn](https://www.linkedin.com/in/feranmi-awotubo-a2ba2b263/)
 
 #### Role
 
@@ -263,7 +263,7 @@ acquiring the neccesary skills, which ultimately leads him to taking on this
 challenge as early as this to gain hands on experience and prepare himself
 for actual jobs.
 
-### Hamida Mahama <mahamahamida@gmail.com> [GitHub](https://github.com/AngryDuchess) / [LinkedIn]()
+### Hamida Mahama - <mahamahamida@gmail.com> / [GitHub](https://github.com/AngryDuchess) / [LinkedIn]()
 
 #### Role
 

@@ -4,6 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import { GoTrash } from "react-icons/go";
 import { useElection } from '@/app/contexts/electionContext';
 import EditBallot from './EditBallot';
+import Image from 'next/image';
 
 
 function ViewBallot({ show, onHide, contestant }) {
@@ -20,6 +21,11 @@ function ViewBallot({ show, onHide, contestant }) {
           <Modal.Title className='fw-bold'>Candidate details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <div className='d-flex justify-content-center'>
+            <Image src={contestant.profile_image} alt={contestant.full_name} width={120} height={120}
+            className='rounded-circle mb-4 object-fit-cover'
+            />
+          </div>
           <div className="mb-3">
             <p className="fw-bold">Position</p>
             {/* <input type="text" className="form-control rounded-4" style={{ height: "56px" }} id="ballotName" placeholder="Enter name of ballot paper" /> */}
