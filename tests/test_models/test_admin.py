@@ -62,7 +62,7 @@ class TestAdminModel(unittest.TestCase):
                                            candidates=[Candidate(first_name='Test',
                                                                  last_name='Candidate',
                                                                 position='Test Position')])
-        
+
         updated_election = self.admin.update_election(election.id,
                                                       first_name='Updated',
                                                       last_name='Election')

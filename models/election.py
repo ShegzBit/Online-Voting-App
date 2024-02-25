@@ -81,8 +81,7 @@ class Election(BaseModel, Base):
         for position in self.positions:
             candidates = [candidate for candidate in self.candidates
                           if candidate.position == position]
-            results[position] = {candidate.full_name: candidate.votes
-                                for candidate in candidates}
+            results[position] = [candidate.to_dict() for candidate in candidates]
 
         self.results = results
         self.total_votes = sum([candidate.votes
