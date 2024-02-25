@@ -38,7 +38,7 @@ def create_election():
     # create the election
     admin_id = data['admin_id']
     election = data['election']
-    
+
     candidates = data.get('candidates', [])
     voters_id = set(data.get('voters_id', []))
 

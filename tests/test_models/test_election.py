@@ -14,8 +14,8 @@ class TestElection(unittest.TestCase):
     def setUp(self):
         """Set up the test environment."""
         self.admin = Admin(first_name="John", last_name="Doe",
-                            email=f"john_{short_uuid()}@gmail.com",
-                            password="password")
+                           email=f"john_{short_uuid()}@gmail.com",
+                           password="password")
         self.admin.save()
 
         self.election = Election(
@@ -113,35 +113,41 @@ class TestElection(unittest.TestCase):
         """
         # Create two elections
         election1 = Election(admin_id=self.admin.id,
-                             title="Election 1", start_date='2021-01-01 00:00:00',
+                             title="Election 1",
+                             start_date='2021-01-01 00:00:00',
                              end_date='2021-01-01 00:00:00',
                              voters_id={'voter1'})
         election1.save()
         election2 = Election(admin_id=self.admin.id,
-                             title="Election 2", start_date='2021-01-01 00:00:00',
+                             title="Election 2",
+                             start_date='2021-01-01 00:00:00',
                              end_date='2021-01-01 00:00:00',
                              voters_id={'voter2'})
         election2.save()
 
         # Add a candidate to each election
-        election1.add_candidate(first_name="John", last_name="Doe", position="President")
-        election2.add_candidate(first_name="Jane", last_name="Smith", position="Vice President")
+        election1.add_candidate(first_name="John", last_name="Doe",
+                                position="President")
+        election2.add_candidate(first_name="Jane", last_name="Smith",
+                                position="Vice President")
 
         # Check the positions and ballots for election1
         self.assertEqual(election1.positions, {"President"})
-        self.assertEqual(election1.ballots, [{"name": "President", "candidates": ["John Doe"]}])
+        self.assertEqual(election1.ballots, [{"name": "President",
+                                              "candidates": ["John Doe"]}])
 
         # Check the positions and ballots for election2
         self.assertEqual(election2.positions, {"Vice President"})
-        self.assertEqual(election2.ballots, [{"name": "Vice President", "candidates": ["Jane Smith"]}])
+        self.assertEqual(election2.ballots, [{"name": "Vice President",
+                                              "candidates": ["Jane Smith"]}])
 
     def test_compute_results_no_votes(self):
         """Test the compute_results method with no votes."""
         self.election.add_candidate(first_name="John",
                                     last_name="Doe",
-                                   party="Party A",
-                                   position="President",
-                                   manifesto="Manifesto A")
+                                    party="Party A",
+                                    position="President",
+                                    manifesto="Manifesto A")
         self.election.add_candidate(first_name="Jane",
                                     last_name="Doe",
                                     party="Party B",
@@ -149,33 +155,55 @@ class TestElection(unittest.TestCase):
                                     manifesto="Manifesto B")
         self.election.compute_results()
 
-        self.assertEqual(self.election.results.get('President')[0].get('votes'), 0)
-        self.assertEqual(self.election.results.get('Vice President')[0].get('votes'), 0)
+        self.assertEqual(
+            self.election.results.get('President')[0].get('votes'),
+            0
+        )
+        self.assertEqual(
+            self.election.results.get('Vice President')[0].get('votes'),
+            0
+        )
 
     def test_compute_results_with_votes(self):
         """Test the compute_results method with votes."""
-        john = Candidate(first_name="John", last_name="Doe", position="President")
+        john = Candidate(first_name="John", last_name="Doe",
+                         position="President")
         john.votes = 5
         self.election.candidates.append(john)
-        jane = Candidate(first_name="Jane", last_name="Doe", position="Vice President")
+        jane = Candidate(first_name="Jane", last_name="Doe",
+                         position="Vice President")
         jane.votes = 3
         self.election.candidates.append(jane)
         self.election.compute_results()
 
-        self.assertEqual(self.election.results.get('President')[0].get('votes'), 5)
-        self.assertEqual(self.election.results.get('Vice President')[0].get('votes'), 3)
+        self.assertEqual(
+            self.election.results.get('President')[0].get('votes'),
+            5
+        )
+        self.assertEqual(
+            self.election.results.get('Vice President')[0].get('votes'),
+            3
+        )
 
     def test_compute_results_multiple_candidates_same_position(self):
-        """Test the compute_results method with multiple candidates for the same position."""
+        """Test the method with multiple candidates for the same position."""
         self.election.save()
-        john = {'first_name': "John", 'last_name': "Doe", 'position': "President", 'votes': 5}
+        john = {'first_name': "John", 'last_name': "Doe", 'position':
+                "President", 'votes': 5}
         self.election.add_candidate(**john)
-        alice = {'first_name': "Alice", 'last_name': "Smith", 'position': "President", 'votes': 5}
+        alice = {'first_name': "Alice", 'last_name': "Smith", 'position':
+                 "President", 'votes': 5}
         self.election.add_candidate(**alice)
         self.election.compute_results()
 
-        self.assertEqual(self.election.results.get('President')[0].get('votes'), 5)
-        self.assertEqual(self.election.results.get('President')[1].get('votes'), 5)
+        self.assertEqual(
+            self.election.results.get('President')[0].get('votes'),
+            5
+        )
+        self.assertEqual(
+            self.election.results.get('President')[1].get('votes'),
+            5
+        )
 
     def test_public_key(self):
         """ Test that public_key is a short UUID """
@@ -207,6 +235,7 @@ class TestElection(unittest.TestCase):
                                     email="jane.doe@example.com",
                                     candidate_id="candidate1",
                                     voter_id="invalid_voter_id")
+
     def test_add_candidate(self):
         """Test the add_candidate method with valid arguments."""
         self.election.add_candidate(
@@ -239,14 +268,16 @@ class TestElection(unittest.TestCase):
         """Test updating the start_date of the election."""
         old_start_date = self.election.start_date
         new_start_date = datetime.now() + timedelta(days=3)
-        self.election.update_state(start_date=new_start_date.strftime('%Y-%m-%d %H:%M:%S'))
+        self.election.update_state(start_date=new_start_date
+                                   .strftime('%Y-%m-%d %H:%M:%S'))
         self.assertNotEqual(self.election.start_date, old_start_date)
 
     def test_update_state_end_date(self):
         """Test updating the end_date of the election."""
         new_end_date = datetime.now() + timedelta(days=4)
         old_end_date = self.election.end_date
-        self.election.update_state(end_date=new_end_date.strftime('%Y-%m-%d %H:%M:%S'))
+        self.election.update_state(end_date=new_end_date
+                                   .strftime('%Y-%m-%d %H:%M:%S'))
         self.assertNotEqual(self.election.end_date, old_end_date)
 
     def test_update_state_voters_id(self):
@@ -255,30 +286,33 @@ class TestElection(unittest.TestCase):
         if len(self.election.voters_id) == 0:
             self.election.add_voters_id({'voter1'})
         self.election.update_state(voters_id=new_voters_id)
-        self.assertEqual(self.election.voters_id, {'voter1', 'voter2', 'voter3'})
-    
+        self.assertEqual(self.election.voters_id,
+                         {'voter1', 'voter2', 'voter3'})
+
     def test_update_state_invalid_date_format(self):
         """Test updating the election with an invalid date format."""
         with self.assertRaises(ValueError):
             self.election.update_state(start_date='invalid_date_format')
-        
+
     def test_update_state_candidates(self):
         """Test updating the candidates of the election."""
         new_candidates = [
-            {'first_name': 'Alice', 'last_name': 'Johnson', 'party': 'Party A', 'position': 'Treasurer', 'manifesto': 'I will work hard!'},
-            {'first_name': 'Bob', 'last_name': 'Williams', 'party': 'Party B', 'position': 'Secretary', 'manifesto': 'I will bring change!'},
-            {'first_name': 'Charlie', 'last_name': 'Brown', 'party': 'Party C', 'position': 'President', 'manifesto': 'I will make a difference!'}
+            {'first_name': 'Alice', 'last_name': 'Johnson', 'party': 'Party A',
+             'position': 'Treasurer', 'manifesto': 'I will work hard!'},
+            {'first_name': 'Bob', 'last_name': 'Williams', 'party': 'Party B',
+             'position': 'Secretary', 'manifesto': 'I will bring change!'},
+            {'first_name': 'Charlie', 'last_name': 'Brown', 'party': 'Party C',
+             'position': 'President', 'manifesto': 'I will make a difference!'}
         ]
 
         self.election.update_state(candidates=new_candidates)
         self.assertEqual(len(self.election.candidates), 3)
 
-
     class TestElectionActivation(unittest.TestCase):
         def setUp(self):
             self.admin = Admin(first_name="John", last_name="Doe",
                                email="fawaz@gmail.com",
-                                 password="password")
+                               password="password")
             self.admin.save()
 
             self.election = Election(
@@ -303,11 +337,14 @@ class TestElection(unittest.TestCase):
             self.assertEqual(mock_timer.call_count, 2)
 
             # Check that the first Timer was set with the correct delay
-            start_delay = (self.election.start_date - datetime.now()).total_seconds()
-            mock_timer.assert_any_call(start_delay, self.election.start_election)
+            start_delay = (self.election.start_date
+                           - datetime.now()).total_seconds()
+            mock_timer.assert_any_call(start_delay,
+                                       self.election.start_election)
 
             # Check that the second Timer was set with the correct delay
-            end_delay = (self.election.end_date - datetime.now()).total_seconds()
+            end_delay = (self.election.end_date
+                         - datetime.now()).total_seconds()
             mock_timer.assert_any_call(end_delay, self.election.end_election)
 
             # Check that start was called on both Timer instances
