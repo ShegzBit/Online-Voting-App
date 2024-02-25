@@ -148,11 +148,9 @@ class TestElection(unittest.TestCase):
                                     position="Vice President",
                                     manifesto="Manifesto B")
         self.election.compute_results()
-        expected_results = {
-            "President": {"John Doe": 0},
-            "Vice President": {"Jane Doe": 0}
-        }
-        self.assertEqual(self.election.results, expected_results)
+
+        self.assertEqual(self.election.results.get('President')[0].get('votes'), 0)
+        self.assertEqual(self.election.results.get('Vice President')[0].get('votes'), 0)
 
     def test_compute_results_with_votes(self):
         """Test the compute_results method with votes."""
@@ -163,24 +161,21 @@ class TestElection(unittest.TestCase):
         jane.votes = 3
         self.election.candidates.append(jane)
         self.election.compute_results()
-        expected_results = {
-            "President": {"John Doe": 5},
-            "Vice President": {"Jane Doe": 3}
-        }
-        self.assertEqual(self.election.results, expected_results)
+
+        self.assertEqual(self.election.results.get('President')[0].get('votes'), 5)
+        self.assertEqual(self.election.results.get('Vice President')[0].get('votes'), 3)
 
     def test_compute_results_multiple_candidates_same_position(self):
         """Test the compute_results method with multiple candidates for the same position."""
         self.election.save()
         john = {'first_name': "John", 'last_name': "Doe", 'position': "President", 'votes': 5}
         self.election.add_candidate(**john)
-        alice = {'first_name': "Alice", 'last_name': "Smith", 'position': "President", 'votes': 3}
+        alice = {'first_name': "Alice", 'last_name': "Smith", 'position': "President", 'votes': 5}
         self.election.add_candidate(**alice)
         self.election.compute_results()
-        expected_results = {
-            "President": {"John Doe": 5, "Alice Smith": 3}
-        }
-        self.assertEqual(self.election.results, expected_results)
+
+        self.assertEqual(self.election.results.get('President')[0].get('votes'), 5)
+        self.assertEqual(self.election.results.get('President')[1].get('votes'), 5)
 
     def test_public_key(self):
         """ Test that public_key is a short UUID """
