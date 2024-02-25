@@ -131,6 +131,9 @@ class Election(BaseModel, Base):
                                 "email": kwargs.get('email'),
                                 "voter_id": kwargs.get('voter_id')})
             models.storage.save()
+            return "successfull"
+        else:
+            raise ValueError("Election is not ongoing")
 
     def add_candidate(self, **kwargs):
         """ Add a candidate to the election

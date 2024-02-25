@@ -119,8 +119,11 @@ def vote(election_id):
     candidate = storage.get('Candidate', data['candidate_id'])
     if not candidate:
         abort(404, 'Candidate not found')
-    election.add_voter(**data)
-    return jsonify({}), 201
+    try:
+        vote_status = election.add_voter(**data)
+    except ValueError as e:
+        abort(400, str(e))
+    return jsonify({"status": vote_status}), 201
 
 
 @ovs_elect.route('/election/<election_id>/voters', methods=['GET'],
