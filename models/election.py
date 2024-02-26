@@ -19,6 +19,7 @@ class Election(BaseModel, Base):
     """
     __tablename__ = 'elections'
 
+    # elections table schema creation
     title = Column(String(128), nullable=False)
     start_date = Column(DateTime, nullable=False)
     end_date = Column(DateTime, nullable=False)
@@ -45,6 +46,7 @@ class Election(BaseModel, Base):
 
             ValueError: if any of the above arguments are not passed
         """
+        # ensure presence of important attributes
         if not all(key in kwargs for key in ['title', 'start_date',
                                              'end_date']):
             raise ValueError("Invalid arguments")
@@ -66,6 +68,7 @@ class Election(BaseModel, Base):
         """ Make a ballot
         """
         ballots = []
+        # group candidate by their positions
         for position in self.positions:
             candidates_list = [candidate.full_name
                                for candidate in self.candidates
@@ -81,6 +84,8 @@ class Election(BaseModel, Base):
         for position in self.positions:
             candidates = [candidate for candidate in self.candidates
                           if candidate.position == position]
+            # create a dictionary of position to candidate dictionary state of 
+            # candidates in that position
             results[position] = [candidate.to_dict() for candidate in candidates]
 
         self.results = results
@@ -111,27 +116,33 @@ class Election(BaseModel, Base):
         Returns:
             None
         """
+        # ensure necessary arguments are present
         keywords = ['first_name', 'last_name', 'email', 'candidate_id',
                     'voter_id']
         if not all(keyword in kwargs for keyword in keywords):
             raise ValueError("Invalid arguments")
+        # ensure voter is eligible by confirming voters_id
         if not kwargs.get('voter_id') in self.voters_id:
             raise ValueError("Invalid voter id")
 
+        # get candidate from storage state using get method
         candidate = models.storage.get('Candidate', kwargs.get('candidate_id'))
         if not candidate:
             raise ValueError("Invalid candidate id")
 
+        # check if voter is yet to vote
         if self.voted(kwargs.get('voter_id')):
             raise ValueError("Voter has already voted")
+        # add vote to chosen candidate if election is still ongoing.
         if self.get_election_status() == "Ongoing":
             candidate.count_vote()
+            # store voters detail
             self.voters.append({"first_name": kwargs.get('first_name'),
                                 "last_name": kwargs.get('last_name'),
                                 "email": kwargs.get('email'),
                                 "voter_id": kwargs.get('voter_id')})
             models.storage.save()
-            return "successfull"
+            return "successful"
         else:
             raise ValueError("Election is not ongoing")
 
@@ -150,16 +161,19 @@ class Election(BaseModel, Base):
         Returns:
             None
         """
+        # ensure necessary attributes are present
         keywords = ['first_name', 'last_name', 'position']
         if (not all(keyword in kwargs for keyword in keywords)
             and not 'obj' in kwargs):
             raise ValueError("Invalid arguments")
         if 'obj' in kwargs:
+            # add candidate object if already created
             cand = kwargs['obj']
             cand.election_id = self.id
             self.candidates.append(cand)
             cand.save()
         else:
+            # create new candidate object
             new_candidate = Candidate(election_id=self.id, **kwargs)
             # self.candidates.append(new_candidate)
             new_candidate.save()
@@ -170,12 +184,14 @@ class Election(BaseModel, Base):
         for id in ids:
             if id:
                 self.voters_id.add(id)
+        # calculate new value of expected voters
         self.expected_voters = len(self.voters_id)
         models.storage.save()
 
     def update_voters_id(self, old_id, new_id):
         """ Update voters id
         """
+        # update voters id by deleting old id and adding new id
         if old_id in self.voters_id:
             self.voters_id.remove(old_id)
         if new_id:
@@ -189,6 +205,7 @@ class Election(BaseModel, Base):
         """
         if id in self.voters_id:
             self.voters_id.remove(id)
+        # calculate new value of expected voters
         self.expected_voters = len(self.voters_id)
         models.storage.save()
 
@@ -243,7 +260,6 @@ class Election(BaseModel, Base):
     def activate_election(self):
         """ Activate the election
         """
-        # if self.start_date > datetime.now():
         if self.get_election_status() == "Ongoing":
             self.start_election()
         start_delay = self.start_date - datetime.now()
@@ -265,9 +281,11 @@ class Election(BaseModel, Base):
         for key, value in kwargs.items():
             if key in methods:
                 methods[key](value)
+            # evade attributes not to be set by users
             elif key not in ('id', 'public_id', 'status', 'created_at',
                              'results', 'total_votes', 'expected_voters',
                              'voters'):
+                # convert date type values to date
                 if key in ('start_date', 'end_date') and type(value) is str:
                     value = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
                 setattr(self, key, value)
@@ -283,7 +301,9 @@ class Election(BaseModel, Base):
         self.status = self.get_election_status()
         models.storage.save()
 
+        # call BaseModel unrefined to_dict
         main_dict = super().to_dict()
+        # get dictionary state of candidates
         main_dict['candidates'] = [c.to_dict() for c in self.candidates]
         main_dict['voters_id'] = list(self.voters_id)
         del main_dict['admin_id']
@@ -291,18 +311,6 @@ class Election(BaseModel, Base):
             del main_dict['admin']
         except KeyError:
             pass
-        # for prop, value in main_dict.items():
-        #     try:
-        #         dict_state[prop] = value.to_dict()
-        #     except AttributeError:
-        #         if is_jsonnable(value):
-        #             dict_state[prop] = value
-        #         elif type(value) is set:
-        #             dict_state[prop] = list(value)
-        #         elif is_iterable(value):
-        #             if len(value) > 0:
-        #                 if all(hasattr(v, 'to_dict') for v in value):
-        #                     dict_state[prop] = [v.to_dict() for v in value]
         return main_dict
     
     def __str__(self):
