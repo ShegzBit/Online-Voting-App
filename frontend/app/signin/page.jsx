@@ -74,7 +74,7 @@ export default function SignInPage() {
                     <div className='col-lg-6 col-md-6 col-sm-12'>
                         <h1 className="card-title mb-0">Sign in</h1>
                         <p className="card-subtitle">Please enter your details to sign in</p>
-                        <Form validated={validated} noValidate onSubmit={handleSubmit}>
+                        <Form validated={validated} noValidate onSubmit={handleSubmit} className="mt-0">
                             <div className="form-floating mb-2">
                                 <input type="email" className="form-control rounded-4" id="floatingInputValid" placeholder="" onChange={handleChange('email')} required />
                                 <label htmlFor="floatingInputValidation">Email address</label>
