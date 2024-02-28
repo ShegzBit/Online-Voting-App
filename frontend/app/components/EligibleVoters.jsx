@@ -7,6 +7,8 @@ import EditVoter from './modals/EditVoter.jsx'
 import { SlOptionsVertical } from "react-icons/sl";
 import { useElection } from '@/app/contexts/electionContext'
 import DeleteVoter from './modals/DeleteVoter'
+import axios from 'axios'
+import { inviteToVoteEmail } from '@/lib/emailTemplates.js'
 
 
 
@@ -17,10 +19,30 @@ export default function EligibleVoters({electionId}) {
     useEffect(() => {
     }, [])
 
+    const sendInvites = async () => {
+      try {
+        election.voters_id.forEach(async (email) => {
+          try {
+            const res = await axios.post('http://localhost:3000/api/sendmail', {
+              to: email,
+              subject: election.title,
+              html: inviteToVoteEmail(`http://localhost:3000/election/${election.id}`)
+            });
+            console.log(res);
+          } catch (e) {
+            console.log(e);
+          }
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    };
 
     
     return (
-        <div>
+      <div className='d-flex flex-column '
+      style={{minHeight: '100%'}}>
+        <div className='d-flex flex-column'>
             {election?.voters_id.length === 0 &&
                 <p className="text-center text-muted mt-3">You have no eligible voters yet.</p>
             }
@@ -39,7 +61,16 @@ export default function EligibleVoters({electionId}) {
             ))
             }
             </div>
+
         </div>
+        <button
+            className="btn-sm btn-gradient btn-primary text-light px-5 py-2 rounded-3 w-100 border-0"
+            variant="light"
+            onClick={sendInvites}
+            >
+              Send invites
+            </button>
+      </div>
     )
 }
 
