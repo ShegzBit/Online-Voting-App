@@ -3,7 +3,7 @@ import axios from "axios";
 const getElections = async (id) => {
   try {
     const res = await axios.get(
-      `http://localhost:5000/api/v1/admin/${id}/election`
+      `https://api.pollmaster.me/api/v1/admin/${id}/election`
     );
     return res.data;
   } catch (e) {
@@ -20,7 +20,7 @@ const getElections = async (id) => {
 const createElection = async (data) => {
   try {
     const res = await axios.post(
-      "http://localhost:5000/api/v1/create_election",
+      "https://api.pollmaster.me/api/v1/create_election",
       data
     );
     return res.data;
@@ -32,7 +32,7 @@ const createElection = async (data) => {
 
 const getElection = async (id) => {
   try {
-    const res = await axios.get(`http://localhost:5000/api/v1/election/${id}`);
+    const res = await axios.get(`https://api.pollmaster.me/api/v1/election/${id}`);
     return res.data;
   } catch (e) {
     console.log(e);
@@ -43,7 +43,7 @@ const getElection = async (id) => {
 const updateElection = async (admin_id, election_id, data) => {
   try {
     const res = await axios.put(
-      `http://localhost:5000/api/v1/admin/${admin_id}/election/${election_id}`,
+      `https://api.pollmaster.me/api/v1/admin/${admin_id}/election/${election_id}`,
       data
     );
     return res.data;
@@ -56,7 +56,7 @@ const updateElection = async (admin_id, election_id, data) => {
 const updateCandidate = async (admin_id, election_id, candidate_id, data) => {
   try {
     const res = await axios.put(
-      `http://localhost:5000/api/v1/admin/${admin_id}/election/${election_id}/candidate/${candidate_id}`,
+      `https://api.pollmaster.me/api/v1/admin/${admin_id}/election/${election_id}/candidate/${candidate_id}`,
       data
     );
     return res.data;
@@ -69,7 +69,7 @@ const updateCandidate = async (admin_id, election_id, candidate_id, data) => {
 const deleteCandidate = async (admin_id, election_id, candidate_id) => {
   try {
     const res = await axios.delete(
-      `http://localhost:5000/api/v1/admin/${admin_id}/election/${election_id}/candidate/${candidate_id}`
+      `https://api.pollmaster.me/api/v1/admin/${admin_id}/election/${election_id}/candidate/${candidate_id}`
     );
     return res.data;
   } catch (e) {
@@ -81,7 +81,7 @@ const deleteCandidate = async (admin_id, election_id, candidate_id) => {
 const deleteElection = async (admin_id, election_id) => {
   try {
     const res = await axios.delete(
-      `http://localhost:5000/api/v1/admin/${admin_id}/election/${election_id}`
+      `https://api.pollmaster.me/api/v1/admin/${admin_id}/election/${election_id}`
     );
     return res.data;
   } catch (e) {
@@ -107,6 +107,66 @@ const addCandidateImage = async (data) => {
     throw Error(e);
   }
 }
+
+
+const endElection = async (admin_id, election_id) => {
+  try {
+    const res = await axios.put(
+      `https://api.pollmaster.me/api/v1/admin/${admin_id}/election/${election_id}/end`
+    );
+    return res.data;
+  } catch (e) {
+    console.log(e);
+    throw Error(e);
+  }
+
+}
+
+const deleteVoter = async (admin_id, election_id, data) => {
+  try {
+    const res = await axios.delete(
+      `https://api.pollmaster.me/api/v1/admin/${admin_id}/election/${election_id}/voters_id`, data
+      )
+
+      return res.data
+  } catch (e) {
+    console.log(e);
+    throw Error(e)
+  }
+}
+
+const getVoters = async (id) => {
+  try {
+    const res = await axios.get(`https://api.pollmaster.me/api/v1/election/${id}/voters`);
+    return res.data
+  } catch(e) {
+    console.log(e);
+    throw Error(e)
+  }
+}
+
+const vote = async (electionId, data) => {
+  try {
+    console.log(data);
+    const res = await axios.post(`https://api.pollmaster.me/api/v1/election/${electionId}/vote`, data);
+    return res.data;
+  } catch (e) {
+    console.log(e);
+    throw Error(e);
+  }
+
+}
+
+const getResults = async (id) => {
+  try {
+    const res = await axios.get(`https://api.pollmaster.me/api/v1/election/${id}/result`);
+    return res.data;
+  } catch (e) {
+    console.log(e);
+    throw Error(e);
+  }
+
+}
 export {
   getElections,
   createElection,
@@ -115,5 +175,10 @@ export {
   updateCandidate,
   deleteCandidate,
   deleteElection,
-  addCandidateImage
+  addCandidateImage,
+  endElection,
+  deleteVoter,
+  getVoters,
+  vote,
+  getResults
 };
