@@ -2,7 +2,7 @@ import Button from "../components/Button"
 export default function ForgotPassword() {
     return (
         <form>
-            <div className="container " style={{ borderRadius: "20px", overFlow: "hidden" }}>
+            <div className="container" style={{ borderRadius: "20px", overFlow: "hidden" }}>
                 <div className="row justify-content-center">
                     <div className='col-lg-6 col-md-6 col-sm-12'>
                         <h1 className="card-title mb-0">Forgot Password?</h1>
