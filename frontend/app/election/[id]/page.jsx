@@ -10,20 +10,18 @@ import { useElection } from "@/app/contexts/electionContext";
 import { getElection, getVoters } from "@/lib/electionHelper";
 // import VoterLoader from "../components/core/VoterLoader";
 
-export default function VerifyVoter({params}) {
+export default function VerifyVoter({ params }) {
   const [validated, setValidated] = useState(false);
-  const [voters, setVoters] = useState(null)
-  const [error, setError] = useState('')
-  const [isVerified, setIsVerified] = useState(false)
+  const [voters, setVoters] = useState(null);
+  const [error, setError] = useState("");
+  const [isVerified, setIsVerified] = useState(false);
   const [userData, setUserData] = useState({
     first_name: "",
     last_name: "",
     voter_id: "",
   });
 
-  const {election, setElection} = useElection()
-
-  console.log(election);
+  const { election, setElection } = useElection();
 
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -33,27 +31,31 @@ export default function VerifyVoter({params}) {
     if (isVerified) {
       updateUser(userData);
       setLoading(false);
+      const hasVoted = election?.voters.some(
+        (el) => el.voter_id === userData.voter_id
+      );
+      if (hasVoted) {
+        router.push(`/election/${params.id}/electionresults`);
+        return;
+      }
       router.push(`/election/${params.id}/instructions`);
     }
   }, [isVerified]);
 
   useEffect(() => {
-
-    const getRes = async() => {
+    const getRes = async () => {
       try {
-        const res = await getElection(params.id)
+        const res = await getElection(params.id);
         if (res) {
-          setElection(res)
-          setVoters(res.voters_id)
+          setElection(res);
+          setVoters(res.voters_id);
         }
-
-      } catch(e) {
+      } catch (e) {
         console.log(e);
       }
-    }
-    getRes()
-  }, [])
-
+    };
+    getRes();
+  }, []);
 
   const handleChange = (name) => (event) => {
     setUserData({
@@ -63,12 +65,10 @@ export default function VerifyVoter({params}) {
   };
 
   const handleSubmit = async () => {
-    
     try {
       if (voters && userData.voter_id) {
-        setIsVerified(voters.includes(userData.voter_id))
+        setIsVerified(voters.includes(userData.voter_id));
       }
-
     } catch (e) {
       console.log(e);
     }
@@ -87,47 +87,47 @@ export default function VerifyVoter({params}) {
               Please enter your details and voter id to access election
             </p>
             {/* <Form validated={validated} noValidate onSubmit={handleSubmit}> */}
-              <div className="form-floating mb-2">
-                <input
-                  value={userData.first_name}
-                  type="text"
-                  className="form-control rounded-4"
-                  id="floatingInput"
-                  placeholder=""
-                  onChange={handleChange("first_name")}
-                />
-                <label htmlFor="floatingInput">First name</label>
-              </div>
-              <div className="form-floating mb-2">
-                <input
-                  value={userData.last_name}
-                  type="text"
-                  className="form-control rounded-4"
-                  id="floatingInput"
-                  placeholder=""
-                  onChange={handleChange("last_name")}
-                />
-                <label htmlFor="floatingInput">Last name</label>
-              </div>
-              <div className="form-floating mb-2">
-                <input
-                  type="text"
-                  className="form-control rounded-4"
-                  id="floatingInputValid"
-                  placeholder=""
-                  onChange={handleChange("voter_id")}
-                  required
-                />
-                <label htmlFor="floatingInputValidation">Voter id</label>
-                <div className="valid-feedback">Looks good!</div>
-              </div>
+            <div className="form-floating mb-2">
+              <input
+                value={userData.first_name}
+                type="text"
+                className="form-control rounded-4"
+                id="floatingInput"
+                placeholder=""
+                onChange={handleChange("first_name")}
+              />
+              <label htmlFor="floatingInput">First name</label>
+            </div>
+            <div className="form-floating mb-2">
+              <input
+                value={userData.last_name}
+                type="text"
+                className="form-control rounded-4"
+                id="floatingInput"
+                placeholder=""
+                onChange={handleChange("last_name")}
+              />
+              <label htmlFor="floatingInput">Last name</label>
+            </div>
+            <div className="form-floating mb-2">
+              <input
+                type="text"
+                className="form-control rounded-4"
+                id="floatingInputValid"
+                placeholder=""
+                onChange={handleChange("voter_id")}
+                required
+              />
+              <label htmlFor="floatingInputValidation">Voter id</label>
+              <div className="valid-feedback">Looks good!</div>
+            </div>
             {/* </Form> */}
-            <div className="d-grid mb-5">
-            <Button
-              text={loading ? <Loader /> : "Verify me"}
-              cb={handleSubmit}
-              disabled={loading}
-            />
+            <div className="d-grid mt-5">
+              <Button
+                text={loading ? <Loader /> : "Verify me"}
+                cb={handleSubmit}
+                disabled={loading}
+              />
             </div>
           </div>
         </div>
