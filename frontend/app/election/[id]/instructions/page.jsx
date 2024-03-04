@@ -1,8 +1,7 @@
 'use client'
 
 /*Ground rules page*/
-import { useState } from 'react';
-import { Modal } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from "next/navigation";
 
@@ -10,7 +9,7 @@ import { useRouter } from "next/navigation";
 
 export default function Instruction({params}) {
     const [loading, setLoading] = useState(false)
-  const router = useRouter();
+    const router = useRouter();
 
     const handleSubmit = () => {
         router.push(`/election/${params.id}/livevoting`)
@@ -38,9 +37,9 @@ export default function Instruction({params}) {
                     <p>Thank you for your participation!!</p>
                 </div>
                 <div className="d-grid mb-5">
-                <Link className={`btn btn-gradient btn-primary`} href={`/election/${electionId}/livevoting`}>
+                <Link className={`btn btn-gradient btn-primary`} href={`/election/${params.id}/livevoting`}>
                       Start voting
-                    </Link>
+                </Link>
                 </div>
             </div>
         </>
