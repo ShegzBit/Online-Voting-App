@@ -32,11 +32,11 @@ export default function SingleElection({ params }) {
     
 
     return (
-        <div className="w-100 px-2">
+        <div className="w-100 px-2 container">
             <div className="btn-group w-100">
-                <button type="button " onClick={() => handleActive('overview')} href="#" className={`btn rounded-0 fw-semibold text-muted border border-2 ${isActive === 'overview' ? styles.activeBtn : ''}`} aria-current="page">Overview</button>
-                <button type="button" onClick={() => handleActive('candidates')} href="#" className={`btn rounded-0 fw-semibold text-muted border border-2 ${isActive === 'candidates' ? styles.activeBtn : ''}`}>Candidates</button>
-                <button type="button" onClick={() => handleActive('voters')} href="#" className={`btn rounded-0 fw-semibold text-muted border border-2 ${isActive === 'voters' ? styles.activeBtn : ''}`}>Eligible voters</button>
+                <button type="button " onClick={() => handleActive('overview')} href="#" style={{fontSize:"14px"}} className={`btn rounded-0 fw-semibold text-muted border border-1 ${isActive === 'overview' ? styles.activeBtn : ''}`} aria-current="page">Overview</button>
+                <button type="button" onClick={() => handleActive('candidates')} href="#" style={{fontSize:"14px"}} className={`btn rounded-0 fw-semibold text-muted border border-1 ${isActive === 'candidates' ? styles.activeBtn : ''}`}>Candidates</button>
+                <button type="button" onClick={() => handleActive('voters')} href="#" style={{fontSize:"14px"}} className={`btn rounded-0 fw-semibold text-muted border border-1 ${isActive === 'voters' ? styles.activeBtn : ''}`}>Eligible voters</button>
             </div>
             {isActive === 'overview' && <Overview electionId={params.id} />}
             {isActive === 'candidates' && <Ballot electionId={params.id} />}
