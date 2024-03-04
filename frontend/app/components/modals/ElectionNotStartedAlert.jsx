@@ -10,9 +10,9 @@ export default function ElectionNotStarted() {
   return (
     <>
       <Modal show={show} onHide={onHide}>
-        <Modal.Header closeButton>
-          <Modal.Title>Time for Election is not up yet! 🕰️</Modal.Title>
-        </Modal.Header>
+        {/* <Modal.Header>
+          <Modal.Title>Time for Election is not up yet!! 🕰️</Modal.Title>
+        </Modal.Header> */}
         <Modal.Body>
           <h1 className="mb-4" style={{ fontSize: "1.5rem" }}>
             Time for Election is not up yet! 🕰️
