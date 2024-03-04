@@ -13,7 +13,7 @@ import {
 
 function EditBallot({ show, onHide, contestant }) {
   const [showEdit, setShowEdit] = useState(false);
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState("");
   const [candidate, setCandidate] = useState(contestant);
 
   const [data, setData] = useState({
@@ -36,12 +36,12 @@ function EditBallot({ show, onHide, contestant }) {
 
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
-  }
+  };
 
   const handleSubmit = async () => {
     try {
       const formData = new FormData();
-      formData.append('photo', image);
+      formData.append("photo", image);
       if (image) {
         const imgRes = await addCandidateImage(formData);
         setData({
@@ -49,10 +49,15 @@ function EditBallot({ show, onHide, contestant }) {
           profile_image: imgRes?.imageUrl,
         });
         const { isError, ...rest } = data;
-        const res = await updateCandidate(user?.id, election.id, contestant.id, {
-          ...rest,
-          profile_image: imgRes?.imageUrl,
-        });
+        const res = await updateCandidate(
+          user?.id,
+          election.id,
+          contestant.id,
+          {
+            ...rest,
+            profile_image: imgRes?.imageUrl,
+          }
+        );
         if (res) {
           setCandidate(res);
         }
@@ -62,9 +67,14 @@ function EditBallot({ show, onHide, contestant }) {
       }
       if (!image) {
         const { isError, ...rest } = data;
-        const res = await updateCandidate(user?.id, election.id, contestant.id, {
-          ...rest,
-        });
+        const res = await updateCandidate(
+          user?.id,
+          election.id,
+          contestant.id,
+          {
+            ...rest,
+          }
+        );
         if (res) {
           setCandidate(res);
         }
@@ -76,12 +86,11 @@ function EditBallot({ show, onHide, contestant }) {
     } catch (e) {}
   };
 
-
   return (
     <>
       <Modal show={show} onHide={() => onHide(!show)}>
         <Modal.Header closeButton>
-          <Modal.Title>Candidate</Modal.Title>
+          <Modal.Title>Edit Candidate</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="mb-3">
@@ -127,11 +136,13 @@ function EditBallot({ show, onHide, contestant }) {
               placeholder="Enter name of position"
               onChange={handleChange("position")}
             />
+          </div>
+          <div>
             <input
               type="file"
               // defaultValue={candidate.position}
               name="photo"
-              className="form-control rounded-4"
+              className="form-control-plaintext"
               style={{ height: "56px" }}
               id="photo"
               placeholder="Enter name of position"
@@ -141,13 +152,21 @@ function EditBallot({ show, onHide, contestant }) {
           {/* <Contestants setContestants={setContestants} contestants={contestants}  /> */}
         </Modal.Body>
         <Modal.Footer>
-          <Button
+          {/* <Button
             variant="outline-success"
             className="btn-sm px-5 py-1 h-75 base-color text-bold"
             onClick={onHide}
           >
             Go back
-          </Button>
+          </Button> */}
+          <button
+            onClick={onHide}
+            type="button"
+            className="btn btn-outline-secondary btn-sm px-5"
+            style={{ color: "#024647", borderColor: "#024647" }}
+          >
+            Close
+          </button>
           <Button
             className="btn-sm btn-gradient btn-primary text-light px-5 py-1 h-75"
             variant="light"
