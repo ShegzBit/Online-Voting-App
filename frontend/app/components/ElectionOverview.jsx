@@ -28,7 +28,6 @@ export default function ElectionOverview() {
     setTimeLeft(convertMilliSecondsIntoLegibleString(ms));
     if (currentDate.isAfter(endDate)) {
       const res = endElection(user.id, election.id);
-      console.log(res);
       if (res) {
         // setElection(updateElection(user.id, election.id));
         setHasStarted(false);
@@ -48,6 +47,8 @@ export default function ElectionOverview() {
       }
     };
   }, [handleSetTime, hasEnded]);
+
+  console.log(hasEnded);
 
   return (
     <div className="d-flex flex-column gap-4">
@@ -114,8 +115,7 @@ export default function ElectionOverview() {
             </p>
             <p className="fw-semibold">
               {election.candidates &&
-                [new Set(election.candidates.map((x) => x.position))].length +
-                  1}
+                new Set(election.candidates.map((x) => x.position)).size}
             </p>
           </div>
           <div>
@@ -132,18 +132,23 @@ export default function ElectionOverview() {
           </div>
         </div>
       </div>
-      {!hasEnded ? (
+      <div className="d-flex flex-direction-row align-items-center gap-2">
+
+      {!hasStarted && (
         <Button
-          className="btn-sm btn-gradient btn-primary text-light px-5 py-2 h-75 rounded-3"
+          className="text-dark btn btn-primary px-4 align-self-center flex-grow-1"
+          style={{ backgroundColor: "#D4EFEF" }}
           variant="light"
           onClick={() => setShow(true)}
         >
-          Start Election Anyway
+          Start Election
         </Button>
-      ) : (
-          <Link className="px-5 w-100 btn btn-gradient btn-primary text-decoration-none border-0" href="/elections">Go home</Link>
+      )} 
+      {hasEnded && (
+          <Link className="btn btn-gradient btn-primary px-4 align-self-center text-decoration-none border-0 flex-grow-1" href="/elections">Go home</Link>
       )}
       <StartElection show={show} onHide={setShow} />
+      </div>
     </div>
   );
 }
