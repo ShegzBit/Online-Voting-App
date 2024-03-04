@@ -125,7 +125,12 @@ const endElection = async (admin_id, election_id) => {
 const deleteVoter = async (admin_id, election_id, data) => {
   try {
     const res = await axios.delete(
-      `https://api.pollmaster.me/api/v1/admin/${admin_id}/election/${election_id}/voters_id`, data
+      `https://api.pollmaster.me/api/v1/admin/${admin_id}/election/${election_id}/voters_id`, {
+        data: data,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
       )
 
       return res.data
@@ -147,7 +152,6 @@ const getVoters = async (id) => {
 
 const vote = async (electionId, data) => {
   try {
-    console.log(data);
     const res = await axios.post(`https://api.pollmaster.me/api/v1/election/${electionId}/vote`, data);
     return res.data;
   } catch (e) {
