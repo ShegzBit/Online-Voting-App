@@ -65,12 +65,12 @@ function LiveVoting({ params }) {
           <div className="col-lg-6 col-md-6 col-sm-12">
             <h1 className="card-title mb-0">{election?.title}</h1>
             {!showPreview ? (
-              <p className="card-subtitle mb-5">
-                Choose your preferred candidate and tap &apos;Next&apos; to cast your vote
-                and move on to the next.
+              <p className="card-subtitle mb-4">
+                Choose your preferred candidate and tap &apos;Next&apos; to cast
+                your vote and move on to the next.
               </p>
             ) : (
-              <p className="card-subtitle mb-5">
+              <p className="card-subtitle mb-4">
                 Carefully review your selections. When you&apos;re ready, press
                 &apos;Submit&apos; to finalize your choices.
               </p>
@@ -139,9 +139,9 @@ function Positions({ pos, group, showPreview, setPreview, ...props }) {
     <div>
       {group && activePosition && (
         <div>
-          <h5 className="mt-2 fw-bold">{activePosition}</h5>
+          <h5 className="mt-2 fw-semibold mb-4">{activePosition}</h5>
           <div className="d-flex flex-wrap gap-3">
-            <div className="d-flex flex-column">
+            <div className="d-flex flex-column w-100">
               {/* <input
                 className="form-check-input me-2"
                 type="radio"
@@ -153,26 +153,28 @@ function Positions({ pos, group, showPreview, setPreview, ...props }) {
               />
               <label htmlFor="candidateRadio"> */}
               {group[activePosition].map((obj, j) => (
-                <div style={{ width: "15rem" }} key={j}>
-                  <div className="card-body mb-4">
-                    <div className="d-flex align-items-center">
+                <div className="w-100" style={{ width: "15rem" }} key={j}>
+                  <div className="card-body mb-4 w-100">
+                    <div className="d-flex align-items-start">
                       <input
-                        className="me-3"
+                        className="form-check-input me-3"
                         type="radio"
                         name="candidate"
                         value={obj.id}
                         onChange={handleChoice}
                         checked={choices[activePosition] === obj.id}
                       />
-                      <Image
-                        src={obj.profile_image}
-                        alt={obj.full_name}
-                        className="me-3 rounded-2 object-fit-cover"
-                        width={72}
-                        height={72}
-                      />
-                      <div>
-                        <p className="fs-5">{obj.full_name}</p>
+                      <div className="d-flex align-items-center">
+                        <Image
+                          src={obj.profile_image}
+                          alt={obj.full_name}
+                          className="me-3 rounded-2 object-fit-cover"
+                          width={72}
+                          height={72}
+                        />
+                        <div className="w-100">
+                          <p className="fs-6">{obj.full_name}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -181,10 +183,29 @@ function Positions({ pos, group, showPreview, setPreview, ...props }) {
               {/* </label> */}
             </div>
           </div>
-          {activePage > 0 && (
-            <Button text={"Prev"} cb={handlePrev} classNames="me-3" />
-          )}
-          <Button text={"Next"} cb={handleNext} disabled={!hasVoted} />
+          <div className="d-flex flex-direction-row justify-content-between">
+            {activePage > 0 && (
+              // <Button
+              //   text={"Previous"}
+              //   cb={handlePrev}
+              //   classNames="btn btn-outline-secondary px-5 text-light"
+              // />
+            <button
+            onClick={handlePrev}
+            type="button"
+            className="btn btn-outline-secondary px-5 btn-sm"
+            style={{ color: "#024647", borderColor: "#024647" }}
+          >
+            Previous
+          </button>
+            )}
+            <Button
+              classNames="btn-sm btn-gradient btn-primary text-light px-5 py-1 h-75"
+              text={"Next"}
+              cb={handleNext}
+              disabled={!hasVoted}
+            />
+          </div>
         </div>
       )}
     </div>
@@ -227,19 +248,20 @@ const ShowChoicesPreview = ({ choices, group, ...props }) => {
     <div className="d-flex flex-column gap-4">
       {Object.keys(choices).map((key, i) => (
         <div key={i} className="">
-          <h5 className="fw-bold">{key}</h5>
-          <div className="d-flex align-items-center gap-5">
+          <h5 className="fw-semibold mb-3">{key}</h5>
+          <div className="d-flex align-items-center gap-3">
             <Image
               src={keys[i].find((obj) => obj.id === choices[key]).profile_image}
               alt={keys[i].find((obj) => obj.id === choices[key]).full_name}
               width={72}
               height={72}
+              className="rounded-2 object-fit-cover"
             />
             <p>{keys[i].find((obj) => obj.id === choices[key]).full_name}</p>
           </div>
         </div>
       ))}
-      <Button cb={handleVote} classNames="" text={"Submit votes"} />
+      <Button cb={handleVote} classNames="mt-5" text={"Submit votes"} />
     </div>
   );
 };
