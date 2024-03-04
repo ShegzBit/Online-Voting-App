@@ -37,19 +37,23 @@ export default function ElectionCard({ election }) {
               textAlign: "center",
             }}
           >
-            <p className="text-center text-light m-0 rounded-2 px-2">
+            <p className="text-center text-light m-0 px-1">
               {election.status}
             </p>
           </div>
         </div>
         <p className="mb-5 fs-5 fw-semibold">{election.title}</p>
 
-        <p className="fw-medium text-muted mb-1" style={{ fonSize: "0.8rem" }}>
+        <p className="fw-medium text-muted mb-1 card-subtitle" style={{ fonSize: "0.8rem" }}>
           Actions:
         </p>
-        <div className="d-flex gap-3 align-items-center w-100">
+        <div className="d-flex gap-2 align-items-center justify-content-sm-between justify-content-lg-start justify-content-md-startw-100">
+          {/* <div className="flex-grow-1">
+
+          </div> */}
+
           <button
-            className="btn m-0 py-0"
+            className="btn m-0 py-0 flex-grow-1"
             style={{
               backgroundColor: "#ffffff",
               color: "#024647",
@@ -59,8 +63,8 @@ export default function ElectionCard({ election }) {
             }}
           >
             <Link
-              style={{ fontSize: ".8rem", padding: 0 }}
-              className="text-decoration-none align-middle text-dark "
+              style={{padding: 0 }}
+              className="card-subtitle text-decoration-none align-middle text-dark"
               href={`/elections/${election.id}/monitoring`}
             >
               <MdOutlineRemoveRedEye
@@ -81,8 +85,8 @@ export default function ElectionCard({ election }) {
             }}
           >
             <Link
-              style={{ fontSize: ".8rem", padding: 0 }}
-              className="text-decoration-none align-middle text-dark "
+              style={{padding: 0 }}
+              className="flex-grow-1 card-subtitle text-decoration-none align-middle text-dark "
               href={`/elections/${election.id}`}
             >
               <TbEdit className="me-1" style={{ fontSize: "1rem" }} />
@@ -91,9 +95,9 @@ export default function ElectionCard({ election }) {
           </button>
           <button
             onClick={() => setShow(true)}
-            className="btn m-0"
+            className="btn m-0 flex-grow-1"
             style={{
-              fontSize: ".8rem",
+              fontSize: "14px",
               backgroundColor: "#E2E2E2",
               color: "#585858",
               padding: "4px 8px",
