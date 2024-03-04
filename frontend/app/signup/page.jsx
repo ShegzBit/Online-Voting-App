@@ -81,20 +81,20 @@ export default function SignUp() {
                         <p className="card-subtitle">Please enter your details to create an account</p>
                         <div className="form-floating mb-2">
                             <input name='email' value={userData.email} type="email" className="form-control rounded-4" id="floatingInput" placeholder="" onChange={handleChange('email')} />
-                            <label htmlFor="floatingInput">Email address</label>
+                            <label htmlFor="floatingInput" style={{color:"#024647"}}>Email address</label>
                         </div>
                         <div className="form-floating mb-2">
                             <input value={userData.first_name} type="text" className="form-control rounded-4" id="floatingInput" placeholder="" onChange={handleChange('first_name')} />
-                            <label htmlFor="floatingInput">First name</label>
+                            <label htmlFor="floatingInput" style={{color:"#024647"}}>First name</label>
                         </div>
                         <div className="form-floating mb-2">
                             <input value={userData.last_name} type="text" className="form-control rounded-4" id="floatingInput" placeholder="" onChange={handleChange('last_name')} />
-                            <label htmlFor="floatingInput">Last name</label>
+                            <label htmlFor="floatingInput" style={{color:"#024647"}}>Last name</label>
                         </div>
 
                         <div className="form-floating mb-2">
                             <input value={userData.password} type="password" className="form-control rounded-4" id="floatingPassword" placeholder="" onChange={handleChange('password')} />
-                            <label htmlFor="floatingPassword">Password</label>
+                            <label htmlFor="floatingPassword" style={{color:"#024647"}}>Password</label>
                         </div>
 
 
@@ -108,17 +108,17 @@ export default function SignUp() {
                             </div>
                             <div className="form-floating w-75 mb-4">
                                 <input type="number" className="form-control rounded-4" id="floatingPassword" placeholder="" />
-                                <label htmlFor="floatingPassword">Mobile number</label>
+                                <label htmlFor="floatingPassword" style={{color:"#024647"}}>Mobile number</label>
                             </div>
                         </div>
                         <div className="text-center">
-                            <p className="mb-5" style={{ fontSize: ".8rem" }}>By signing up, you agree to our <a href="#" className="link-success link-offset-2 link-underline link-underline-opacity-0 ">terms & conditions</a></p>
+                            <p className="mb-5" style={{ fontSize: ".8rem" }}>By signing up, you agree to our <a href="#" className="link-success link-offset-2 link-offset-2-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">terms & conditions</a></p>
                         </div>
 
                         <div className="d-grid gap-2">
                             {/* <button href="#" className="btn btn-primary">Submit</button> */}
                             <Button cb={handleSubmit} text={loading ? <Loader /> : "Sign Up"} disabled={loading}/>
-                            <p className="mt-3 text-center">Already have an account? <a href="/signin" className=" fw-semibold link-success link-offset-2 link-underline link-underline-opacity-0">Log in here </a></p>
+                            <p className="mt-1 mb-5 text-center card-subtitle fw-medium">Already have an account? <a href="/signin" className="link-success link-offset-2 link-offset-2-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Sign in</a></p>
                         </div>
                     </div>
                 </div>
