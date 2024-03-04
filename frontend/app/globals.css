@@ -1,5 +1,7 @@
 *{
-  font-family: 'Roboto', sans-serif;
+  /* font-family: 'Gelion'; */
+  font-family: 'General Sans', sans-serif;
+  /* font-weight: 500; */
 }
 
 #logo {
@@ -9,11 +11,11 @@
   display: block;
 }
 
-.text-title {
+/* .text-title {
   font-family: 'Open Sans', sans-serif;
-}
+} */
 .card-title{
-  font-family: 'Open Sans', sans-serif;
+  /* font-family: 'Open Sans', sans-serif; */
   font-weight: 800;
   font-size: 28px;
   line-height: 34px;
@@ -22,10 +24,10 @@
 }
 
 .card-subtitle{
-  font-family: 'Roboto', sans-serif;
+  /* font-family: 'Roboto', sans-serif; */
   font-weight: 400;
   font-size: 14px;
-  line-height: 28px;
+  line-height: 24px;
   padding: 8px 0;
   color: #5A6267;
 }
@@ -44,9 +46,9 @@ form{
 }
 
 label{
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
-  color: #024647;
+  color: #050D0D;
   line-height: 18px;
 }
 
@@ -54,13 +56,13 @@ label{
   border-radius: 12px;
   height: 48px;
   text-align: center;
-  margin-top: 24px;
+  /* margin-top: 24px; */
   line-height: 22px;
   font-size: 16px;
 }
 
 .btn-sm{
-  border-radius: 12px;
+  border-radius: 5px;
   height: 32px;
   text-align: center;
   margin-top: 24px;
@@ -90,10 +92,15 @@ input[type="radio"]:checked {
   background-color: red;
 }
 
-::placeholder, label{
+::placeholder{
   color: #024647 !important;
+  font-size: 13px !important;
 }
 
 .link-success:hover{
-  text-decoration: underline;
+  color: #024647;
+}
+
+.container{
+  margin-top: 80px;
 }

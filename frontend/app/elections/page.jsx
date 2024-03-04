@@ -21,6 +21,7 @@ export default function ElectionsPage() {
     useEffect(() => {
         const fetchElections = async () => {
             try {
+                console.log(user)
                 if (user?.id) {
                     const res = await getElections(user?.id)
                     updateElections(res)

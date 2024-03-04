@@ -40,6 +40,7 @@ def is_iterable(obj):
 class BaseModel():
     """ The Base class
     """
+    # table creation data to be inherited
     id = Column(String(60), primary_key=True, default=str(uuid4()),
                 nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow(), nullable=False)
@@ -51,9 +52,11 @@ class BaseModel():
         self.created_at = datetime.now()
         if kwargs:
             for key, value in kwargs.items():
+                # convert datetype values to date 
                 if (key in ('created_at', 'start_date', 'end_date')
                     and type(value) is str):
                     value = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+                # evade attributes not to be set by users
                 if key not in ('__class__', '_sa_instance_state'):
                     setattr(self, key, value)
 
@@ -63,6 +66,7 @@ class BaseModel():
         # Get a copy of instance dict
         dict_copy = self.__dict__.copy()
 
+        # convert datetypes to string for JSON usage
         dict_copy['created_at'] = self.created_at.strftime('%Y-%m-%d %H:%M:%S')
         if 'start_date' in dict_copy:
             dict_copy['start_date'] = (dict_copy['start_date']

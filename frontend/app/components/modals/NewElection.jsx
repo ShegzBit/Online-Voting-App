@@ -1,7 +1,6 @@
-import Button from "../Button";
-import ElectionDetails from "./ElectionDetails";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
+import ElectionDetails from "./ElectionDetails";
 
 export default function NewElection({ isOpen, setIsOpen }) {
   const [showDetails, setShowDetails] = useState(false);
@@ -102,16 +101,17 @@ export default function NewElection({ isOpen, setIsOpen }) {
             onClick={setIsOpen}
             type="button"
             className="btn btn-outline-secondary btn-sm px-5"
+            style={{ color: "#024647", borderColor: "#024647" }}
           >
             Close
           </button>
           <button
             onClick={handleShowProjDetails}
             type="button"
-            className="btn btn-sm btn-gradient btn-primary"
-            aria-label="Create project"
+            className="btn btn-sm btn-gradient btn-primary px-4"
+            aria-label="Create election"
           >
-            Create Project
+            Create Election
           </button>
         </div>
         {/* </div> */}

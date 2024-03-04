@@ -1,3 +1,6 @@
+'use client'
+
+
 export default function Button({text, classNames, cb, disabled}) {
 
     return (

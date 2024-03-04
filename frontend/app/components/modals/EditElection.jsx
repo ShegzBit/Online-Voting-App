@@ -1,26 +1,24 @@
-import Button from "../Button";
-import ElectionCreated from "./ElectionCreatedSucess";
+import { useElection } from "@/app/contexts/electionContext";
+import { getUser } from "@/lib/authHelper";
+import { updateElection } from "@/lib/electionHelper";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
-import { formatDate } from "@/lib/general";
-import { createElection } from "@/lib/electionHelper";
-import { getUser } from "@/lib/authHelper";
 import Datetime from "react-datetime";
-import moment from "moment";
 import Loader from "../core/Loader";
 
-export default function ElectionDetails({ show, onHide }) {
+export default function EditElection({ show, onHide, election }) {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [values, setValues] = useState({
-    title: "",
-    description: "",
-    start_date: moment(),
-    end_date: moment(),
+    title: election.title,
+    description: election.description,
+    start_date: election.start_date,
+    end_date: election.end_date,
     error: "",
     isSuccess: false,
     fwdParam: "",
   });
+  const { setElection } = useElection();
 
   const handleChange = (name) => (event) => {
     if (name != "start_date" && name != "end_date") {
@@ -36,15 +34,6 @@ export default function ElectionDetails({ show, onHide }) {
     }
   };
 
-  const handleShow = (key) => {
-    // if (key === 'open') {
-    //     setShowModal(true)
-    // } else {
-    //     setShowModal(false)
-    // }
-    onHide();
-    setShowModal(!showModal);
-  };
 
   const handleSubmit = async () => {
     const { title, description, start_date, end_date } = values;
@@ -61,28 +50,23 @@ export default function ElectionDetails({ show, onHide }) {
     }
     try {
       setLoading(true);
-      const res = await createElection({
-        admin_id: getUser().id,
-        election: {
-          title,
-          description,
-          start_date,
-          end_date,
-        },
+      const res = await updateElection(getUser().id, election.id, {
+        title,
+        description,
+        start_date,
+        end_date,
       });
-      setValues({
-        ...values,
-        fwdParam: res.election.id,
-      });
+      setElection(res);
       setLoading(false);
-      onHide();
-      setShowModal(!showModal);
+      onHide(false);
       console.log(res);
     } catch (e) {
       console.log(e);
       return;
     }
   };
+
+
   return (
     <>
       <Modal show={show} onHide={onHide}>
@@ -97,7 +81,7 @@ export default function ElectionDetails({ show, onHide }) {
               Enter election name
             </label>
             <input
-              value={values.title}
+              defaultValue={election.title}
               type="text"
               className="form-control rounded-4"
               style={{ height: "56px" }}
@@ -111,7 +95,7 @@ export default function ElectionDetails({ show, onHide }) {
               Enter election description
             </label>
             <textarea
-              value={values.description}
+              defaultValue={election.description}
               className="form-control rounded-3"
               id="projectDesc"
               rows="3"
@@ -128,40 +112,33 @@ export default function ElectionDetails({ show, onHide }) {
               onChange={handleChange("start_date")}
               timeFormat="HH:mm:ss"
               dateFormat="DD-MM-YYYY"
+              initialValue={election.start_date}
             />
           </div>
           <div className="mb-3">
             <label htmlFor="endDate" className="form-label">
               Enter End date
             </label>
-            {/* <input value={values.end_date} type="date" className="form-control" id="endDate" rows="3" onChange={handleChange('end_date')} /> */}
             <Datetime
               onChange={handleChange("end_date")}
               timeFormat="HH:mm:ss"
               dateFormat="DD-MM-YYYY"
+              initialValue={election.end_date}
             />
           </div>
         </div>
         <div className="modal-footer">
-          {/* <button type="button" className="btn btn-outline-secondary px-5" data-bs-dismiss="modal">Close</button> */}
           <button
             onClick={handleSubmit}
             type="button"
             className="btn btn-gradient btn-primary w-100"
-            aria-label="Create project"
+            aria-label="Save election"
             disabled={loading}
           >
-            {loading ? <Loader /> : "Continue"}
+            {loading ? <Loader /> : "Save changes"}
           </button>
         </div>
-        {/* </div>
-                </div> */}
       </Modal>
-      <ElectionCreated
-        electionId={values.fwdParam}
-        show={showModal}
-        onHide={handleShow}
-      />
     </>
   );
 }

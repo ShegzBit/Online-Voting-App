@@ -10,6 +10,7 @@ from models.base import BaseModel, Base
 class Candidate(BaseModel, Base):
     """ The Candidate class
     """
+    # candidates table schema creations
     __tablename__ = 'candidates'
 
     first_name = Column(String(128), nullable=False)
@@ -44,12 +45,16 @@ class Candidate(BaseModel, Base):
         """
         self.votes += 1
         models.storage.save()
+        # return the current number of votes gotten
+        return self.votes
     
     def to_dict(self):
         """
         Returns the dictionary state of the election
         """
+        # call BaseModel unrefined to_dict
         super_dict = super().to_dict()
+        # add api address of image to candidate dictionary state
         super_dict.update({'image_address': 'api/v1/images/' + self.id})
         try:
             del super_dict['election']

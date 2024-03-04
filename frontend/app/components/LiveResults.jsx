@@ -33,8 +33,8 @@ function LiveResults() {
                       <div className="d-flex gap-3">
                         <Image src={obj.profile_image} alt={obj.full_name} width={50} height={50} className="rounded-circle object-fit-cover" />
                         <div>
-                        <p className="">{obj.full_name}</p>
-                        <p className="">Votes: {obj.votes}</p>
+                        <p className="fw-medium mb-0">{obj.full_name}</p>
+                        <p className="text-muted mb-4">Votes: <span className=" text-dark fw-medium">{obj.votes}</span> </p>
                         </div>
                       </div>
                     </div>

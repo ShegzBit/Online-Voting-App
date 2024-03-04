@@ -19,6 +19,7 @@ class Admin(BaseModel, Base):
     """
     Class for modelling admin in OVS
     """
+    # admins table data setup
     __tablename__ = 'admins'
     first_name = Column(String(120), nullable=False)
     last_name = Column(String(120), nullable=False)
@@ -53,8 +54,10 @@ class Admin(BaseModel, Base):
             if key not in ['__class__', 'password']:
                 setattr(self, key, value)
         self.id = str(uuid4())
+        # protect password attribute
         self.__password = kwargs.get('password')
         self.created_at = dt.utcnow()
+        # username = email - @suffix
         self.username = kwargs.get('username',
                                    kwargs.get('email').split('@')[0])
 
@@ -80,17 +83,18 @@ class Admin(BaseModel, Base):
         """
         Returns the state of the object in a dictionary format
         """
+        # call to_dict of BaseModel class to get the unrefined dictionary of the class
         main_dict = super().to_dict()
+
         for key in list(main_dict.keys()):
+            # delete password
             if 'password' in key:
                 del main_dict[key]
-        # if '_Admin__password' in main_dict:
-        #     del main_dict['_Admin__password']
-        # if 'password' in main_dict:
-        #     del main_dict['password']
         dict_state = {}
         for prop, value in main_dict.items():
             try:
+                # check through all properties and iterables for models
+                # and call their to_dict method
                 dict_state[prop] = value.to_dict()
             except AttributeError:
                 if is_jsonnable(value):
@@ -107,13 +111,12 @@ class Admin(BaseModel, Base):
         Gets the result of the current election
         election_id: id of election to get result from
         """
+        # get election with given id using storage get method
         election = models.storage.get('Election', election_id)
         if not election:
             raise ValueError('Election not found')
         if election.admin_id != self.id:
             raise ValueError('Election not found')
-        # key = 'Election.' + election_id
-        # election = self.elections.get(key, None)
         return election.get_results()
 
     def update_election(self, election_id, **kwargs):
@@ -121,6 +124,8 @@ class Admin(BaseModel, Base):
         Takes the id of an election and updates its state
         """
         election = models.storage.get('Election', election_id)
+        # election model update_state takes keyword args and update
+        # the election
         return election.update_state(**kwargs) 
 
     def update_state(self, **kwargs):
@@ -133,6 +138,7 @@ class Admin(BaseModel, Base):
                     self.__password = kwargs.get('new_password')
                 else:
                     raise ValueError('Old password is incorrect')
+            # filter out attributes to not be edited by user
             elif key not in ('id', 'created_at', 'elections', 'username'):
                 setattr(self, key, value)
         models.storage.save()
@@ -152,7 +158,9 @@ class Admin(BaseModel, Base):
         if not attr:
             return None
         admins = models.storage.all(Admin)
+        # loop through all admins
         for admin in admins.values():
+            #get admin with attr = value given
             if getattr(admin, attr) == value:
                 return admin
         return None
@@ -162,7 +170,9 @@ class Admin(BaseModel, Base):
         """
         Authenticates an admin
         """
+        # allows for authentication using username of password
         email = username = search_key = None
+        # set key to search for admin by which is passed.
         if 'email' in kwargs and not kwargs['email'] is None:
             search_key = 'email'
             email = kwargs.get('email', None)
@@ -171,6 +181,8 @@ class Admin(BaseModel, Base):
             username = kwargs.get('username', None)
         else:
             return None
+        # get the admin by the passed attr and use email or username
+        # whichever is not None
         admin = Admin.get_by_attr(search_key, email or username)
         if admin and admin.is_valid_password(password):
             return admin

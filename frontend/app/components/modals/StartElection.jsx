@@ -29,8 +29,8 @@ export default function StartElection({ show, onHide }) {
   return (
     <>
       <Modal show={show} onHide={onHide}>
-        <Modal.Header closeButton>
-          <Modal.Title>Time for Election is not up yet! 🕰️</Modal.Title>
+        <Modal.Header>
+          <Modal.Title style={{fontSize:"20px"}}>Time for Election is not up yet! 🕰️</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div>
@@ -38,13 +38,21 @@ export default function StartElection({ show, onHide }) {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button
+        <button
+            onClick={handleClick}
+            type="button"
+            className="btn btn-outline-secondary btn-sm px-5"
+            style={{ color: "#024647", borderColor: "#024647" }}
+          >
+            Yes
+          </button>
+          {/* <Button
             variant="outline-success"
             className="btn-sm px-5 py-1 h-75 base-color text-bold"
             onClick={handleClick}
           >
             Yes
-          </Button>
+          </Button> */}
           <Button
             className="btn-sm btn-gradient btn-primary text-light px-5 py-1 h-75"
             variant="light"

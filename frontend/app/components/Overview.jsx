@@ -6,6 +6,7 @@ import { FaRegEdit } from "react-icons/fa"
 import { IoMdArrowDropdown } from "react-icons/io";
 import { IoCopyOutline } from "react-icons/io5";
 import { getElection } from '@/lib/electionHelper'
+import EditElection from './modals/EditElection';
 import { FaArrowRightLong } from "react-icons/fa6";
 import { useUser } from '@/app/contexts/userContext'
 import { useElection } from '../contexts/electionContext';
@@ -15,29 +16,28 @@ import { useElection } from '../contexts/electionContext';
 export default function Overview() {
     const { election } = useElection()
 
-    console.log(election)
 
     return (
         <Accordion className="mt-2 d-flex flex-column gap-1" defaultActiveKey="0" flush>
-            <Accordion.Item className="border border-2" eventKey="0">
+            <Accordion.Item className="border border-1" eventKey="0">
                 <Accordion.Header>Project Details</Accordion.Header>
                 <Accordion.Body>
                     <ProjectDetails election={election} />
                 </Accordion.Body>
             </Accordion.Item>
-            <Accordion.Item className="border border-2" eventKey="1">
+            <Accordion.Item className="border border-1" eventKey="1">
                 <Accordion.Header>Project Customization</Accordion.Header>
                 <Accordion.Body>
                     <ProjectCustomization election={election} />
                 </Accordion.Body>
             </Accordion.Item>
-            <Accordion.Item className="border border-2" eventKey="2">
+            <Accordion.Item className="border border-1" eventKey="2">
                 <Accordion.Header>Voting Configuration</Accordion.Header>
                 <Accordion.Body>
                     <VotingConfiguration election={election} />
                 </Accordion.Body>
             </Accordion.Item>
-            <Accordion.Item className="border border-2" eventKey="3">
+            <Accordion.Item className="border border-1" eventKey="3">
                 <Accordion.Header>Privacy Settings</Accordion.Header>
                 <Accordion.Body>
                     <PrivacySettings />
@@ -51,34 +51,40 @@ export default function Overview() {
 function ProjectDetails({}) {
     const { election } = useElection()
     const { user } = useUser()
+    const [show, setShow] = useState(false)
+
+    const handleShow = () => {
+        setShow(true)
+    }
 
     return (
         <div className="d-flex flex-column gap-0">
             <div className="mb-4">
                 <div className="d-flex justify-content-between align-items-center">
                     <p className="m-0 text-muted " style={{ fontSize: ".8rem" }}>Election name </p>
-                    <button className="btn p-0 m-0"><FaRegEdit /></button>
+                    <button className="btn p-0 m-0" onClick={handleShow}><FaRegEdit /></button>
                 </div>
-                <h6 className="fw-bold">{election.title}</h6>
+                <h6 className="fw-semibold">{election.title}</h6>
             </div>
             <div className="mb-4">
                 <p className="text-muted" style={{ fontSize: ".8rem" }}>Project Id</p>
-                <p className="fw-bold">{election.public_id}</p>
+                <p className="fw-semibold">{election.public_id}</p>
             </div>
             <div className="mb-4">
                 <p className="text-muted" style={{ fontSize: ".8rem" }}>Project Owner</p>
-                <p className="fw-bold">{user.email}</p>
+                <p className="fw-semibold">{user.email}</p>
             </div>
             <div className="mb-4">
                 <p className="text-muted" style={{ fontSize: ".8rem" }}>Project Duration</p>
-                <p className="fw-bold">{election.start_date} <FaArrowRightLong /> {election.end_date}</p>
+                <p className="fw-semibold">{election.start_date} <FaArrowRightLong /> {election.end_date}</p>
             </div>
             <div className="mb-4">
                 <p className="text-muted" style={{ fontSize: ".8rem" }}>Project Description</p>
-                <p className="fw-bold">
+                <p className="fw-semibold">
                     {election.description}
                 </p>
             </div>
+            <EditElection election={election} show={show} onHide={setShow} />
         </div>
     )
 }
@@ -95,10 +101,10 @@ function ProjectCustomization() {
 function VotingConfiguration({election}) {
     return (
         <div className="mb-4">
-            <div className="d-flex justify-content-end">
+            {/* <div className="d-flex justify-content-end">
                 <button className="btn p-0 m-0"><FaRegEdit /></button>
 
-            </div>
+            </div> */}
             <div className="mb-4">
                 <p className="text-muted" style={{ fontSize: ".8rem" }}>Ballot papers</p>
                 <p className="fw-bold">{election.candidates?.length}</p>
@@ -119,6 +125,7 @@ function PrivacySettings() {
     }
     return (
         <>
+        <p className='card-subtitle'>How would you like to invite voters to your election?</p>
             <div className="dropdown">
                 <button className="btn w-100 text-start rounded-4 border border-2 d-flex justify-content-between align-items-center" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                     {privacy}

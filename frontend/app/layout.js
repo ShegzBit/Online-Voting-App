@@ -19,7 +19,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-      <link href="https://fonts.cdnfonts.com/css/gelion" rel="stylesheet" />
+      {/* <link href="https://fonts.cdnfonts.com/css/gelion" rel="stylesheet" /> */}
+      <link href="https://fonts.cdnfonts.com/css/general-sans" rel="stylesheet"></link>
       </head>
       <body className="">
         <UserProvider>
