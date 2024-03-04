@@ -37,13 +37,21 @@ export default function DeleteVoter({ show, onHide, email}) {
             </div>
         </Modal.Body>
         <Modal.Footer>
-        <Button
+        {/* <Button
             variant="outline-success"
             className="btn-sm px-5 py-1 h-75 base-color text-bold"
             onClick={onHide}
           >
             Go back
-          </Button>
+          </Button> */}
+          <button
+            onClick={onHide}
+            type="button"
+            className="btn btn-outline-secondary btn-sm px-5"
+            style={{ color: "#024647", borderColor: "#024647" }}
+          >
+            Close
+          </button>
           <Button
             className="btn-sm btn-gradient btn-primary text-light px-5 py-1 h-75"
             variant="light"
