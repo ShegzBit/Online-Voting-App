@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
+import { useElection } from "@/app/contexts/electionContext";
+import { useUser } from "@/app/contexts/userContext";
+import { addCandidateImage, getElection, updateElection } from "@/lib/electionHelper";
+import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { updateElection, addCandidateImage } from "@/lib/electionHelper";
-import { useUser } from "@/app/contexts/userContext";
-import { useElection } from "@/app/contexts/electionContext";
-import { getElection } from "@/lib/electionHelper";
 
 function AddNewBallot({ show, onHide, electionId }) {
   const [data, setData] = useState({
@@ -27,12 +26,12 @@ function AddNewBallot({ show, onHide, electionId }) {
 
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
-  }
+  };
 
   const handleSubmit = async () => {
     try {
       const formData = new FormData();
-      formData.append('photo', image);
+      formData.append("photo", image);
 
       console.log(image);
       if (image) {
@@ -42,23 +41,28 @@ function AddNewBallot({ show, onHide, electionId }) {
           profile_image: imgRes?.imageUrl,
         });
 
-      const { isError, ...rest } = data;
-      
-      const res = await updateElection(user?.id, electionId, {
-        candidates: [{ ...rest, profile_image: imgRes?.imageUrl }],
-      });
-      if (res) {
-        setElection(res);
-      }
-      const updatedElection = await getElection(electionId);
-      setElection(updatedElection);
-      onHide();
+        const { isError, ...rest } = data;
+
+        const res = await updateElection(user?.id, electionId, {
+          candidates: [{ ...rest, profile_image: imgRes?.imageUrl }],
+        });
+        if (res) {
+          setElection(res);
+        }
+        const updatedElection = await getElection(electionId);
+        setElection(updatedElection);
+        onHide();
       }
 
       if (!image) {
         const { isError, ...rest } = data;
         const res = await updateElection(user?.id, electionId, {
-          candidates: [{ ...rest, profile_image: 'https://placehold.co/600x400?text=No image' }],
+          candidates: [
+            {
+              ...rest,
+              profile_image: "https://placehold.co/600x400?text=No image",
+            },
+          ],
         });
         if (res) {
           setElection(res);
@@ -80,7 +84,7 @@ function AddNewBallot({ show, onHide, electionId }) {
         </Modal.Header>
         <Modal.Body>
           <div className="mb-3">
-            <label htmlFor="ballotName" className="form-label">
+            <label htmlFor="ballotName" className="form-label text-dark">
               Candidate’s first name
             </label>
             <input
@@ -90,11 +94,11 @@ function AddNewBallot({ show, onHide, electionId }) {
               className="form-control rounded-4"
               style={{ height: "56px" }}
               id="ballotName"
-              placeholder="Enter candidate’s name"
+              placeholder="Enter candidate’s first name"
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="ballotName" className="form-label">
+            <label htmlFor="ballotName" className="form-label text-dark">
               Candidate’s last name
             </label>
             <input
@@ -104,11 +108,11 @@ function AddNewBallot({ show, onHide, electionId }) {
               className="form-control rounded-4"
               style={{ height: "56px" }}
               id="ballotName"
-              placeholder="Enter candidate’s name"
+              placeholder="Enter candidate’s last name"
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="ballotLimit" className="form-label">
+            <label htmlFor="ballotLimit" className="form-label text-dark">
               Position
             </label>
             <input
@@ -120,33 +124,47 @@ function AddNewBallot({ show, onHide, electionId }) {
               placeholder="Enter name of position"
               onChange={handleChange("position")}
             />
+          </div>
+          <div>
+            <label htmlFor="candidatePhoto" className="form-label text-dark">
+              Upload candidate&apos;s photo
+            </label>
             <input
               type="file"
               name="photo"
-              className="form-control rounded-4"
-              style={{ height: "56px" }}
+              className="form-control-plaintext rounded-3"
+              // style={{ height: "56px" }}
               id="photo"
               onChange={handleImageChange}
             />
           </div>
           {/* <Contestants setContestants={setContestants} contestants={contestants}  /> */}
         </Modal.Body>
-        <Modal.Footer>
-          <Button
+        <div className="modal-footer">
+        {/* <Button
             variant="outline-success"
             className="btn-sm px-5 py-1 h-75 base-color text-bold"
             onClick={onHide}
           >
-            Go back
-          </Button>
-          <Button
-            className="btn-sm btn-gradient btn-primary text-light px-5 py-1 h-75"
-            variant="light"
+            close
+          </Button> */}
+          <button
+            onClick={onHide}
+            type="button"
+            className="btn btn-outline-secondary btn-sm px-5"
+            style={{ color: "#024647", borderColor: "#024647" }}
+          >
+            Close
+          </button>
+          <button
+          type="button"
+            className="btn btn-sm btn-gradient btn-primary text-light px-5 py-1 h-75"
+           
             onClick={handleSubmit}
           >
             Add
-          </Button>
-        </Modal.Footer>
+          </button>
+        </div>
       </Modal>
     </>
   );
