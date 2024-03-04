@@ -33,11 +33,11 @@ export default function Monitoring({params}) {
     },[params.id])
 
     return (
-        <div className="w-100 px-2">
+        <div className="w-100 px-2 container">
         <div className="btn-group w-100">
-            <button type="button " onClick={() => handleActive('overview')} href="#" className={`btn rounded-0 fw-semibold text-muted border border-2 ${isActive === 'overview' ? styles.activeBtn : ''}`} aria-current="page">Overview</button>
-            <button type="button" onClick={() => handleActive('live')} href="#" className={`btn rounded-0 fw-semibold text-muted border border-2 ${isActive === 'live' ? styles.activeBtn : ''}`}>Live results</button>
-            <button disabled type="button" onClick={() => handleActive('voters')} href="#" className={`btn rounded-0 fw-semibold text-muted border border-2 ${isActive === 'voters' ? styles.activeBtn : ''}`}>Settings</button>
+            <button type="button " onClick={() => handleActive('overview')} href="#" style={{fontSize:"14px"}} className={`btn rounded-0 fw-semibold text-muted border border-1 ${isActive === 'overview' ? styles.activeBtn : ''}`} aria-current="page">Overview</button>
+            <button type="button" onClick={() => handleActive('live')} href="#" style={{fontSize:"14px"}} className={`btn rounded-0 fw-semibold text-muted border border-1 ${isActive === 'live' ? styles.activeBtn : ''}`}>Live results</button>
+            <button disabled type="button" onClick={() => handleActive('voters')} href="#" style={{fontSize:"14px"}} className={`btn rounded-0 fw-semibold text-muted border border-1 ${isActive === 'voters' ? styles.activeBtn : ''}`}>Settings</button>
         </div>
         {isActive === 'overview' && <ElectionOverview electionId={params.id} />}
         {isActive === 'live' && <LiveResults electionId={params.id} />}
