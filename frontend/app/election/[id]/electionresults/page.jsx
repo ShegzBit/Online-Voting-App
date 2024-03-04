@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 /*Election live results*/
 import { convertMilliSecondsIntoLegibleString } from "@/lib/general";
@@ -8,7 +8,7 @@ import { getElection, getResults } from "@/lib/electionHelper";
 import { useUser } from "@/app/contexts/userContext";
 import moment from "moment";
 import Image from "next/image";
-import Button from '@/app/components/Button';
+import Button from "@/app/components/Button";
 
 export default function ElectionResults({ params }) {
   const { election, setElection } = useElection();
@@ -21,8 +21,6 @@ export default function ElectionResults({ params }) {
   const [group, setGroup] = useState(null);
   const [pos, setPos] = useState([]);
 
-  
-  
   useEffect(() => {
     const getRes = async () => {
       try {
@@ -58,7 +56,7 @@ export default function ElectionResults({ params }) {
   //     setPos(Object.keys(group));
   //   }
   // }, [election]);
-  
+
   const currentDate = moment(new Date());
   const startDate = moment(election.start_date);
   const endDate = moment(election.end_date);
@@ -70,8 +68,8 @@ export default function ElectionResults({ params }) {
     const ms = moment.duration(endDate.diff(currentDate)).asMilliseconds();
     setTimeLeft(convertMilliSecondsIntoLegibleString(ms));
     if (currentDate.isAfter(endDate)) {
-        setHasStarted(false);
-        setHasEnded(true);
+      setHasStarted(false);
+      setHasEnded(true);
     }
   }, [endDate]);
 
@@ -86,14 +84,14 @@ export default function ElectionResults({ params }) {
       }
     };
   }, [handleSetTime, hasEnded]);
-
   console.log(results);
+
   return (
     <>
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-lg-6 col-md-6 col-sm-12">
-            <h1 className="card-title mb-0">{election?.title}</h1>
+            <h1 className="card-title mb-4">{election?.title}</h1>
             {!hasStarted ? (
               <div>
                 <p className="mb-0 text-muted " style={{ fontSize: ".8rem" }}>
@@ -132,7 +130,7 @@ export default function ElectionResults({ params }) {
                 </p>
               </div>
             )}
-            {/* <ShowChoicesPreview ballots={results} /> */}
+            <ShowChoicesPreview ballots={results} />
           </div>
         </div>
       </div>
@@ -140,56 +138,77 @@ export default function ElectionResults({ params }) {
   );
 }
 
+const ShowChoicesPreview = ({ ballots }) => {
+  const { election } = useElection();
+  const { user } = useUser();
+  const [activePage, setActivePage] = useState(0);
 
-const ShowChoicesPreview = ({ choices, group, ...props }) => {
-  const { election } = useElection()
-  const { user } = useUser()
-
-
-  const handleVote = async () => {
-    try {
-      // Object.values(choices).forEach( (choice) => {
-      //   console.log(choice);
-      //   vote(election.id, {
-      //     ...user,
-      //     candidate_id: choice,
-      //   });
-      // })
-      props.setVoted(true);
-    
-    } catch (e) {
-      console.log(e);
+  const handleNext = () => {
+    if (activePage < Object.keys(ballots).length) {
+      setActivePage(activePage + 1);
     }
-  }
+  };
 
-  const keys = [];
+  const handlePrev = () => {
+    if (activePage > 0) {
+      setActivePage(activePage - 1);
+    }
+  };
 
-  Object.keys(choices).map((key, i) => {
-    Object.keys(group).map((k, j) => {
-      if (key === k) {
-        keys.push(group[k]);
-      }
-    });
-  });
+  const activePosition = Object.keys(ballots)[activePage];
 
+  console.log(election);
   return (
-    <div className="d-flex flex-column gap-4">
-      {Object.keys(choices).map((key, i) => (
-        <div key={i} className="">
-          <h5 className="fw-bold">{key}</h5>
-          <div className="d-flex align-items-center gap-5">
-          <Image
-            src={keys[i].find((obj) => obj.id === choices[key]).profile_image}
-            alt={keys[i].find((obj) => obj.id === choices[key]).full_name}
-            width={72}
-            height={72}
-          />
-          <p>{keys[i].find((obj) => obj.id === choices[key]).full_name}</p>
-
-          </div>
+    <div className="d-flex flex-column mb-4">
+      <div className="d-flex justify-content-between">
+        <h5 className="mt-2 fw-semibold mb-4">{activePosition}</h5>
+        <p className="card-subtitle text-muted">{`${activePage + 1}/${
+          Object.keys(ballots).length
+        }`}</p>
+      </div>
+      <div className="d-flex flex-column align-items-start gap-1">
+        {activePosition &&
+          ballots[activePosition].map((choice, j) => (
+            <div
+              className="d-flex justify-items-center align-content-center gap-3 mb-3"
+              key={j}
+            >
+              <Image
+                src={choice.profile_image}
+                alt={""}
+                width={72}
+                height={72}
+                className=" rounded-2 object-fit-cover"
+              />
+              <div className="d-flex flex-column justify-content-center">
+                <p className="m-0 fs-6 fw-medium">{choice.full_name}</p>
+                <p className="m-0 text-muted">
+                  Votes:{" "}
+                  <span className="text-dark fw-medium">{choice.votes}</span>
+                </p>
+              </div>
+            </div>
+          ))}
+      </div>
+      {Object.keys(ballots).length > 0 && (
+        <div>
+          {activePage > 0 && (
+            // <Button text={"Prev"} cb={handlePrev} classNames="me-3" />
+            <button
+            onClick={handlePrev}
+            type="button"
+            className="btn btn-outline-secondary px-5 btn-sm"
+            style={{ color: "#024647", borderColor: "#024647" }}
+          >
+            Previous
+          </button>
+          )}
+          {Object.keys(ballots).length > 1 &&
+            activePage < Object.keys(ballots).length - 1 && (
+              <Button text={"Next"} cb={handleNext} classNames="btn-sm btn-gradient btn-primary text-light px-5 py-1 h-75" />
+            )}
         </div>
-      ))}
-          <Button cb={handleVote} classNames='' text={"Submit votes"} />
+      )}
     </div>
   );
 };
