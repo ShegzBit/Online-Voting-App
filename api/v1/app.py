@@ -54,4 +54,5 @@ def routes():
 
 if __name__ == "__main__":
     host = os.getenv('OVS_API_HOST', '0.0.0.0')
-    app.run(host=host, port=5000)
+    port = os.getenv('OVS_API_PORT', 5000)
+    app.run(host=host, port=port)
