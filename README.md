@@ -6,7 +6,7 @@ This application aims to simplify and enhance the voting experience, allowing
 eligible voters to cast their ballots conveniently from any location with internet
 access. We ensure our application has a very good user interface and experience,
 as well as very reliable and sophisticated API. Pollmaster web interface and its
-API with designed routes can be accessed at [https://pollmaster.me](https://pollmaster.me) and [https://api.pollmaster.me](https://api.pollmaster.me) respectively.
+API with designed routes can be accessed at [https://pollmaster.me](https://pollmaster.me) and [https://pollmaster.me/api/v1/](https://pollmaster.me/api/v1/) respectively.
 
 ![Application web interface](./frontend/public/OVS_Screenshot.png)
 
